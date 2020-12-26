@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>capa.png</file>
+        <file>icon.png</file>
+    </qresource>
+</RCC>

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Calendar</class>
+ <widget class="QMainWindow" name="Calendar">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>541</width>
+    <height>403</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>RaqMed - Suíte de Gerenciamento de Pacientes</string>
+  </property>
+  <property name="documentMode">
+   <bool>false</bool>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item alignment="Qt::AlignHCenter">
+       <widget class="QCalendarWidget" name="calendarWidget">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>405</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="gridVisible">
+         <bool>false</bool>
+        </property>
+        <property name="verticalHeaderFormat">
+         <enum>QCalendarWidget::NoVerticalHeader</enum>
+        </property>
+        <property name="navigationBarVisible">
+         <bool>true</bool>
+        </property>
+        <property name="dateEditEnabled">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Pesquisar paciente</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEdit"/>
+      </item>
+      <item>
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="teste.qrc">:/capa.png</pixmap>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Consultas do dia</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QTableWidget" name="tableWidget">
+        <property name="showGrid">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>541</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuOp_es">
+    <property name="title">
+     <string>Adicionar</string>
+    </property>
+    <addaction name="actionAdicionar_Paciente"/>
+    <addaction name="actionAdicionar_Consulta"/>
+   </widget>
+   <widget class="QMenu" name="menuEditar_modelos">
+    <property name="title">
+     <string>Editar modelos</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuP_nico">
+    <property name="title">
+     <string>Pânico</string>
+    </property>
+    <addaction name="actionApagar_todos_os_arquivos_do_computador_e_n_o_ligar_mais"/>
+   </widget>
+   <addaction name="menuOp_es"/>
+   <addaction name="menuEditar_modelos"/>
+   <addaction name="menuP_nico"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionAdicionar_Paciente">
+   <property name="text">
+    <string>Cadastrar Paciente</string>
+   </property>
+  </action>
+  <action name="actionAdicionar_Consulta">
+   <property name="text">
+    <string>Agendar Consulta</string>
+   </property>
+  </action>
+  <action name="actionIdentifica_ao">
+   <property name="text">
+    <string>Identificação</string>
+   </property>
+  </action>
+  <action name="actionMotivos">
+   <property name="text">
+    <string>Motivos</string>
+   </property>
+  </action>
+  <action name="actionAntecedentes">
+   <property name="text">
+    <string>Antecedentes</string>
+   </property>
+  </action>
+  <action name="actionExames">
+   <property name="text">
+    <string>Exames</string>
+   </property>
+  </action>
+  <action name="actionRelat_rios">
+   <property name="text">
+    <string>Relatórios</string>
+   </property>
+  </action>
+  <action name="actionAtalhos">
+   <property name="text">
+    <string>Atalhos</string>
+   </property>
+  </action>
+  <action name="actionApagar_todos_os_arquivos_do_computador_e_n_o_ligar_mais">
+   <property name="text">
+    <string>Apagar todos os arquivos do computador e não ligar mais</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="teste.qrc"/>
+ </resources>
+ <connections/>
+</ui>
