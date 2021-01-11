@@ -6,14 +6,6 @@
 //#define CLOUD_DB
 //#define DB_VERBOSE
 
-#ifdef DB_VERBOSE
-    #define DB_VERBOSE_CODE \
-        printf("intern %s;\n", command.c_str()); \
-        fflush(stdout);
-#else
-    #define DB_VERBOSE_CODE
-#endif
-
 #if defined(__unix__)
     #define DATABASE_CONFIG_FILE "/etc/RaqMed/database.config"
 #elif defined(_WIN32)
@@ -126,41 +118,49 @@ PGconn* PatientBDModel::setConn()
     return conn;
 }
 
+PGresult* PatientBDModel::safeBDExec(const char *command, int nParams, const char *const *paramValues)
+{
+
+#ifdef DB_VERBOSE
+        printf("intern %s;\n", command.c_str()); \
+        fflush(stdout);
+#endif
+
+    PGresult* res = PQexecParams(conn, command, nParams, nullptr, paramValues, nullptr, nullptr, 0);
+
+    if (RESULT_OK(res))
+        return res;
+
+    PQreset(conn);
+    //if (PQstatus(conn) == CONNECTION_OK) //# May need response verification
+        return PQexecParams(conn, command, nParams, nullptr, paramValues, nullptr, nullptr, 0);
+}
+
 PGresult* PatientBDModel::BDExec(string command, std::vector<char*> params)
 {
-    DB_VERBOSE_CODE
-
-    return PQexecParams(conn, command.c_str(), params.size(), nullptr, params.data(), nullptr, nullptr, 0);
+    return safeBDExec(command.c_str(), params.size(), params.data());
 }
 
 PGresult* PatientBDModel::BDExec(string command, QString param)
 {
-    DB_VERBOSE_CODE
-
     string str = param.toStdString();
     const char* buff = str.c_str();
-    return PQexecParams(conn, command.c_str(), 1, nullptr, &buff, nullptr, nullptr, 0);
+    return safeBDExec(command.c_str(), 1, &buff);
 }
 
 PGresult* PatientBDModel::BDExec(string command, string param)
 {
-    DB_VERBOSE_CODE
-
     const char* buff = param.c_str();
-    return PQexecParams(conn, command.c_str(), 1, nullptr, &buff, nullptr, nullptr, 0);
+    return safeBDExec(command.c_str(), 1, &buff);
 }
 
 PGresult* PatientBDModel::BDExec(string command, char* param)
 {
-    DB_VERBOSE_CODE
-
-    return PQexecParams(conn, command.c_str(), 1, nullptr, &param, nullptr, nullptr, 0);
+    return safeBDExec(command.c_str(), 1, &param);
 }
 
 
 PGresult* PatientBDModel::BDExec(string command)
 {
-    DB_VERBOSE_CODE
-
-    return PQexec(conn, command.c_str());
+    return safeBDExec(command.c_str(), 0, nullptr);
 }

@@ -10,6 +10,7 @@ extern "C" {
 #define FIELDS_NUM 16
 #define BIRTHDATE_INDEX 1
 #define NOTES_INDEX FIELDS_NUM - 1
+#define RESULT_OK(res) PQresultStatus(res) != PGRES_FATAL_ERROR
 
 class PatientBDModel : public QAbstractListModel
 {
@@ -29,6 +30,7 @@ public:
 
     //DB functions
     static PGconn* setConn();
+    static PGresult* safeBDExec(const char *command, int nParams, const char *const *paramValues);
     static PGresult* BDExec(string command, std::vector<char*> params);
     static PGresult* BDExec(string command, QString param);
     static PGresult* BDExec(string command, string param);
