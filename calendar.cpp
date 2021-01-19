@@ -11,6 +11,7 @@ Calendar::Calendar(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::Calendar)
 {
+    PatientBDModel::setMainWindow(this);
     ui->setupUi(this);
 
     ui->tableWidget->setColumnCount(2);

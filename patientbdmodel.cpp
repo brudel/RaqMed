@@ -1,5 +1,6 @@
 #include "patientbdmodel.h"
 #include <QMessageBox>
+#include <QPushButton>
 
 
 //Boolean config defines
@@ -19,6 +20,10 @@
 #else
     PGconn* PatientBDModel::conn = PQconnectdb("user=brudel dbname=rqm_pgloader");
 #endif
+
+QWidget* PatientBDModel::mainWindow = nullptr;
+
+QMessageBox* PatientBDModel::reconnectWindow = nullptr;
 
 QStringList* PatientBDModel::fieldNames = new QStringList({"Nome", "Data de aniversário", "Endereço", "Bairro", "Cidade", "Estado",
 "Telefone 1", "Telefone 2", "Telefone 3", "Email", "Nome da mãe", "Profissão da mãe", "Nome do pai",
@@ -118,6 +123,39 @@ PGconn* PatientBDModel::setConn()
     return conn;
 }
 
+void PatientBDModel::setMainWindow(QWidget* mW)
+{
+    mainWindow = mW;
+}
+
+void PatientBDModel::createReconectWindow()
+{
+    if (reconnectWindow != nullptr)
+    {
+        reconnectWindow->show();
+        return;
+    }
+
+    reconnectWindow = new QMessageBox(mainWindow);
+    reconnectWindow->setText("A conexão com o servidor em nuvem que hospeda o banco de dados foi interrompida."
+        "Verifique sua conexão com a internet.");
+    reconnectWindow->setIcon(QMessageBox::Critical);
+    reconnectWindow->setWindowModality(Qt::NonModal);
+    QPushButton* qb = reconnectWindow->addButton("Reconectar", QMessageBox::ApplyRole);
+    connect(qb, &QPushButton::clicked, &PatientBDModel::tryReconnect);
+    reconnectWindow->show();
+}
+
+void PatientBDModel::tryReconnect()
+{
+    PQreset(conn);
+    if (IS_CONNECTION_OK)
+        QMessageBox::about(mainWindow, "Reconectado com sucesso",
+            "A conexão com o banco de dados foi reestabelecida com sucesso, você pode continuar o trabalho.");
+    else
+        reconnectWindow->show();
+}
+
 PGresult* PatientBDModel::safeBDExec(const char *command, int nParams, const char *const *paramValues)
 {
 
@@ -126,14 +164,28 @@ PGresult* PatientBDModel::safeBDExec(const char *command, int nParams, const cha
         fflush(stdout);
 #endif
 
+    if (!IS_CONNECTION_OK)
+    {
+        reconnectWindow->show();
+        reconnectWindow->activateWindow();
+        return nullptr;
+    }
+
     PGresult* res = PQexecParams(conn, command, nParams, nullptr, paramValues, nullptr, nullptr, 0);
 
-    if (RESULT_OK(res))
+    if (IS_RESULT_OK(res))
         return res;
 
     PQreset(conn);
-    //if (PQstatus(conn) == CONNECTION_OK) //# May need response verification
-        return PQexecParams(conn, command, nParams, nullptr, paramValues, nullptr, nullptr, 0);
+    if (IS_CONNECTION_OK)
+    {
+        res = PQexecParams(conn, command, nParams, nullptr, paramValues, nullptr, nullptr, 0);
+        if (IS_RESULT_OK(res))
+            return res;
+    }
+
+    createReconectWindow();
+    return nullptr;
 }
 
 PGresult* PatientBDModel::BDExec(string command, std::vector<char*> params)

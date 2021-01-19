@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
     {
         QMessageBox::critical(nullptr, "Erro no banco de dados",
 "Não foi possível se conectar ao banco de dados, encerrando programa.");
-    exit(1);
+        exit(1);
     }
 
     Calendar c;
@@ -18,4 +18,3 @@ int main(int argc, char *argv[])
 
     return a.exec();
 }
-

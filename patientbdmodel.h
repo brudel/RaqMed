@@ -2,6 +2,8 @@
 #define PATIENTBDMODEL_H
 
 #include <QAbstractListModel>
+#include <QMessageBox>
+#include <QWidget>
 #include <qutils.h>
 extern "C" {
 #include <libpq-fe.h>
@@ -9,8 +11,9 @@ extern "C" {
 
 #define FIELDS_NUM 16
 #define BIRTHDATE_INDEX 1
-#define NOTES_INDEX FIELDS_NUM - 1
-#define RESULT_OK(res) PQresultStatus(res) != PGRES_FATAL_ERROR
+#define NOTES_INDEX (FIELDS_NUM - 1)
+#define IS_CONNECTION_OK (PQstatus(conn) == CONNECTION_OK)
+#define IS_RESULT_OK(res) (PQresultStatus(res) != PGRES_FATAL_ERROR)
 
 class PatientBDModel : public QAbstractListModel
 {
@@ -30,6 +33,9 @@ public:
 
     //DB functions
     static PGconn* setConn();
+    static void setMainWindow(QWidget* mW);
+    static void createReconectWindow();
+    static void tryReconnect();
     static PGresult* safeBDExec(const char *command, int nParams, const char *const *paramValues);
     static PGresult* BDExec(string command, std::vector<char*> params);
     static PGresult* BDExec(string command, QString param);
@@ -37,8 +43,10 @@ public:
     static PGresult* BDExec(string command, char* param);
     static PGresult* BDExec(string command);
 
-    //DB
+    //DB variables
     static PGconn* conn;
+    static QWidget* mainWindow;
+    static QMessageBox* reconnectWindow;
 
     //DB human names
     static QStringList* fieldNames;
