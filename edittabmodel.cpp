@@ -5,6 +5,21 @@
 EditTabModel::EditTabModel(int _tabNumber, QWidget *parent) :
     QDialog(parent)
 {
+    PGresult* res = PatientBDModel::BDExec
+("SELECT col.column_default \
+FROM information_schema.columns col \
+WHERE col.table_name = 'patient' \
+AND col.column_name = $1", PatientBDModel::tableTabs[tabNumber]);
+
+    if (res == nullptr)
+{
+        close();
+        return;
+}
+
+    QString old = PQgetvalue(res, 0, 0) + 1;
+    plainTextEdit = new QPlainTextEdit(old.chopped(7), this);
+
     tabNumber = _tabNumber;
 
     setWindowTitle("Editar Modelo de " + PatientBDModel::tabNames->at(tabNumber));
@@ -23,22 +38,16 @@ EditTabModel::EditTabModel(int _tabNumber, QWidget *parent) :
 
     connect(saveButton, SIGNAL(clicked()), this, SLOT(save()));
     connect(cancelButton, SIGNAL(clicked()), this, SLOT(close()));
-
-    PGresult* ans = PatientBDModel::BDExec
-("SELECT col.column_default \
-FROM information_schema.columns col \
-WHERE col.table_name = 'patient' \
-AND col.column_name = $1", PatientBDModel::tableTabs[tabNumber]);
-
-    QString old = PQgetvalue(ans, 0, 0) + 1;
-    plainTextEdit->setPlainText(old.chopped(7));
 }
 
 void EditTabModel::save() {
     char* newDefault = QUtils::ToCString(plainTextEdit->toPlainText());
 
-    PatientBDModel::BDExec("ALTER TABLE patient ALTER " + PatientBDModel::tableTabs[tabNumber]
+    PGresult* res = PatientBDModel::BDExec("ALTER TABLE patient ALTER " + PatientBDModel::tableTabs[tabNumber]
 + " SET DEFAULT '" + newDefault + '\'');
+
+    if (res == nullptr)
+        return;
 
     saved = true;
     this->close();

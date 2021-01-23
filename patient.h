@@ -30,11 +30,11 @@ class Patient : public QMainWindow
 
 public:
     explicit Patient(QString name, QWidget *parent = nullptr);
-    ~Patient();
+    void closeEvent(QCloseEvent *event) override;
 
     //Variables
     char* name;
-    bool deleted = false;
+    bool invalid = false;
     std::array<QPlainTextEdit*, 4> tabs;
 
     //Layout

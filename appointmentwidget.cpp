@@ -8,6 +8,12 @@ QWidget(parent)
 {
     ident.push_back(name);
     comboBox = _comboBox;
+
+    if (!loadDates())
+    {
+        invalid = true;
+        return;
+    }
     menu = _menu;
 
     menu->addAction("Remarcar Data/Hora", this, SLOT(dateEdit()));
@@ -27,31 +33,40 @@ QWidget(parent)
     connect(exitButton, SIGNAL(clicked()), this, SLOT(exit()));
     connect(this, SIGNAL(dateEdited(QDate,QDate)), this, SLOT(loadDates()));
     connect(plainTextEdit, SIGNAL(undoAvailable(bool)), this, SLOT(contentChange(bool)));
-
-    loadDates();
 }
 
 void AppointmentWidget::setDate(int index)
 {
+    char* old = ident.back();
+
     if (ident.size() == 2)
-        saveChanges();
+        if (!saveChanges())
+            return;
 
     ident.push_back(dateTimes[index]);
 
+    PGresult* res = PatientBDModel::BDExec("SELECT content FROM appointment WHERE patient = $1 AND day = $2", ident);
+    if (res == nullptr)
+    {
+        ident[1] = old;
+        return;
+    }
+
+    plainTextEdit->setPlainText(PQgetvalue(res, 0, 0));
+
     label->setText(comboBox->itemText(index));
-
-    PGresult* ans = PatientBDModel::BDExec("SELECT content FROM appointment WHERE patient = $1 AND day = $2", ident);
-
-    plainTextEdit->setPlainText(PQgetvalue(ans, 0, 0));
     menu->menuAction()->setVisible(true);
 }
 
-void AppointmentWidget::exit()
+bool AppointmentWidget::exit()
 {
-    saveChanges();
+    if (!saveChanges())
+        return;
+
     menu->menuAction()->setVisible(false);
     comboBox->setCurrentIndex(0);
     exited();
+    return true;
 }
 
 void AppointmentWidget::dateEdit()
@@ -66,26 +81,32 @@ void AppointmentWidget::dateEdit()
 }
 
 
-void AppointmentWidget::saveChanges()
+bool AppointmentWidget::saveChanges()
 {
-    if (contentChanged && !deleted) {
+    if (contentChanged && !invalid) {
         ident.push_back(QUtils::ToCString(plainTextEdit->toPlainText()));
-        QUtils::BDdebug(PatientBDModel::BDExec("UPDATE appointment SET content = $3 WHERE patient = $1 AND day = $2", ident));
+        PGresult* res = PatientBDModel::BDExec("UPDATE appointment SET content = $3 WHERE patient = $1 AND day = $2", ident);
         ident.pop_back();
+
+        if (res == nullptr)
+            return false;
 
         contentChanged = false;
     }
 
     //#UnIFicar
 
-    if (dateTimeChanged  && !deleted) {
+    if (dateTimeChanged  && !invalid) {
         QDateTime newDateTime = dateTimeEdit->dateTime();
         if (oldDateTime != newDateTime) {
             char* newDateTimeStr = QUtils::ToCString(newDateTime.toString("yyyy-MM-dd hh:mm:00"));
 
             ident.push_back(newDateTimeStr);
-            PatientBDModel::BDExec("UPDATE appointment SET day = $3 WHERE patient = $1 AND day = $2", ident);
+            PGresult* res = PatientBDModel::BDExec("UPDATE appointment SET day = $3 WHERE patient = $1 AND day = $2", ident);
             ident.pop_back();
+
+            if (res == nullptr)
+                return false;
 
             dateEdited(oldDateTime.date(), newDateTime.date()); //Signal
         }
@@ -94,8 +115,8 @@ void AppointmentWidget::saveChanges()
         stackedLayout->setCurrentIndex(0);
     }
 
-
     ident.pop_back();
+    return true;
 }
 
 void AppointmentWidget::contentChange(bool mudado)
@@ -109,37 +130,43 @@ void AppointmentWidget::nameChanged(char* newName)
     ident[0] = newName;
 }
 
-void AppointmentWidget::deleteAppointment()
+bool AppointmentWidget::deleteAppointment()
 {
     QMessageBox::StandardButton b_ans = QMessageBox::warning(this, "Apagar Consulta",
 "Tem certeza que você deseja apagar essa consulta?\nTodos os dados serão perdidos",
 QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
 
     if (b_ans == QMessageBox::Cancel)
+        return false;
+
+    PGresult* res = PatientBDModel::BDExec("DELETE FROM appointment WHERE patient = $1 AND day = $2", ident);
+    if (res == nullptr)
         return;
 
-    PatientBDModel::BDExec("DELETE FROM appointment WHERE patient = $1 AND day = $2", ident);
-
-    deleted = true;
+    invalid = true;
     exit();
-    deleted = false;
+    invalid = false;
 
     oldDateTime.setDate(QDate(atoi(ident[1]), atoi(ident[1] + 5), atoi(ident[1] + 8)));
     dateEdited(oldDateTime.date(), oldDateTime.date());
+    return true;
 }
 
-void AppointmentWidget::loadDates()
+bool AppointmentWidget::loadDates()
 {
-    PGresult* ans = PatientBDModel::BDExec("SELECT day FROM appointment WHERE patient = $1 ORDER BY day DESC", ident.front());
+    PGresult* res = PatientBDModel::BDExec("SELECT day FROM appointment WHERE patient = $1 ORDER BY day DESC", ident.front());
+    if (res == nullptr)
+        return false;
 
-    int n = PQntuples(ans);
+    int n = PQntuples(res);
     dateTimes.clear();
     dateTimes.reserve(n);
     comboBox->clear();
 
     for (int i = 0; i < n; ++i) {
-        dateTimes.push_back(PQgetvalue(ans, i, 0));
+        dateTimes.push_back(PQgetvalue(res, i, 0));
         comboBox->addItem(QUtils::toBrDate(dateTimes.back()).c_str());
     }
+    return true;
 }
 

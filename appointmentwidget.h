@@ -21,13 +21,13 @@ public:
     explicit AppointmentWidget(char* name, QComboBox* _comboBox, QMenu* _menu, QWidget *parent = nullptr);
 
     //Functions
-    void saveChanges();
+    bool saveChanges();
 
     //Variables
     std::vector<char*> ident;
     bool contentChanged = false;
     bool dateTimeChanged = false;
-    bool deleted = false;
+    bool invalid = false;
     QDateTime oldDateTime;
     std::vector<char*> dateTimes;
 
@@ -51,12 +51,12 @@ signals:
 public slots:
     //User action
     void setDate(int index); //Combobox
-    void exit(); //Salvar e sair
+    bool exit(); //Button: "Salvar e sair"
     void dateEdit();
-    void deleteAppointment();
+    bool deleteAppointment();
 
     //Basic action
-    void loadDates();
+    bool loadDates();
 
     //Intern action
     void contentChange(bool original);

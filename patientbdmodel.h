@@ -29,6 +29,7 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
     //Model variables
+    bool invalid = false;
     std::vector<string> fieldValues;
 
     //DB functions

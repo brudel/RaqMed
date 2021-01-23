@@ -24,7 +24,7 @@ public:
 
     QVBoxLayout *verticalLayout = new QVBoxLayout(this);
     QLabel* label = new QLabel("Data:", this);
-    QPlainTextEdit *plainTextEdit = new QPlainTextEdit(this);
+    QPlainTextEdit *plainTextEdit;
     QPushButton *saveButton = new QPushButton("Salvar", this);
     QPushButton *cancelButton = new QPushButton("Cancelar", this);
     QHBoxLayout *horizontalButtonLayout = new QHBoxLayout();

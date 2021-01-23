@@ -51,8 +51,11 @@ void AddPatientForm::save() {
         values.push_back(QUtils::ToCString(lineEdits[i]->text()));
     values.push_back(QUtils::ToCString(plainTextEdit->toPlainText()));
 
-    PatientBDModel::BDExec("INSERT INTO patient (name, " + PatientBDModel::tableFieldsLine +
+    PGresult* res = PatientBDModel::BDExec("INSERT INTO patient (name, " + PatientBDModel::tableFieldsLine +
 ") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)", values);
+
+    if (res == nullptr)
+        return;
 
     saved = true;
     this->close();

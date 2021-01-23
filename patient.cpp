@@ -6,7 +6,32 @@ Patient::Patient(QString qname, QWidget *parent) :
     QMainWindow(parent)
 {
     name = QUtils::ToCString(qname);
+    PGresult* res = PatientBDModel::BDExec("SELECT reasons, antecedents, exams, reports FROM patient WHERE name = $1", name);
+    if (res == nullptr)
+    {
+        invalid = true;
+        return;
+    }
+
+    patientModel = new PatientBDModel(name, centralWidget);
+    if (patientModel->invalid == true)
+    {
+        invalid = true;
+        return;
+    }
+
     appointmentWidget = new AppointmentWidget(name, comboBox, menuAppointment, centralWidget);
+    if (appointmentWidget->invalid == true)
+    {
+        invalid = true;
+        return;
+    }
+
+    tabWidget->addTab(tableView, "Identificação");
+    for (int i = 0; i < 4; ++i) {
+        tabs[i] = new QPlainTextEdit(PQgetvalue(res, 0, i), tabWidget);
+        tabWidget->addTab(tabs[i], PatientBDModel::tabNames->at(i));
+    }
 
     setWindowTitle("Ficha de " + qname);
     setCentralWidget(centralWidget);
@@ -27,7 +52,6 @@ Patient::Patient(QString qname, QWidget *parent) :
     tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     tableView->horizontalHeader()->hide();
     tableView->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-    patientModel = new PatientBDModel(name, centralWidget);
     tableView->setModel(patientModel);
     tableView->setItemDelegate(new PatientDelegate(tableView));
     tableView->verticalHeader()->setStretchLastSection(true);
@@ -48,32 +72,36 @@ Patient::Patient(QString qname, QWidget *parent) :
     connect(patientModel, SIGNAL(nameEdited(char*)), this, SLOT(nameChanged(char*)));
     connect(patientModel, SIGNAL(nameEdited(char*)), appointmentWidget, SLOT(nameChanged(char*))); //#Mover para um deles
     connect(patientModel, SIGNAL(notesCellEdited()), this, SLOT(resizeNoteCell()));
-
-    PGresult* ans = PatientBDModel::BDExec("SELECT reasons, antecedents, exams, reports FROM patient WHERE name = $1", name);
-
-    tabWidget->addTab(tableView, "Identificação");
-    for (int i = 0; i < 4; ++i){
-        tabs[i] = new QPlainTextEdit(PQgetvalue(ans, 0, i), tabWidget);
-        tabWidget->addTab(tabs[i], PatientBDModel::tabNames->at(i));
-    }
 }
 
-Patient::~Patient()
+
+void Patient::closeEvent(QCloseEvent *event)
 {
-    if (!deleted) {
+    if (!invalid)
+    {
+        if (stackedLayout->currentIndex() == 1)
+            if (!appointmentWidget->saveChanges())
+            {
+                event->ignore();
+                return;
+            }
+
         std::vector<char*> tabTexts;
         for (int i = 0; i < 4; ++i)
             tabTexts.push_back(QUtils::ToCString(tabs[i]->toPlainText()));
         tabTexts.push_back(name);
 
-        PatientBDModel::BDExec("UPDATE patient SET (reasons, antecedents, exams, reports) = ($1, $2, $3, $4)\
+        PGresult* res = PatientBDModel::BDExec("UPDATE patient SET (reasons, antecedents, exams, reports) = ($1, $2, $3, $4)\
  WHERE name = $5", tabTexts);
-
-        if (stackedLayout->currentIndex() == 1)
-            appointmentWidget->saveChanges();
+        if (res == nullptr)
+        {
+            event->ignore();
+            return;
+        }
     }
 
     closed(name);
+    event->accept();
 }
 
 void Patient::deletePatient()
@@ -97,10 +125,13 @@ QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
     }
 #endif
 
-    PatientBDModel::BDExec("DELETE FROM patient WHERE name = $1", name);
+    PGresult* res = PatientBDModel::BDExec("DELETE FROM patient WHERE name = $1", name);
+    if (res == nullptr)
+        return;
+
     patientEdited(name);
 
-    deleted = true;
+    invalid = true;
     close();
 }
 

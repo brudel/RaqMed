@@ -74,7 +74,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 DISTFILES += \
     database.config \
     ddl.sql \
-	notes.txt
+	notes.txt \
+    .gitignore
 
 RESOURCES += \
     images.qrc

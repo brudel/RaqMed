@@ -39,7 +39,10 @@ void AddAppointmentForm::save() {
     values.push_back(QUtils::ToCString(dateTimeEdit->dateTime().toString("yyyy-MM-dd hh:mm")));
     values.push_back(QUtils::ToCString(plainTextEdit->toPlainText()));
 
-    PatientBDModel::BDExec("INSERT INTO appointment (patient, day, content) VALUES ($1, $2, $3)", values);
+    PGresult* res = PatientBDModel::BDExec("INSERT INTO appointment (patient, day, content) VALUES ($1, $2, $3)", values);
+
+    if (res == nullptr)
+        return;
 
     dateEdited(dateTimeEdit->date(), name);
     saved = true;

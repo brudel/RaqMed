@@ -47,18 +47,22 @@ Calendar::~Calendar()
 void Calendar::dayChanged()
 {
     QDate qdate = ui->calendarWidget->selectedDate();
-    ui->label->setText("Consultas de " + qdate.toString("dddd, dd/MM/yyyy"));
 
-    PGresult* ans = PatientBDModel::BDExec("SELECT patient, to_char(day, 'HH24:MI') FROM appointment\
+    PGresult* res = PatientBDModel::BDExec("SELECT patient, to_char(day, 'HH24:MI') FROM appointment\
  WHERE date(day) = $1 ORDER BY day", qdate.toString("yyyy-MM-dd"));
 
-    int n = PQntuples(ans);
+    if (res == nullptr)
+        return;
+
+    ui->label->setText("Consultas de " + qdate.toString("dddd, dd/MM/yyyy"));
+
+    int n = PQntuples(res);
     ui->tableWidget->setRowCount(0);
 
     for (int i = 0; i < n; ++i) {
         ui->tableWidget->insertRow(i);
-        ui->tableWidget->setItem(i, 0, new QTableWidgetItem(PQgetvalue(ans, i, 0)));
-        ui->tableWidget->setItem(i, 1, new QTableWidgetItem(PQgetvalue(ans, i, 1)));
+        ui->tableWidget->setItem(i, 0, new QTableWidgetItem(PQgetvalue(res, i, 0)));
+        ui->tableWidget->setItem(i, 1, new QTableWidgetItem(PQgetvalue(res, i, 1)));
     }
 }
 
@@ -100,6 +104,9 @@ bool Calendar::openPatient(QString qname)
     }
 
     Patient* p = new Patient(qname, this);
+    if (p->invalid == true)
+        return false;
+
     connect(p, SIGNAL(closed(char*)), this, SLOT(patient_closed(char*)));
     connect(p->appointmentWidget, SIGNAL(dateEdited(QDate, QDate)), this, SLOT(dateChanged(QDate, QDate)));
     connect(p, SIGNAL(patientEdited(char*)), this, SLOT(nameChanged()));

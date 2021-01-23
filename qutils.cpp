@@ -65,9 +65,9 @@ string QUtils::toBrDate(char* dateTime)
 }
 
 
-void QUtils::BDdebug(PGresult* ans)
+void QUtils::BDdebug(PGresult* res)
 {
-    qDebug(PQresultErrorMessage(ans));
+    qDebug(PQresultErrorMessage(res));
 }
 
 char* QUtils::readFile(FILE *file)

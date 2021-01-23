@@ -174,9 +174,11 @@ void PatientLineEdit::autoSuggest()
     if (editor->text() == "")
         return;
 
-    PGresult* ans = PatientBDModel::BDExec("SELECT name FROM patient WHERE name ~* $1 LIMIT 10", editor->text());
+    PGresult* res = PatientBDModel::BDExec("SELECT name FROM patient WHERE name ~* $1 LIMIT 10", editor->text());
+    if (res == nullptr)
+        return false;
 
-    int rows = PQntuples(ans);
+    int rows = PQntuples(res);
 
     if (rows == 0)
         return;
@@ -184,7 +186,7 @@ void PatientLineEdit::autoSuggest()
     QVector<QString> choices;
 
     for (int i = 0; i < rows; ++i) {
-        choices << PQgetvalue(ans, i, 0);
+        choices << PQgetvalue(res, i, 0);
     }
 
     showCompletion(choices);

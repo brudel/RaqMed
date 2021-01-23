@@ -47,10 +47,15 @@ PatientBDModel::PatientBDModel(char* _patient, QObject* parent) :
     fieldValues.reserve(tableFields.size());
     fieldValues.push_back(_patient);
 
-    PGresult* ans = BDExec("SELECT " + tableFieldsLine + " FROM patient WHERE name = $1", _patient);
+    PGresult* res = BDExec("SELECT " + tableFieldsLine + " FROM patient WHERE name = $1", _patient);
+    if (res == nullptr)
+    {
+        invalid = true;
+        return;
+    }
 
     for (int i = 0; i < tableFields.size() - 1; ++i)
-        fieldValues.push_back(PQgetvalue(ans, 0, i));
+        fieldValues.push_back(PQgetvalue(res, 0, i));
 }
 
 Qt::ItemFlags PatientBDModel::flags(const QModelIndex &index) const
@@ -96,7 +101,9 @@ bool PatientBDModel::setData(const QModelIndex &index, const QVariant &value, in
 
     std::vector<char*> pgValues({QUtils::ToCString(value.toString()), (char*)fieldValues.front().c_str()});
 
-    PGresult* ans = BDExec("UPDATE patient SET " + tableFields[index.row()] + " = $1  WHERE name = $2", pgValues);
+    PGresult* res = BDExec("UPDATE patient SET " + tableFields[index.row()] + " = $1  WHERE name = $2", pgValues);
+    if (res == nullptr)
+        return false;
 
     fieldValues[index.row()] = value.toString().toStdString();
 
@@ -182,6 +189,7 @@ PGresult* PatientBDModel::safeBDExec(const char *command, int nParams, const cha
         res = PQexecParams(conn, command, nParams, nullptr, paramValues, nullptr, nullptr, 0);
         if (IS_RESULT_OK(res))
             return res;
+
     }
 
     createReconectWindow();
