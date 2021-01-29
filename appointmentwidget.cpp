@@ -45,7 +45,7 @@ void AppointmentWidget::setDate(int index)
 
     ident.push_back(dateTimes[index]);
 
-    PGresult* res = PatientBDModel::BDExec("SELECT content FROM appointment WHERE patient = $1 AND day = $2", ident);
+    PGresult* res = PatientBDModel::DBExec("SELECT content FROM appointment WHERE patient = $1 AND day = $2", ident);
     if (res == nullptr)
     {
         ident[1] = old;
@@ -85,7 +85,7 @@ bool AppointmentWidget::saveChanges()
 {
     if (contentChanged && !invalid) {
         ident.push_back(QUtils::ToCString(plainTextEdit->toPlainText()));
-        PGresult* res = PatientBDModel::BDExec("UPDATE appointment SET content = $3 WHERE patient = $1 AND day = $2", ident);
+        PGresult* res = PatientBDModel::DBExec("UPDATE appointment SET content = $3 WHERE patient = $1 AND day = $2", ident);
         ident.pop_back();
 
         if (res == nullptr)
@@ -102,7 +102,7 @@ bool AppointmentWidget::saveChanges()
             char* newDateTimeStr = QUtils::ToCString(newDateTime.toString("yyyy-MM-dd hh:mm:00"));
 
             ident.push_back(newDateTimeStr);
-            PGresult* res = PatientBDModel::BDExec("UPDATE appointment SET day = $3 WHERE patient = $1 AND day = $2", ident);
+            PGresult* res = PatientBDModel::DBExec("UPDATE appointment SET day = $3 WHERE patient = $1 AND day = $2", ident);
             ident.pop_back();
 
             if (res == nullptr)
@@ -139,7 +139,7 @@ QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
     if (b_ans == QMessageBox::Cancel)
         return false;
 
-    PGresult* res = PatientBDModel::BDExec("DELETE FROM appointment WHERE patient = $1 AND day = $2", ident);
+    PGresult* res = PatientBDModel::DBExec("DELETE FROM appointment WHERE patient = $1 AND day = $2", ident);
     if (res == nullptr)
         return;
 
@@ -154,7 +154,7 @@ QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
 
 bool AppointmentWidget::loadDates()
 {
-    PGresult* res = PatientBDModel::BDExec("SELECT day FROM appointment WHERE patient = $1 ORDER BY day DESC", ident.front());
+    PGresult* res = PatientBDModel::DBExec("SELECT day FROM appointment WHERE patient = $1 ORDER BY day DESC", ident.front());
     if (res == nullptr)
         return false;
 

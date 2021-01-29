@@ -38,11 +38,11 @@ public:
     static void createReconectWindow();
     static void tryReconnect();
     static PGresult* safeBDExec(const char *command, int nParams, const char *const *paramValues);
-    static PGresult* BDExec(string command, std::vector<char*> params);
-    static PGresult* BDExec(string command, QString param);
-    static PGresult* BDExec(string command, string param);
-    static PGresult* BDExec(string command, char* param);
-    static PGresult* BDExec(string command);
+    static PGresult* DBExec(string command, std::vector<char*> params);
+    static PGresult* DBExec(string command, QString param);
+    static PGresult* DBExec(string command, string param);
+    static PGresult* DBExec(string command, char* param);
+    static PGresult* DBExec(string command);
 
     //DB variables
     static PGconn* conn;

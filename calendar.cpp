@@ -48,7 +48,7 @@ void Calendar::dayChanged()
 {
     QDate qdate = ui->calendarWidget->selectedDate();
 
-    PGresult* res = PatientBDModel::BDExec("SELECT patient, to_char(day, 'HH24:MI') FROM appointment\
+    PGresult* res = PatientBDModel::DBExec("SELECT patient, to_char(day, 'HH24:MI') FROM appointment\
  WHERE date(day) = $1 ORDER BY day", qdate.toString("yyyy-MM-dd"));
 
     if (res == nullptr)

@@ -6,7 +6,7 @@ Patient::Patient(QString qname, QWidget *parent) :
     QMainWindow(parent)
 {
     name = QUtils::ToCString(qname);
-    PGresult* res = PatientBDModel::BDExec("SELECT reasons, antecedents, exams, reports FROM patient WHERE name = $1", name);
+    PGresult* res = PatientBDModel::DBExec("SELECT reasons, antecedents, exams, reports FROM patient WHERE name = $1", name);
     if (res == nullptr)
     {
         invalid = true;
@@ -91,7 +91,7 @@ void Patient::closeEvent(QCloseEvent *event)
             tabTexts.push_back(QUtils::ToCString(tabs[i]->toPlainText()));
         tabTexts.push_back(name);
 
-        PGresult* res = PatientBDModel::BDExec("UPDATE patient SET (reasons, antecedents, exams, reports) = ($1, $2, $3, $4)\
+        PGresult* res = PatientBDModel::DBExec("UPDATE patient SET (reasons, antecedents, exams, reports) = ($1, $2, $3, $4)\
  WHERE name = $5", tabTexts);
         if (res == nullptr)
         {
@@ -125,7 +125,7 @@ QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
     }
 #endif
 
-    PGresult* res = PatientBDModel::BDExec("DELETE FROM patient WHERE name = $1", name);
+    PGresult* res = PatientBDModel::DBExec("DELETE FROM patient WHERE name = $1", name);
     if (res == nullptr)
         return;
 

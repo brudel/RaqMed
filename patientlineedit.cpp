@@ -174,7 +174,7 @@ void PatientLineEdit::autoSuggest()
     if (editor->text() == "")
         return;
 
-    PGresult* res = PatientBDModel::BDExec("SELECT name FROM patient WHERE name ~* $1 LIMIT 10", editor->text());
+    PGresult* res = PatientBDModel::DBExec("SELECT name FROM patient WHERE name ~* $1 LIMIT 10", editor->text());
     if (res == nullptr)
         return false;
 

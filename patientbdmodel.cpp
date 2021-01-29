@@ -47,7 +47,7 @@ PatientBDModel::PatientBDModel(char* _patient, QObject* parent) :
     fieldValues.reserve(tableFields.size());
     fieldValues.push_back(_patient);
 
-    PGresult* res = BDExec("SELECT " + tableFieldsLine + " FROM patient WHERE name = $1", _patient);
+    PGresult* res = DBExec("SELECT " + tableFieldsLine + " FROM patient WHERE name = $1", _patient);
     if (res == nullptr)
     {
         invalid = true;
@@ -101,7 +101,7 @@ bool PatientBDModel::setData(const QModelIndex &index, const QVariant &value, in
 
     std::vector<char*> pgValues({QUtils::ToCString(value.toString()), (char*)fieldValues.front().c_str()});
 
-    PGresult* res = BDExec("UPDATE patient SET " + tableFields[index.row()] + " = $1  WHERE name = $2", pgValues);
+    PGresult* res = DBExec("UPDATE patient SET " + tableFields[index.row()] + " = $1  WHERE name = $2", pgValues);
     if (res == nullptr)
         return false;
 
@@ -196,31 +196,31 @@ PGresult* PatientBDModel::safeBDExec(const char *command, int nParams, const cha
     return nullptr;
 }
 
-PGresult* PatientBDModel::BDExec(string command, std::vector<char*> params)
+PGresult* PatientBDModel::DBExec(string command, std::vector<char*> params)
 {
     return safeBDExec(command.c_str(), params.size(), params.data());
 }
 
-PGresult* PatientBDModel::BDExec(string command, QString param)
+PGresult* PatientBDModel::DBExec(string command, QString param)
 {
     string str = param.toStdString();
     const char* buff = str.c_str();
     return safeBDExec(command.c_str(), 1, &buff);
 }
 
-PGresult* PatientBDModel::BDExec(string command, string param)
+PGresult* PatientBDModel::DBExec(string command, string param)
 {
     const char* buff = param.c_str();
     return safeBDExec(command.c_str(), 1, &buff);
 }
 
-PGresult* PatientBDModel::BDExec(string command, char* param)
+PGresult* PatientBDModel::DBExec(string command, char* param)
 {
     return safeBDExec(command.c_str(), 1, &param);
 }
 
 
-PGresult* PatientBDModel::BDExec(string command)
+PGresult* PatientBDModel::DBExec(string command)
 {
     return safeBDExec(command.c_str(), 0, nullptr);
 }

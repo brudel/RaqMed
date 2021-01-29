@@ -5,7 +5,7 @@
 EditTabModel::EditTabModel(int _tabNumber, QWidget *parent) :
     QDialog(parent)
 {
-    PGresult* res = PatientBDModel::BDExec
+    PGresult* res = PatientBDModel::DBExec
 ("SELECT col.column_default \
 FROM information_schema.columns col \
 WHERE col.table_name = 'patient' \
@@ -43,7 +43,7 @@ AND col.column_name = $1", PatientBDModel::tableTabs[_tabNumber]);
 void EditTabModel::save() {
     char* newDefault = QUtils::ToCString(plainTextEdit->toPlainText());
 
-    PGresult* res = PatientBDModel::BDExec("ALTER TABLE patient ALTER " + PatientBDModel::tableTabs[tabNumber]
+    PGresult* res = PatientBDModel::DBExec("ALTER TABLE patient ALTER " + PatientBDModel::tableTabs[tabNumber]
 + " SET DEFAULT '" + newDefault + '\'');
 
     if (res == nullptr)
