@@ -19,6 +19,7 @@ AND col.column_name = $1", PatientBDModel::tableTabs[_tabNumber]);
 
     QString old = PQgetvalue(res, 0, 0) + 1;
     plainTextEdit = new QPlainTextEdit(old.chopped(7), this);
+    PQclear(res);
 
     tabNumber = _tabNumber;
 
@@ -46,8 +47,11 @@ void EditTabModel::save() {
     PGresult* res = PatientBDModel::DBExec("ALTER TABLE patient ALTER " + PatientBDModel::tableTabs[tabNumber]
 + " SET DEFAULT '" + newDefault + '\'');
 
+    free(newDefault);
+
     if (res == nullptr)
         return;
+    PQclear(res);
 
     saved = true;
     this->close();

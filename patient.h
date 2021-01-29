@@ -30,6 +30,7 @@ class Patient : public QMainWindow
 
 public:
     explicit Patient(QString name, QWidget *parent = nullptr);
+    ~Patient();
     void closeEvent(QCloseEvent *event) override;
 
     //Variables

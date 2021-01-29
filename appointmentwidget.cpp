@@ -2,6 +2,7 @@
 #include "patientbdmodel.h"
 #include <QMenu>
 #include <QMessageBox>
+#include <cstring>
 
 AppointmentWidget::AppointmentWidget(char* name, QComboBox* _comboBox, QMenu* _menu, QWidget *parent) :
 QWidget(parent)
@@ -34,6 +35,11 @@ QWidget(parent)
     connect(this, SIGNAL(dateEdited(QDate,QDate)), this, SLOT(loadDates()));
     connect(plainTextEdit, SIGNAL(undoAvailable(bool)), this, SLOT(contentChange(bool)));
 }
+AppointmentWidget::~AppointmentWidget()
+{
+    for (auto cstr : dateTimes)
+        free(cstr);
+}
 
 void AppointmentWidget::setDate(int index)
 {
@@ -53,6 +59,7 @@ void AppointmentWidget::setDate(int index)
     }
 
     plainTextEdit->setPlainText(PQgetvalue(res, 0, 0));
+    PQclear(res);
 
     label->setText(comboBox->itemText(index));
     menu->menuAction()->setVisible(true);
@@ -61,7 +68,7 @@ void AppointmentWidget::setDate(int index)
 bool AppointmentWidget::exit()
 {
     if (!saveChanges())
-        return;
+        return false;
 
     menu->menuAction()->setVisible(false);
     comboBox->setCurrentIndex(0);
@@ -86,10 +93,12 @@ bool AppointmentWidget::saveChanges()
     if (contentChanged && !invalid) {
         ident.push_back(QUtils::ToCString(plainTextEdit->toPlainText()));
         PGresult* res = PatientBDModel::DBExec("UPDATE appointment SET content = $3 WHERE patient = $1 AND day = $2", ident);
+        free(ident.back());
         ident.pop_back();
 
         if (res == nullptr)
             return false;
+        PQclear(res);
 
         contentChanged = false;
     }
@@ -103,10 +112,12 @@ bool AppointmentWidget::saveChanges()
 
             ident.push_back(newDateTimeStr);
             PGresult* res = PatientBDModel::DBExec("UPDATE appointment SET day = $3 WHERE patient = $1 AND day = $2", ident);
+            free(ident.back());
             ident.pop_back();
 
             if (res == nullptr)
                 return false;
+            PQclear(res);
 
             dateEdited(oldDateTime.date(), newDateTime.date()); //Signal
         }
@@ -141,7 +152,8 @@ QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
 
     PGresult* res = PatientBDModel::DBExec("DELETE FROM appointment WHERE patient = $1 AND day = $2", ident);
     if (res == nullptr)
-        return;
+        return false;
+    PQclear(res);
 
     invalid = true;
     exit();
@@ -158,15 +170,19 @@ bool AppointmentWidget::loadDates()
     if (res == nullptr)
         return false;
 
-    int n = PQntuples(res);
+    for (auto cstr : dateTimes)
+        free(cstr);
     dateTimes.clear();
+
+    int n = PQntuples(res);
     dateTimes.reserve(n);
     comboBox->clear();
 
     for (int i = 0; i < n; ++i) {
-        dateTimes.push_back(PQgetvalue(res, i, 0));
+        dateTimes.push_back(strdup(PQgetvalue(res, i, 0)));
         comboBox->addItem(QUtils::toBrDate(dateTimes.back()).c_str());
     }
+    PQclear(res);
     return true;
 }
 

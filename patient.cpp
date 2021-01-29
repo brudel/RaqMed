@@ -32,6 +32,7 @@ Patient::Patient(QString qname, QWidget *parent) :
         tabs[i] = new QPlainTextEdit(PQgetvalue(res, 0, i), tabWidget);
         tabWidget->addTab(tabs[i], PatientBDModel::tabNames->at(i));
     }
+    PQclear(res);
 
     setWindowTitle("Ficha de " + qname);
     setCentralWidget(centralWidget);
@@ -74,6 +75,11 @@ Patient::Patient(QString qname, QWidget *parent) :
     connect(patientModel, SIGNAL(notesCellEdited()), this, SLOT(resizeNoteCell()));
 }
 
+Patient::~Patient()
+{
+    free(name);
+}
+
 
 void Patient::closeEvent(QCloseEvent *event)
 {
@@ -93,11 +99,17 @@ void Patient::closeEvent(QCloseEvent *event)
 
         PGresult* res = PatientBDModel::DBExec("UPDATE patient SET (reasons, antecedents, exams, reports) = ($1, $2, $3, $4)\
  WHERE name = $5", tabTexts);
+
+        tabTexts.pop_back();
+        for (auto cstr : tabTexts)
+                free(cstr);
+
         if (res == nullptr)
         {
             event->ignore();
             return;
         }
+        PQclear(res);
     }
 
     closed(name);
@@ -128,6 +140,7 @@ QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
     PGresult* res = PatientBDModel::DBExec("DELETE FROM patient WHERE name = $1", name);
     if (res == nullptr)
         return;
+    PQclear(res);
 
     patientEdited(name);
 

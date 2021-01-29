@@ -64,6 +64,7 @@ void Calendar::dayChanged()
         ui->tableWidget->setItem(i, 0, new QTableWidgetItem(PQgetvalue(res, i, 0)));
         ui->tableWidget->setItem(i, 1, new QTableWidgetItem(PQgetvalue(res, i, 1)));
     }
+    PQclear(res);
 }
 
 void Calendar::on_tableWidget_cellClicked(int row)

@@ -56,6 +56,7 @@ PatientBDModel::PatientBDModel(char* _patient, QObject* parent) :
 
     for (int i = 0; i < tableFields.size() - 1; ++i)
         fieldValues.push_back(PQgetvalue(res, 0, i));
+    PQclear(res);
 }
 
 Qt::ItemFlags PatientBDModel::flags(const QModelIndex &index) const
@@ -102,8 +103,12 @@ bool PatientBDModel::setData(const QModelIndex &index, const QVariant &value, in
     std::vector<char*> pgValues({QUtils::ToCString(value.toString()), (char*)fieldValues.front().c_str()});
 
     PGresult* res = DBExec("UPDATE patient SET " + tableFields[index.row()] + " = $1  WHERE name = $2", pgValues);
+
+    free(pgValues.front());
+
     if (res == nullptr)
         return false;
+    PQclear(res);
 
     fieldValues[index.row()] = value.toString().toStdString();
 
@@ -183,6 +188,7 @@ PGresult* PatientBDModel::safeBDExec(const char *command, int nParams, const cha
     if (IS_RESULT_OK(res))
         return res;
 
+    PQclear(res);
     PQreset(conn);
     if (IS_CONNECTION_OK)
     {
@@ -190,6 +196,7 @@ PGresult* PatientBDModel::safeBDExec(const char *command, int nParams, const cha
         if (IS_RESULT_OK(res))
             return res;
 
+        PQclear(res);
     }
 
     createReconectWindow();

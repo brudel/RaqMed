@@ -176,7 +176,7 @@ void PatientLineEdit::autoSuggest()
 
     PGresult* res = PatientBDModel::DBExec("SELECT name FROM patient WHERE name ~* $1 LIMIT 10", editor->text());
     if (res == nullptr)
-        return false;
+        return;
 
     int rows = PQntuples(res);
 
@@ -188,6 +188,7 @@ void PatientLineEdit::autoSuggest()
     for (int i = 0; i < rows; ++i) {
         choices << PQgetvalue(res, i, 0);
     }
+    PQclear(res);
 
     showCompletion(choices);
 }

@@ -19,6 +19,7 @@ class AppointmentWidget : public QWidget
     Q_OBJECT
 public:
     explicit AppointmentWidget(char* name, QComboBox* _comboBox, QMenu* _menu, QWidget *parent = nullptr);
+    ~AppointmentWidget();
 
     //Functions
     bool saveChanges();

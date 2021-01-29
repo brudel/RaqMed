@@ -41,8 +41,12 @@ void AddAppointmentForm::save() {
 
     PGresult* res = PatientBDModel::DBExec("INSERT INTO appointment (patient, day, content) VALUES ($1, $2, $3)", values);
 
+    for (auto cstr : values)
+        free(cstr);
+
     if (res == nullptr)
         return;
+    PQclear(res);
 
     dateEdited(dateTimeEdit->date(), name);
     saved = true;
