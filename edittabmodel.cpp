@@ -9,7 +9,7 @@ EditTabModel::EditTabModel(int _tabNumber, QWidget *parent) :
 ("SELECT col.column_default \
 FROM information_schema.columns col \
 WHERE col.table_name = 'patient' \
-AND col.column_name = $1", PatientBDModel::tableTabs[tabNumber]);
+AND col.column_name = $1", PatientBDModel::tableTabs[_tabNumber]);
 
     if (res == nullptr)
 {
