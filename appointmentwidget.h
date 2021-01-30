@@ -8,6 +8,7 @@
 #include <QPushButton>
 #include <QPlainTextEdit>
 #include <QComboBox>
+#include <QLineEdit>
 #include "qutils.h"
 extern "C" {
 #include <libpq-fe.h>
@@ -27,17 +28,18 @@ public:
     //Variables
     std::vector<char*> ident;
     bool contentChanged = false;
-    bool dateTimeChanged = false;
     bool invalid = false;
-    QDateTime oldDateTime;
+    QDateTime currentDateTime;
     std::vector<char*> dateTimes;
 
     //Layout
-    QLabel* label = new QLabel(this);
+    QLabel* dateLabel = new QLabel("Agendamento:", this);
     QDateTimeEdit* dateTimeEdit = new QDateTimeEdit(this);
-    QStackedLayout* stackedLayout = new QStackedLayout();
+    QLabel* heightLabel = new QLabel("Altura:", this);
+    QLineEdit* heightLineEdit = new QLineEdit(this);
+    QLabel* weightLabel = new QLabel("Peso:", this);
+    QLineEdit* weightLineEdit = new QLineEdit(this);
     QSpacerItem *horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-    //QPushButton* editButton = new QPushButton("Editar data/hora", this);
     QPushButton* exitButton = new QPushButton("Salvar e fechar", this);
     QHBoxLayout* horizontalLayout = new QHBoxLayout();
     QPlainTextEdit* plainTextEdit = new QPlainTextEdit(this);
@@ -53,14 +55,13 @@ public slots:
     //User action
     void setDate(int index); //Combobox
     bool exit(); //Button: "Salvar e sair"
-    void dateEdit();
     bool deleteAppointment();
 
     //Basic action
     bool loadDates();
 
     //Intern action
-    void contentChange(bool original);
+    void contentChange(bool modified);
 
     //Extern action
     void nameChanged(char* newName);
