@@ -114,7 +114,7 @@ bool PatientBDModel::setData(const QModelIndex &index, const QVariant &value, in
 
     dataChanged(index, index, QVector<int>({Qt::EditRole}));
     if (index.row() == 0)
-        nameEdited(fieldValues.front().c_str());
+        nameEdited(QUtils::ToCString(fieldValues.front()));
 
     if (index.row() == NOTES_INDEX)
         notesCellEdited();

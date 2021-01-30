@@ -161,6 +161,7 @@ void Patient::appointmentClosed()
 void Patient::nameChanged(char* newName)
 {
     patientEdited(name);
+    free(name);
     name = newName;
     nameLbl->setText(newName);
 }

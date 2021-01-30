@@ -56,7 +56,7 @@ public slots:
     void dateChanged(QDate newQDate, QString name); //Add
     void dateChanged(QDate oldQDate, QDate newQDate); //Reschedule
     void dateChanged(QDate qDate); //Geral
-    void nameChanged();
+    void nameChanged(char* name);
 
 private:
     Ui::Calendar *ui;

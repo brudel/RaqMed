@@ -110,7 +110,7 @@ bool Calendar::openPatient(QString qname)
 
     connect(p, SIGNAL(closed(char*)), this, SLOT(patient_closed(char*)));
     connect(p->appointmentWidget, SIGNAL(dateEdited(QDate, QDate)), this, SLOT(dateChanged(QDate, QDate)));
-    connect(p, SIGNAL(patientEdited(char*)), this, SLOT(nameChanged()));
+    connect(p, SIGNAL(patientEdited(char*)), this, SLOT(nameChanged(char*)));
     p->showMaximized();
 
     open_patients.insert({qname, p});
@@ -148,8 +148,12 @@ void Calendar::dateChanged(QDate qDate)
         dayChanged();
 }
 
-void Calendar::nameChanged()
+void Calendar::nameChanged(char* name)
 {
-    dayChanged();
-    //#Detalhezinho comparar consultas com data atual antes de emitir
+    for (int i = 0; i < ui->tableWidget->rowCount(); ++i)
+        if (ui->tableWidget->item(i, 0)->text() == name)
+        {
+            dayChanged();
+            return;
+        }
 }
