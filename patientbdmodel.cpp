@@ -172,7 +172,7 @@ PGresult* PatientBDModel::safeBDExec(const char *command, int nParams, const cha
 {
 
 #ifdef DB_VERBOSE
-        printf("intern %s;\n", command.c_str()); \
+        printf("intern %s;\n", command); \
         fflush(stdout);
 #endif
 
