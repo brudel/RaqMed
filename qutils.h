@@ -4,6 +4,7 @@
 #include <QString>
 #include <QDateTimeEdit>
 #include <functional>
+#include <QDate>
 extern "C" {
 #include <libpq-fe.h>
 }
@@ -19,6 +20,9 @@ public:
     static string toBrDate(char* dateTime);
     static void BDdebug(PGresult* ans);
     static char* readFile(FILE* file);
+    static QDateTime stringToQDateTime(char* str);
+    static QDate stringToQDate(char* str);
+    static int yearsTo(QDate first, QDate second);
 };
 
 class QBDateTimeEdit: public QDateTimeEdit {

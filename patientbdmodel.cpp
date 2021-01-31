@@ -113,13 +113,22 @@ bool PatientBDModel::setData(const QModelIndex &index, const QVariant &value, in
     fieldValues[index.row()] = value.toString().toStdString();
 
     dataChanged(index, index, QVector<int>({Qt::EditRole}));
+
     if (index.row() == 0)
         nameEdited(QUtils::ToCString(fieldValues.front()));
 
-    if (index.row() == NOTES_INDEX)
+    else if (index.row() == BIRTHDATE_INDEX)
+        birthdayEdited(value.toDate());
+
+    else if (index.row() == NOTES_INDEX)
         notesCellEdited();
 
     return true;
+}
+
+QDate PatientBDModel::getBirthday()
+{
+    return QDate::fromString(fieldValues[BIRTHDATE_INDEX].c_str(), Qt::ISODate);
 }
 
 PGconn* PatientBDModel::setConn()

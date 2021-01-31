@@ -4,7 +4,7 @@
 #include <QMessageBox>
 #include <cstring>
 
-AppointmentWidget::AppointmentWidget(char* name, QComboBox* _comboBox, QMenu* _menu, QWidget *parent) :
+AppointmentWidget::AppointmentWidget(char* name, QComboBox* _comboBox, QMenu* _menu, QDate _birthday, QWidget *parent) :
 QWidget(parent)
 {
     ident.push_back(name);
@@ -17,6 +17,7 @@ QWidget(parent)
     }
 
     menu = _menu;
+    birthday = _birthday;
 
     menu->addAction("Apagar Consulta", this, SLOT(deleteAppointment()));
     menu->menuAction()->setVisible(false);
@@ -27,6 +28,7 @@ QWidget(parent)
     horizontalLayout->addWidget(heightLineEdit);
     horizontalLayout->addWidget(weightLabel);
     horizontalLayout->addWidget(weightLineEdit);
+    horizontalLayout->addWidget(ageLabel);
     horizontalLayout->addItem(horizontalSpacer);
     horizontalLayout->addWidget(exitButton);
 
@@ -38,6 +40,7 @@ QWidget(parent)
     connect(this, SIGNAL(dateEdited(QDate,QDate)), this, SLOT(loadDates()));
     connect(plainTextEdit, SIGNAL(undoAvailable(bool)), this, SLOT(contentChange(bool)));
 }
+
 AppointmentWidget::~AppointmentWidget()
 {
     for (auto cstr : dateTimes)
@@ -54,10 +57,6 @@ void AppointmentWidget::setDate(int index)
 
     ident.push_back(dateTimes[index]);
 
-    currentDateTime.setDate(QDate(atoi(dateTimes[index]), atoi(dateTimes[index] + 5), atoi(dateTimes[index] + 8)));
-    currentDateTime.setTime(QTime(atoi(dateTimes[index] + 11), atoi(dateTimes[index] + 14)));
-    dateTimeEdit->setDateTime(currentDateTime);
-
     PGresult* res = PatientBDModel::DBExec("SELECT content, height, weight FROM appointment WHERE patient = $1 AND day = $2", ident);
     if (res == nullptr)
     {
@@ -69,6 +68,11 @@ void AppointmentWidget::setDate(int index)
     heightLineEdit->setText(PQgetvalue(res, 0, 1));
     weightLineEdit->setText(PQgetvalue(res, 0, 2));
     PQclear(res);
+
+    currentDateTime = QUtils::stringToQDateTime(dateTimes[index]);
+    dateTimeEdit->setDateTime(currentDateTime);
+
+    ageLabel->setText(("Idade: " + std::to_string(QUtils::yearsTo(birthday, currentDateTime.date())) + " anos").c_str());
 
     menu->menuAction()->setVisible(true);
 }
@@ -148,7 +152,6 @@ void AppointmentWidget::contentChange(bool modified)
     contentChanged = modified;
 }
 
-
 void AppointmentWidget::nameChanged(char* newName)
 {
     ident[0] = newName;
@@ -172,7 +175,6 @@ QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
     exit();
     invalid = false;
 
-    currentDateTime.setDate(QDate(atoi(ident[1]), atoi(ident[1] + 5), atoi(ident[1] + 8)));
     dateEdited(currentDateTime.date(), currentDateTime.date());
     return true;
 }
@@ -197,5 +199,11 @@ bool AppointmentWidget::loadDates()
     }
     PQclear(res);
     return true;
+}
+
+void AppointmentWidget::birthdayChanged(QDate newBirthday)
+{
+    birthday = newBirthday;
+    ageLabel->setText(("Idade: " + std::to_string(QUtils::yearsTo(birthday, currentDateTime.date())) + " anos").c_str());
 }
 

@@ -19,7 +19,7 @@ class AppointmentWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit AppointmentWidget(char* name, QComboBox* _comboBox, QMenu* _menu, QWidget *parent = nullptr);
+    explicit AppointmentWidget(char* name, QComboBox* _comboBox, QMenu* _menu, QDate _birthday, QWidget *parent = nullptr);
     ~AppointmentWidget();
 
     //Functions
@@ -31,6 +31,7 @@ public:
     bool invalid = false;
     QDateTime currentDateTime;
     std::vector<char*> dateTimes;
+    QDate birthday;
 
     //Layout
     QLabel* dateLabel = new QLabel("Agendamento:", this);
@@ -39,6 +40,7 @@ public:
     QLineEdit* heightLineEdit = new QLineEdit(this);
     QLabel* weightLabel = new QLabel("Peso:", this);
     QLineEdit* weightLineEdit = new QLineEdit(this);
+    QLabel* ageLabel = new QLabel(this);
     QSpacerItem *horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
     QPushButton* exitButton = new QPushButton("Salvar e fechar", this);
     QHBoxLayout* horizontalLayout = new QHBoxLayout();
@@ -63,8 +65,9 @@ public slots:
     //Intern action
     void contentChange(bool modified);
 
-    //Extern action
+    //Responsivity
     void nameChanged(char* newName);
+    void birthdayChanged(QDate newBirthday);
 };
 
 #endif // APPOINTMENTWIDGET_H

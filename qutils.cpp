@@ -86,3 +86,28 @@ char* QUtils::readFile(FILE *file)
 
     return s;
 }
+
+QDateTime QUtils::stringToQDateTime(char* str)
+{
+    return QDateTime(QDate(atoi(str), atoi(str + 5), atoi(str + 8)), QTime(atoi(str + 11), atoi(str + 14)));
+}
+
+QDate QUtils::stringToQDate(char* str)
+{
+    return QDate(atoi(str), atoi(str + 5), atoi(str + 8));
+}
+
+int QUtils::yearsTo(QDate first, QDate second)
+{
+    int deltaYears = second.year() - first.year();
+
+    if (second.month() > first.month())
+        return deltaYears;
+
+    if (second.month() == first.month() && second.day() >= first.day())
+        return deltaYears;
+
+    return deltaYears - 1;
+}
+
+

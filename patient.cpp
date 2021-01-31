@@ -20,7 +20,7 @@ Patient::Patient(QString qname, QWidget *parent) :
         return;
     }
 
-    appointmentWidget = new AppointmentWidget(name, comboBox, menuAppointment, centralWidget);
+    appointmentWidget = new AppointmentWidget(name, comboBox, menuAppointment, patientModel->getBirthday(), centralWidget);
     if (appointmentWidget->invalid == true)
     {
         invalid = true;
@@ -72,6 +72,7 @@ Patient::Patient(QString qname, QWidget *parent) :
     //Patient Model interface
     connect(patientModel, SIGNAL(nameEdited(char*)), this, SLOT(nameChanged(char*)));
     connect(patientModel, SIGNAL(nameEdited(char*)), appointmentWidget, SLOT(nameChanged(char*))); //#Mover para um deles
+    connect(patientModel, SIGNAL(birthdayEdited(QDate)), appointmentWidget, SLOT(birthdayChanged(QDate)));
     connect(patientModel, SIGNAL(notesCellEdited()), this, SLOT(resizeNoteCell()));
 }
 
