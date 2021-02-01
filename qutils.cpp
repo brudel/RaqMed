@@ -111,3 +111,8 @@ int QUtils::yearsTo(QDate first, QDate second)
 }
 
 
+bool QUtils::stringGreaterThan(char* a, char* b)
+{
+    return strcmp(a, b) > 0;
+}
+

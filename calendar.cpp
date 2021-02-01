@@ -49,7 +49,7 @@ void Calendar::dayChanged()
     QDate qdate = ui->calendarWidget->selectedDate();
 
     PGresult* res = PatientBDModel::DBExec("SELECT patient, to_char(day, 'HH24:MI') FROM appointment\
- WHERE date(day) = $1 ORDER BY day", qdate.toString("yyyy-MM-dd"));
+ WHERE date(day) = $1", qdate.toString("yyyy-MM-dd"));
 
     if (res == nullptr)
         return;
@@ -65,6 +65,8 @@ void Calendar::dayChanged()
         ui->tableWidget->setItem(i, 1, new QTableWidgetItem(PQgetvalue(res, i, 1)));
     }
     PQclear(res);
+
+    ui->tableWidget->sortItems(1);
 }
 
 void Calendar::on_tableWidget_cellClicked(int row)

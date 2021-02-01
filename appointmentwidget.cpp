@@ -181,7 +181,7 @@ QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
 
 bool AppointmentWidget::loadDates()
 {
-    PGresult* res = PatientBDModel::DBExec("SELECT day FROM appointment WHERE patient = $1 ORDER BY day DESC", ident.front());
+    PGresult* res = PatientBDModel::DBExec("SELECT day FROM appointment WHERE patient = $1", ident.front());
     if (res == nullptr)
         return false;
 
@@ -193,10 +193,14 @@ bool AppointmentWidget::loadDates()
     dateTimes.reserve(n);
     comboBox->clear();
 
-    for (int i = 0; i < n; ++i) {
+    for (int i = 0; i < n; ++i)
         dateTimes.push_back(strdup(PQgetvalue(res, i, 0)));
-        comboBox->addItem(QUtils::toBrDate(dateTimes.back()).c_str());
-    }
+
+    std::sort(dateTimes.begin(), dateTimes.end(), &QUtils::stringGreaterThan);
+
+    for (int i = 0; i < n; ++i)
+        comboBox->addItem(QUtils::toBrDate(dateTimes[i]).c_str());
+
     PQclear(res);
     return true;
 }

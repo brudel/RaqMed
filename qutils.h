@@ -23,6 +23,7 @@ public:
     static QDateTime stringToQDateTime(char* str);
     static QDate stringToQDate(char* str);
     static int yearsTo(QDate first, QDate second);
+    static bool stringGreaterThan(char* a, char* b);
 };
 
 class QBDateTimeEdit: public QDateTimeEdit {
