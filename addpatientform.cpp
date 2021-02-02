@@ -42,23 +42,43 @@ AddPatientForm::AddPatientForm(QWidget *parent) :
     lineEdits[0]->setFocus();
 }
 
-void AddPatientForm::save() {
+void AddPatientForm::save()
+{
     std::vector<char*> values;
+    PGresult* res;
+    std::vector<char*> expectedErrors = {"23505"};
 
     values.push_back(QUtils::ToCString(lineEdits[0]->text()));
+    if (values.front()[0] == '\0')
+    {
+        QMessageBox::warning(this, "Erro de cadastro", "O nome do paciente está em branco.");
+        free(values.front());
+        return;
+    }
+
     values.push_back(QUtils::ToCString(birthDateEdit->date().toString("yyyy-MM-dd")));
     for (int i = 1; i < FIELDS_NUM - 2; ++i)
         values.push_back(QUtils::ToCString(lineEdits[i]->text()));
     values.push_back(QUtils::ToCString(plainTextEdit->toPlainText()));
 
-    PGresult* res = PatientBDModel::DBExec("INSERT INTO patient (name, " + PatientBDModel::tableFieldsLine +
-") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)", values);
+    try
+    {
+        res = PatientBDModel::DBExec("INSERT INTO patient (name, " + PatientBDModel::tableFieldsLine +
+            ") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)", values, expectedErrors);
+    }
+
+    catch (...)
+    {
+        QMessageBox::warning(this, "Erro de cadastro", "Já existe um paciente cadastrado com esse nome");
+        res = nullptr;
+    }
 
     for (auto cstr : values)
         free(cstr);
 
     if (res == nullptr)
         return;
+
     PQclear(res);
 
     saved = true;
