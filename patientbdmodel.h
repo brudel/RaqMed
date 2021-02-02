@@ -40,6 +40,7 @@ public:
     static void createReconectWindow();
     static void tryReconnect();
     static PGresult* safeBDExec(const char *command, int nParams, const char *const *paramValues);
+    static void unknownDBError(PGresult* res, const char *command, int nParams, const char *const *paramValues);
     static PGresult* DBExec(string command, std::vector<char*> params);
     static PGresult* DBExec(string command, QString param);
     static PGresult* DBExec(string command, string param);

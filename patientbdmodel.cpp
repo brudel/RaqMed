@@ -7,6 +7,8 @@
 //#define CLOUD_DB
 //#define DB_VERBOSE
 
+#define LOGFILE "dblog.txt"
+
 #if defined(__unix__)
     #define DATABASE_CONFIG_FILE "/etc/RaqMed/database.config"
 #elif defined(_WIN32)
@@ -197,6 +199,13 @@ PGresult* PatientBDModel::safeBDExec(const char *command, int nParams, const cha
     if (IS_RESULT_OK(res))
         return res;
 
+    if (IS_CONNECTION_OK)
+    {
+        unknownDBError(res, command, nParams, paramValues);
+        PQclear(res);
+        return nullptr;
+    }
+
     PQclear(res);
     PQreset(conn);
     if (IS_CONNECTION_OK)
@@ -210,6 +219,46 @@ PGresult* PatientBDModel::safeBDExec(const char *command, int nParams, const cha
 
     createReconectWindow();
     return nullptr;
+}
+
+void PatientBDModel::unknownDBError(PGresult* res, const char *command, int nParams, const char *const *paramValues)
+{
+    FILE* logfile = fopen(LOGFILE, "a");
+
+    if (logfile == nullptr)
+    {
+        QMessageBox::warning(mainWindow, "Erro do banco de dados",
+            "Não foi possível realizar essa operação devido a um erro não identificado.");
+        return;
+    }
+
+    fprintf(
+        logfile,
+        "{\n"
+        "\ttime: \"%s\"\n"
+        "\tError status: \"%s\"\n"
+        "\tSQL state: \"%s\"\n"
+        "\tError message: \"%s\"\n"
+        "\tquery: \"%s\"\n"
+        "\tArguments:\n"
+        "\t{\n",
+        QDateTime::currentDateTime().toString(Qt::ISODate).toStdString().c_str(),
+        PQresStatus(PQresultStatus(res)),
+        PQresultErrorField(res, PG_DIAG_SQLSTATE),
+        PQresultErrorMessage(res),
+        command
+        );
+
+    for (int i = 0; i < nParams; ++i)
+        fprintf(logfile, "\t\t$%d: \"%s\"\n", i + 1, paramValues[i]);
+
+    fprintf(logfile, "\t}\n}\n");
+
+    fclose(logfile);
+
+    QMessageBox::warning(mainWindow, "Erro do banco de dados",
+        "Não foi possível realizar essa operação devido a um erro não identificado.\n"
+        "O log do erro foi registrado, contate um desenvolvedor para análise.");
 }
 
 PGresult* PatientBDModel::DBExec(string command, std::vector<char*> params)
