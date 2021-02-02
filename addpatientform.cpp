@@ -7,6 +7,8 @@ AddPatientForm::AddPatientForm(QWidget *parent) :
 {
     setWindowTitle("Cadastrar Paciente");
 
+    defaultDate = birthDateEdit->date();
+
     //Name line
     labels[0] = new QLabel(PatientBDModel::fieldNames->at(0), this);
     lineEdits[0] = new QLineEdit(this);
@@ -57,7 +59,7 @@ void AddPatientForm::save()
     }
 
     values.push_back(QUtils::ToCString(birthDateEdit->date().toString("yyyy-MM-dd")));
-    for (int i = 1; i < FIELDS_NUM - 2; ++i)
+    for (int i = 1; i < FIELDS_NUM - 2; ++i) // FIELDS_NUM - birthday - notes
         values.push_back(QUtils::ToCString(lineEdits[i]->text()));
     values.push_back(QUtils::ToCString(plainTextEdit->toPlainText()));
 
@@ -87,7 +89,8 @@ void AddPatientForm::save()
 
 void AddPatientForm::closeEvent(QCloseEvent *event)
 {
-    if (saved) {
+    if (saved || noModified())
+    {
         event->accept();
         return;
     }
@@ -100,4 +103,18 @@ QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Yes);
          event->accept();
         else
          event->ignore();
+}
+
+bool AddPatientForm::noModified()
+{
+    int i;
+
+    if (birthDateEdit->date() != defaultDate || !plainTextEdit->toPlainText().isEmpty())
+        return false;
+
+    for (i = 0; i < FIELDS_NUM - 2; ++i) // FIELDS_NUM - birthday - notes
+        if (!lineEdits[i]->text().isEmpty())
+            break;
+
+    return i == FIELDS_NUM - 2;
 }

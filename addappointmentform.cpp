@@ -83,7 +83,16 @@ void AddAppointmentForm::save() {
 
 void AddAppointmentForm::closeEvent(QCloseEvent *event)
  {
-    if (saved) {
+    if
+    (
+        saved ||
+        (
+            lineEdit->text().isEmpty() &&
+            dateTimeEdit->dateTime() == QDateTime(original) &&
+            plainTextEdit->toPlainText().isEmpty()
+        )
+    )
+    {
         event->accept();
         return;
     }

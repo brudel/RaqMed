@@ -26,8 +26,10 @@ class AddPatientForm : public QDialog
 public:
     explicit AddPatientForm(QWidget *parent = nullptr);
     void closeEvent(QCloseEvent *event) override;
+    bool noModified();
 
     bool saved = false;
+    QDate defaultDate;
 
     QVBoxLayout *verticalLayout = new QVBoxLayout(this);
     QFormLayout *formLayout = new QFormLayout();
