@@ -44,7 +44,7 @@ AND col.column_name = $1", PatientBDModel::tableTabs[_tabNumber]);
 void EditTabModel::save() {
     char* newDefault = QUtils::ToCString(plainTextEdit->toPlainText());
 
-    PGresult* res = PatientBDModel::DBExec("ALTER TABLE patient ALTER " + PatientBDModel::tableTabs[tabNumber]
+    PGresult* res = PatientBDModel::DBExecCommand("ALTER TABLE patient ALTER " + PatientBDModel::tableTabs[tabNumber]
 + " SET DEFAULT '" + newDefault + '\'');
 
     free(newDefault);

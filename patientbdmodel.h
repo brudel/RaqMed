@@ -39,13 +39,14 @@ public:
     static void setMainWindow(QWidget* mW);
     static void createReconectWindow();
     static void tryReconnect();
-    static PGresult* safeBDExec(const char *command, int nParams, const char *const *paramValues);
+    static PGresult* safeBDExec(const char *command, int nParams, const char *const *paramValues,
+        std::vector<char*> expectedErros = {});
     static void unknownDBError(PGresult* res, const char *command, int nParams, const char *const *paramValues);
-    static PGresult* DBExec(string command, std::vector<char*> params);
-    static PGresult* DBExec(string command, QString param);
-    static PGresult* DBExec(string command, string param);
-    static PGresult* DBExec(string command, char* param);
-    static PGresult* DBExec(string command);
+    static PGresult* DBExec(string command, std::vector<char*> params, std::vector<char*> expectedErros = {});
+    static PGresult* DBExec(string command, QString param, std::vector<char*> expectedErros = {});
+    static PGresult* DBExec(string command, string param, std::vector<char*> expectedErros = {});
+    static PGresult* DBExec(string command, char* param, std::vector<char*> expectedErros = {});
+    static PGresult* DBExecCommand(string command, std::vector<char*> expectedErros = {});
 
     //DB variables
     static PGconn* conn;

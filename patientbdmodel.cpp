@@ -179,7 +179,8 @@ void PatientBDModel::tryReconnect()
         reconnectWindow->show();
 }
 
-PGresult* PatientBDModel::safeBDExec(const char *command, int nParams, const char *const *paramValues)
+PGresult* PatientBDModel::safeBDExec(const char *command, int nParams, const char *const *paramValues,
+    std::vector<char*> expectedErros)
 {
 
 #ifdef DB_VERBOSE
@@ -201,6 +202,14 @@ PGresult* PatientBDModel::safeBDExec(const char *command, int nParams, const cha
 
     if (IS_CONNECTION_OK)
     {
+        char* sqlstate = PQresultErrorField(res, PG_DIAG_SQLSTATE);
+        for (int i = 0; i < expectedErros.size(); ++i)
+            if (!strcmp(expectedErros[i], sqlstate))
+            {
+                PQclear(res);
+                throw i;
+            }
+
         unknownDBError(res, command, nParams, paramValues);
         PQclear(res);
         return nullptr;
@@ -261,31 +270,31 @@ void PatientBDModel::unknownDBError(PGresult* res, const char *command, int nPar
         "O log do erro foi registrado, contate um desenvolvedor para análise.");
 }
 
-PGresult* PatientBDModel::DBExec(string command, std::vector<char*> params)
+PGresult* PatientBDModel::DBExec(string command, std::vector<char*> params, std::vector<char *> expectedErros)
 {
-    return safeBDExec(command.c_str(), params.size(), params.data());
+    return safeBDExec(command.c_str(), params.size(), params.data(), expectedErros);
 }
 
-PGresult* PatientBDModel::DBExec(string command, QString param)
+PGresult* PatientBDModel::DBExec(string command, QString param, std::vector<char *> expectedErros)
 {
     string str = param.toStdString();
     const char* buff = str.c_str();
-    return safeBDExec(command.c_str(), 1, &buff);
+    return safeBDExec(command.c_str(), 1, &buff, expectedErros);
 }
 
-PGresult* PatientBDModel::DBExec(string command, string param)
+PGresult* PatientBDModel::DBExec(string command, string param, std::vector<char *> expectedErros)
 {
     const char* buff = param.c_str();
-    return safeBDExec(command.c_str(), 1, &buff);
+    return safeBDExec(command.c_str(), 1, &buff, expectedErros);
 }
 
-PGresult* PatientBDModel::DBExec(string command, char* param)
+PGresult* PatientBDModel::DBExec(string command, char* param, std::vector<char *> expectedErros)
 {
-    return safeBDExec(command.c_str(), 1, &param);
+    return safeBDExec(command.c_str(), 1, &param, expectedErros);
 }
 
 
-PGresult* PatientBDModel::DBExec(string command)
+PGresult* PatientBDModel::DBExecCommand(string command, std::vector<char *> expectedErros)
 {
-    return safeBDExec(command.c_str(), 0, nullptr);
+    return safeBDExec(command.c_str(), 0, nullptr, expectedErros);
 }
