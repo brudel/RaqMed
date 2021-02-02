@@ -181,7 +181,10 @@ void PatientLineEdit::autoSuggest()
     int rows = PQntuples(res);
 
     if (rows == 0)
+    {
+        PQclear(res);
         return;
+    }
 
     QVector<QString> choices;
 
