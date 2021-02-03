@@ -6,7 +6,7 @@ Patient::Patient(QString qname, QWidget *parent) :
     QMainWindow(parent)
 {
     name = QUtils::ToCString(qname);
-    PGresult* res = PatientBDModel::DBExec("SELECT reasons, antecedents, exams, reports FROM patient WHERE name = $1", name);
+    PGresult* res = PatientBDModel::DBExec("SELECT " + PatientBDModel::tableTabsLine + " FROM patient WHERE name = $1", name);
     if (res == nullptr)
     {
         invalid = true;
@@ -28,7 +28,7 @@ Patient::Patient(QString qname, QWidget *parent) :
     }
 
     tabWidget->addTab(tableView, "Identificação");
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < TABS_NUM; ++i) {
         tabs[i] = new QPlainTextEdit(PQgetvalue(res, 0, i), tabWidget);
         tabWidget->addTab(tabs[i], PatientBDModel::tabNames->at(i));
     }
@@ -98,7 +98,7 @@ void Patient::closeEvent(QCloseEvent *event)
             tabTexts.push_back(QUtils::ToCString(tabs[i]->toPlainText()));
         tabTexts.push_back(name);
 
-        PGresult* res = PatientBDModel::DBExec("UPDATE patient SET (reasons, antecedents, exams, reports) = ($1, $2, $3, $4)\
+        PGresult* res = PatientBDModel::DBExec("UPDATE patient SET (" + PatientBDModel::tableTabsLine + ") = ($1, $2, $3, $4)\
  WHERE name = $5", tabTexts);
 
         tabTexts.pop_back();

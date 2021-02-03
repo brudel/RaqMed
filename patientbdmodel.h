@@ -11,6 +11,7 @@ extern "C" {
 }
 
 #define FIELDS_NUM 16
+#define TABS_NUM 4
 #define BIRTHDATE_INDEX 1
 #define NOTES_INDEX (FIELDS_NUM - 1)
 #define IS_CONNECTION_OK (PQstatus(conn) == CONNECTION_OK)
@@ -53,14 +54,14 @@ public:
     static QWidget* mainWindow;
     static QMessageBox* reconnectWindow;
 
-    //DB human names
+    //Model fields
     static QStringList* fieldNames;
     static std::vector<string> tableFields; //Does not contain 'name' for select purposes
     static string tableFieldsLine;
 
-    //Column names
+    //Tabs
     static QStringList* tabNames;
-    static std::vector<string> tableTabs; //Does not contain 'name' for select purposes
+    static std::vector<string> tableTabs;
     static string tableTabsLine;
 
 signals:
