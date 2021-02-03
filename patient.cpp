@@ -93,28 +93,46 @@ void Patient::closeEvent(QCloseEvent *event)
                 return;
             }
 
-        std::vector<char*> tabTexts;
-        for (int i = 0; i < 4; ++i)
-            tabTexts.push_back(QUtils::ToCString(tabs[i]->toPlainText()));
-        tabTexts.push_back(name);
-
-        PGresult* res = PatientBDModel::DBExec("UPDATE patient SET (" + PatientBDModel::tableTabsLine + ") = ($1, $2, $3, $4)\
- WHERE name = $5", tabTexts);
-
-        tabTexts.pop_back();
-        for (auto cstr : tabTexts)
-                free(cstr);
-
-        if (res == nullptr)
+        if (!saveTabs())
         {
             event->ignore();
             return;
         }
-        PQclear(res);
     }
 
     closed(name);
     event->accept();
+}
+
+bool Patient::saveTabs()
+{
+    int i, j = 2;
+    string command = "UPDATE patient SET";
+    std::vector<char*> parameters = {name};
+
+    for (i = 0; i < 4; ++i)
+        if (tabs[i]->document()->isModified())
+        {
+            command += /*(string) */(j == 2 ? " " : ", ") + PatientBDModel::tableTabs[i] + " = $" + std::to_string(j);
+            ++j;
+            parameters.push_back(QUtils::ToCString(tabs[i]->toPlainText()));
+        }
+
+    if (j != 2)
+    {
+        command += " WHERE name = $1";
+        PGresult* res = PatientBDModel::DBExec(command, parameters);
+
+        --j;
+        while (--j > 0)
+            free(parameters[j]);
+
+        if (res == nullptr)
+            return false;
+        PQclear(res);
+    }
+
+    return true;
 }
 
 void Patient::deletePatient()
@@ -127,7 +145,8 @@ QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
         return;
 
 #ifdef DELETE_CONFIRMATION
-    if (comboBox->count() > 0){
+    if (comboBox->count() > 0)
+    {
         b_ans = QMessageBox::warning(this, "Deletar Paciente",
 "Você tem certeza MESMO que quer deletar esse paciente???\n\
 Perceba que você não está apagando uma consulta só, está apagando todos os dados do paciente para sempre e inrecuperavelmente",
