@@ -95,7 +95,7 @@ bool AppointmentWidget::saveChanges()
     QDateTime newDateTime = dateTimeEdit->dateTime();
     bool dateChanged = false;
 
-    if (contentChanged)
+    if (plainTextEdit->document()->isModified())
     {
         query += " content = $" + std::to_string(count++);
         ident.push_back(QUtils::ToCString(plainTextEdit->toPlainText()));
@@ -110,14 +110,14 @@ bool AppointmentWidget::saveChanges()
         dateChanged = true;
     }
 
-    if (heightLineEdit->isUndoAvailable())
+    if (heightLineEdit->isModified())
     {
         query += (string)(count == 3 ? "" : ",") + " height = $" + std::to_string(count);
         ++count;
         ident.push_back(QUtils::ToCString(heightLineEdit->text()));
     }
 
-    if (weightLineEdit->isUndoAvailable())
+    if (weightLineEdit->isModified())
     {
         query += (string)(count == 3 ? "" : ",") + " weight = $" + std::to_string(count);
         ++count;
