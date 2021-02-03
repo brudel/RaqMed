@@ -50,7 +50,7 @@ void AddPatientForm::save()
     PGresult* res;
     std::vector<char*> expectedErrors = {"23505"};
 
-    values.push_back(QUtils::ToCString(lineEdits[0]->text()));
+    values.push_back(QUtils::ToCString(lineEdits[0]->text().simplified()));
     if (values.front()[0] == '\0')
     {
         QMessageBox::warning(this, "Erro de cadastro", "O nome do paciente está em branco.");
