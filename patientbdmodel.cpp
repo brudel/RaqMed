@@ -317,6 +317,13 @@ PGresult* PatientBDModel::DBExecCommand(string command, std::vector<char *> expe
 
 bool PatientBDModel::rollBack()
 {
+
+    if (!IS_CONNECTION_OK)
+    {
+        rb = true;
+        return false;
+    }
+
     PGresult* res = PQexec(conn, "ROLLBACK");
 
     PQclear(res);
