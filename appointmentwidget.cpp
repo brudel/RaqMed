@@ -147,6 +147,12 @@ bool AppointmentWidget::saveChanges()
     return true;
 }
 
+void AppointmentWidget::restoreDate()
+{
+    dateTimes.push_back(QUtils::ToCString(currentDateTime.toString(Qt::ISODate)));
+    ident.push_back(dateTimes.back());
+}
+
 void AppointmentWidget::contentChange(bool modified)
 {
     contentChanged = modified;

@@ -24,6 +24,7 @@ public:
 
     //Functions
     bool saveChanges();
+    void restoreDate();
 
     //Variables
     std::vector<char*> ident;
