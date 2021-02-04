@@ -27,6 +27,8 @@ QWidget* PatientBDModel::mainWindow = nullptr;
 
 QMessageBox* PatientBDModel::reconnectWindow = nullptr;
 
+bool PatientBDModel::rb = false;
+
 QStringList* PatientBDModel::fieldNames = new QStringList({"Nome", "Data de aniversário", "Endereço", "Bairro", "Cidade", "Estado",
 "Telefone 1", "Telefone 2", "Telefone 3", "Email", "Nome da mãe", "Profissão da mãe", "Nome do pai",
 "Profissão do pai", "Indicação", "Observações"});
@@ -182,6 +184,7 @@ void PatientBDModel::tryReconnect()
 PGresult* PatientBDModel::safeBDExec(const char *command, int nParams, const char *const *paramValues,
     std::vector<char*> expectedErros)
 {
+    PGresult* res;
 
 #ifdef DB_VERBOSE
         printf("intern %s;\n", command); \
@@ -195,7 +198,20 @@ PGresult* PatientBDModel::safeBDExec(const char *command, int nParams, const cha
         return nullptr;
     }
 
-    PGresult* res = PQexecParams(conn, command, nParams, nullptr, paramValues, nullptr, nullptr, 0);
+    if (rb)
+    {
+        res = PQexec(conn, "ROLLBACK");
+        PQclear(res);
+        if (!IS_CONNECTION_OK)
+        {
+            createReconectWindow();
+            return nullptr;
+        }
+
+        rb = false;
+    }
+
+    res = PQexecParams(conn, command, nParams, nullptr, paramValues, nullptr, nullptr, 0);
 
     if (IS_RESULT_OK(res))
         return res;
@@ -297,4 +313,20 @@ PGresult* PatientBDModel::DBExec(string command, char* param, std::vector<char *
 PGresult* PatientBDModel::DBExecCommand(string command, std::vector<char *> expectedErros)
 {
     return safeBDExec(command.c_str(), 0, nullptr, expectedErros);
+}
+
+bool PatientBDModel::rollBack()
+{
+    PGresult* res = PQexec(conn, "ROLLBACK");
+
+    PQclear(res);
+
+    if (!IS_CONNECTION_OK)
+    {
+        createReconectWindow();
+        rb = true;
+        return false;
+    }
+
+    return true;
 }

@@ -48,11 +48,13 @@ public:
     static PGresult* DBExec(string command, string param, std::vector<char*> expectedErros = {});
     static PGresult* DBExec(string command, char* param, std::vector<char*> expectedErros = {});
     static PGresult* DBExecCommand(string command, std::vector<char*> expectedErros = {});
+    static bool rollBack();
 
     //DB variables
     static PGconn* conn;
     static QWidget* mainWindow;
     static QMessageBox* reconnectWindow;
+    static bool rb;
 
     //Model fields
     static QStringList* fieldNames;
