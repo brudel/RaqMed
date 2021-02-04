@@ -84,20 +84,49 @@ Patient::~Patient()
 
 void Patient::closeEvent(QCloseEvent *event)
 {
-    if (!invalid)
-    {
-        if (stackedLayout->currentIndex() == 1)
-            if (!appointmentWidget->saveChanges())
-            {
-                event->ignore();
-                return;
-            }
+    PGresult* res;
 
-        if (!saveTabs())
+    if (invalid)
+    {
+        closed(name);
+        event->accept();
+    }
+
+    if (stackedLayout->currentIndex() == 1)
+    {
+        res = PatientBDModel::DBExecCommand("BEGIN");
+
+        if (res == nullptr)
         {
             event->ignore();
             return;
         }
+
+        PQclear(res);
+
+        if (!saveTabs() || !appointmentWidget->saveChanges())
+        {
+            PatientBDModel::rollBack();
+            event->ignore();
+            return;
+        }
+
+        res = PatientBDModel::DBExecCommand("COMMIT");
+
+        if (res == nullptr)
+        {
+            PatientBDModel::rollBack();
+            appointmentWidget->restoreDate();
+            event->ignore();
+            return;
+        }
+        PQclear(res);
+    }
+
+    else if (!saveTabs())
+    {
+        event->ignore();
+        return;
     }
 
     closed(name);
