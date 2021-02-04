@@ -217,19 +217,7 @@ PGresult* PatientBDModel::safeBDExec(const char *command, int nParams, const cha
         return res;
 
     if (IS_CONNECTION_OK)
-    {
-        char* sqlstate = PQresultErrorField(res, PG_DIAG_SQLSTATE);
-        for (int i = 0; i < expectedErros.size(); ++i)
-            if (!strcmp(expectedErros[i], sqlstate))
-            {
-                PQclear(res);
-                throw i;
-            }
-
-        unknownDBError(res, command, nParams, paramValues);
-        PQclear(res);
-        return nullptr;
-    }
+        return nonconnectionErrorHandler(res, command, nParams, paramValues, expectedErros);
 
     PQclear(res);
     PQreset(conn);
@@ -238,6 +226,9 @@ PGresult* PatientBDModel::safeBDExec(const char *command, int nParams, const cha
         res = PQexecParams(conn, command, nParams, nullptr, paramValues, nullptr, nullptr, 0);
         if (IS_RESULT_OK(res))
             return res;
+
+        if (IS_CONNECTION_OK)
+            return nonconnectionErrorHandler(res, command, nParams, paramValues, expectedErros);
 
         PQclear(res);
     }
@@ -336,4 +327,18 @@ bool PatientBDModel::rollBack()
     }
 
     return true;
+}
+
+PGresult* PatientBDModel::nonconnectionErrorHandler(PGresult* res, const char *command, int nParams,
+    const char *const *paramValues, std::vector<char*> expectedErros)
+{
+    char* sqlstate = PQresultErrorField(res, PG_DIAG_SQLSTATE);
+    PQclear(res);
+
+    for (int i = 0; i < expectedErros.size(); ++i)
+        if (!strcmp(expectedErros[i], sqlstate))
+            throw i;
+
+    unknownDBError(res, command, nParams, paramValues);
+    return nullptr;
 }

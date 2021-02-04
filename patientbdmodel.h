@@ -49,6 +49,8 @@ public:
     static PGresult* DBExec(string command, char* param, std::vector<char*> expectedErros = {});
     static PGresult* DBExecCommand(string command, std::vector<char*> expectedErros = {});
     static bool rollBack();
+    static PGresult* nonconnectionErrorHandler(PGresult* res, const char *command, int nParams, const char *const *paramValues,
+        std::vector<char*> expectedErros);
 
     //DB variables
     static PGconn* conn;
