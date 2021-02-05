@@ -46,10 +46,11 @@ SOURCES += \
     addappointmentform.cpp \
     addpatientform.cpp \
     patientlineedit.cpp \
-    patientbdmodel.cpp \
     appointmentwidget.cpp \
     edittabmodel.cpp \
-    patientdelegate.cpp
+    patientdelegate.cpp \
+    db.cpp \
+    patientmodel.cpp
 
 HEADERS += \
 	patient.h \
@@ -58,10 +59,11 @@ HEADERS += \
     addappointmentform.h \
     addpatientform.h \
     patientlineedit.h \
-    patientbdmodel.h \
     appointmentwidget.h \
     edittabmodel.h \
-    patientdelegate.h
+    patientdelegate.h \
+    db.h \
+    patientmodel.h
 
 FORMS += \
 	calendar.ui

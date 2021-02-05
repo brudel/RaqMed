@@ -14,7 +14,7 @@
 #include <QVBoxLayout>
 #include <QDateEdit>
 #include "qutils.h"
-#include "patientbdmodel.h"
+#include "db.h"
 extern "C" {
 #include <libpq-fe.h>
 }

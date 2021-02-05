@@ -1,15 +1,15 @@
 #include "edittabmodel.h"
-#include "patientbdmodel.h"
+#include "db.h"
 #include <QMessageBox>
 
 EditTabModel::EditTabModel(int _tabNumber, QWidget *parent) :
     QDialog(parent)
 {
-    PGresult* res = PatientBDModel::DBExec
+    PGresult* res = DB::Exec
 ("SELECT col.column_default \
 FROM information_schema.columns col \
 WHERE col.table_name = 'patient' \
-AND col.column_name = $1", PatientBDModel::tableTabs[_tabNumber]);
+AND col.column_name = $1", DB::tableTabs[_tabNumber]);
 
     if (res == nullptr)
 {
@@ -23,10 +23,10 @@ AND col.column_name = $1", PatientBDModel::tableTabs[_tabNumber]);
 
     tabNumber = _tabNumber;
 
-    setWindowTitle("Editar Modelo de " + PatientBDModel::tabNames->at(tabNumber));
+    setWindowTitle("Editar Modelo de " + DB::tabNames->at(tabNumber));
     resize(600, 400); //#Find elegant answer
 
-    label->setText(PatientBDModel::tabNames->at(tabNumber));
+    label->setText(DB::tabNames->at(tabNumber));
     verticalLayout->addWidget(label);
     verticalLayout->addWidget(plainTextEdit);
 
@@ -44,7 +44,7 @@ AND col.column_name = $1", PatientBDModel::tableTabs[_tabNumber]);
 void EditTabModel::save() {
     char* newDefault = QUtils::ToCString(plainTextEdit->toPlainText());
 
-    PGresult* res = PatientBDModel::DBExecCommand("ALTER TABLE patient ALTER " + PatientBDModel::tableTabs[tabNumber]
+    PGresult* res = DB::ExecCommand("ALTER TABLE patient ALTER " + DB::tableTabs[tabNumber]
 + " SET DEFAULT '" + newDefault + '\'');
 
     free(newDefault);

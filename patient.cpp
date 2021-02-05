@@ -6,21 +6,21 @@ Patient::Patient(QString qname, QWidget *parent) :
     QMainWindow(parent)
 {
     name = QUtils::ToCString(qname);
-    PGresult* res = PatientBDModel::DBExec("SELECT " + PatientBDModel::tableTabsLine + " FROM patient WHERE name = $1", name);
+    PGresult* res = DB::Exec("SELECT " + DB::tableTabsLine + " FROM patient WHERE name = $1", name);
     if (res == nullptr)
     {
         invalid = true;
         return;
     }
 
-    patientModel = new PatientBDModel(name, centralWidget);
-    if (patientModel->invalid == true)
+    pModel = new PatientModel(name, centralWidget);
+    if (pModel->invalid == true)
     {
         invalid = true;
         return;
     }
 
-    appointmentWidget = new AppointmentWidget(name, comboBox, menuAppointment, patientModel->getBirthday(), centralWidget);
+    appointmentWidget = new AppointmentWidget(name, comboBox, menuAppointment, pModel->getBirthday(), centralWidget);
     if (appointmentWidget->invalid == true)
     {
         invalid = true;
@@ -30,7 +30,7 @@ Patient::Patient(QString qname, QWidget *parent) :
     tabWidget->addTab(tableView, "Identificação");
     for (int i = 0; i < TABS_NUM; ++i) {
         tabs[i] = new QPlainTextEdit(PQgetvalue(res, 0, i), tabWidget);
-        tabWidget->addTab(tabs[i], PatientBDModel::tabNames->at(i));
+        tabWidget->addTab(tabs[i], DB::tabNames->at(i));
     }
     PQclear(res);
 
@@ -53,7 +53,7 @@ Patient::Patient(QString qname, QWidget *parent) :
     tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     tableView->horizontalHeader()->hide();
     tableView->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-    tableView->setModel(patientModel);
+    tableView->setModel(pModel);
     tableView->setItemDelegate(new PatientDelegate(tableView));
     tableView->verticalHeader()->setStretchLastSection(true);
     resizeNoteCell();
@@ -70,10 +70,10 @@ Patient::Patient(QString qname, QWidget *parent) :
     connect(this, SIGNAL(appointmentChanged()), appointmentWidget, SLOT(loadDates()));
 
     //Patient Model interface
-    connect(patientModel, SIGNAL(nameEdited(char*)), this, SLOT(nameChanged(char*)));
-    connect(patientModel, SIGNAL(nameEdited(char*)), appointmentWidget, SLOT(nameChanged(char*))); //#Mover para um deles
-    connect(patientModel, SIGNAL(birthdayEdited(QDate)), appointmentWidget, SLOT(birthdayChanged(QDate)));
-    connect(patientModel, SIGNAL(notesCellEdited()), this, SLOT(resizeNoteCell()));
+    connect(pModel, SIGNAL(nameEdited(char*)), this, SLOT(nameChanged(char*)));
+    connect(pModel, SIGNAL(nameEdited(char*)), appointmentWidget, SLOT(nameChanged(char*))); //#Mover para um deles
+    connect(pModel, SIGNAL(birthdayEdited(QDate)), appointmentWidget, SLOT(birthdayChanged(QDate)));
+    connect(pModel, SIGNAL(notesCellEdited()), this, SLOT(resizeNoteCell()));
 }
 
 Patient::~Patient()
@@ -94,7 +94,7 @@ void Patient::closeEvent(QCloseEvent *event)
 
     if (stackedLayout->currentIndex() == 1)
     {
-        res = PatientBDModel::DBExecCommand("BEGIN");
+        res = DB::ExecCommand("BEGIN");
 
         if (res == nullptr)
         {
@@ -106,16 +106,16 @@ void Patient::closeEvent(QCloseEvent *event)
 
         if (!saveTabs() || !appointmentWidget->saveChanges())
         {
-            PatientBDModel::rollBack();
+            DB::rollBack();
             event->ignore();
             return;
         }
 
-        res = PatientBDModel::DBExecCommand("COMMIT");
+        res = DB::ExecCommand("COMMIT");
 
         if (res == nullptr)
         {
-            PatientBDModel::rollBack();
+            DB::rollBack();
             appointmentWidget->restoreDate();
             event->ignore();
             return;
@@ -142,7 +142,7 @@ bool Patient::saveTabs()
     for (i = 0; i < 4; ++i)
         if (tabs[i]->document()->isModified())
         {
-            command += /*(string) */(j == 2 ? " " : ", ") + PatientBDModel::tableTabs[i] + " = $" + std::to_string(j);
+            command += /*(string) */(j == 2 ? " " : ", ") + DB::tableTabs[i] + " = $" + std::to_string(j);
             ++j;
             parameters.push_back(QUtils::ToCString(tabs[i]->toPlainText()));
         }
@@ -150,7 +150,7 @@ bool Patient::saveTabs()
     if (j != 2)
     {
         command += " WHERE name = $1";
-        PGresult* res = PatientBDModel::DBExec(command, parameters);
+        PGresult* res = DB::Exec(command, parameters);
 
         --j;
         while (--j > 0)
@@ -186,7 +186,7 @@ QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
     }
 #endif
 
-    PGresult* res = PatientBDModel::DBExec("DELETE FROM patient WHERE name = $1", name);
+    PGresult* res = DB::Exec("DELETE FROM patient WHERE name = $1", name);
     if (res == nullptr)
         return;
     PQclear(res);

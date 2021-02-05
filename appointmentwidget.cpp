@@ -1,5 +1,5 @@
 #include "appointmentwidget.h"
-#include "patientbdmodel.h"
+#include "db.h"
 #include <QMenu>
 #include <QMessageBox>
 #include <cstring>
@@ -57,7 +57,7 @@ void AppointmentWidget::setDate(int index)
 
     ident.push_back(dateTimes[index]);
 
-    PGresult* res = PatientBDModel::DBExec("SELECT content, height, weight FROM appointment WHERE patient = $1 AND day = $2", ident);
+    PGresult* res = DB::Exec("SELECT content, height, weight FROM appointment WHERE patient = $1 AND day = $2", ident);
     if (res == nullptr)
     {
         ident[1] = old;
@@ -127,7 +127,7 @@ bool AppointmentWidget::saveChanges()
     if (count != 3)
     {
         query += " WHERE patient = $1 AND day = $2";
-        PGresult* res = PatientBDModel::DBExec(query, ident);
+        PGresult* res = DB::Exec(query, ident);
 
         while (--count > 2)
         {
@@ -172,7 +172,7 @@ QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
     if (b_ans == QMessageBox::Cancel)
         return false;
 
-    PGresult* res = PatientBDModel::DBExec("DELETE FROM appointment WHERE patient = $1 AND day = $2", ident);
+    PGresult* res = DB::Exec("DELETE FROM appointment WHERE patient = $1 AND day = $2", ident);
     if (res == nullptr)
         return false;
     PQclear(res);
@@ -187,7 +187,7 @@ QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
 
 bool AppointmentWidget::loadDates()
 {
-    PGresult* res = PatientBDModel::DBExec("SELECT day FROM appointment WHERE patient = $1", ident.front());
+    PGresult* res = DB::Exec("SELECT day FROM appointment WHERE patient = $1", ident.front());
     if (res == nullptr)
         return false;
 

@@ -1,5 +1,5 @@
 #include "patientdelegate.h"
-#include "patientbdmodel.h"
+#include "db.h"
 
 PatientDelegate::PatientDelegate(QWidget *parent) : QStyledItemDelegate(parent)
 {

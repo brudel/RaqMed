@@ -1,5 +1,5 @@
 #include "addpatientform.h"
-#include "patientbdmodel.h"
+#include "db.h"
 #include <QMessageBox>
 
 AddPatientForm::AddPatientForm(QWidget *parent) :
@@ -10,25 +10,25 @@ AddPatientForm::AddPatientForm(QWidget *parent) :
     defaultDate = birthDateEdit->date();
 
     //Name line
-    labels[0] = new QLabel(PatientBDModel::fieldNames->at(0), this);
+    labels[0] = new QLabel(DB::fieldNames->at(0), this);
     lineEdits[0] = new QLineEdit(this);
     formLayout->setWidget(0, QFormLayout::LabelRole, labels[0]);
     formLayout->setWidget(0, QFormLayout::FieldRole, lineEdits[0]);
 
     //Birthdate line
-    labels[BIRTHDATE_INDEX] = new QLabel(PatientBDModel::fieldNames->at(BIRTHDATE_INDEX), this);
+    labels[BIRTHDATE_INDEX] = new QLabel(DB::fieldNames->at(BIRTHDATE_INDEX), this);
     formLayout->setWidget(BIRTHDATE_INDEX, QFormLayout::LabelRole, labels[BIRTHDATE_INDEX]);
     formLayout->setWidget(BIRTHDATE_INDEX, QFormLayout::FieldRole, birthDateEdit);
 
     //
     for (int i = 2; i < FIELDS_NUM - 1; ++i) {
-        labels[i] = new QLabel(PatientBDModel::fieldNames->at(i), this);
+        labels[i] = new QLabel(DB::fieldNames->at(i), this);
         lineEdits[i - 1] = new QLineEdit(this);
         formLayout->setWidget(i, QFormLayout::LabelRole, labels[i]);
         formLayout->setWidget(i, QFormLayout::FieldRole, lineEdits[i - 1]);
     }
 
-    labels[NOTES_INDEX] = new QLabel(PatientBDModel::fieldNames->at(NOTES_INDEX), this);
+    labels[NOTES_INDEX] = new QLabel(DB::fieldNames->at(NOTES_INDEX), this);
     formLayout->setWidget(NOTES_INDEX, QFormLayout::LabelRole, labels[NOTES_INDEX]);
     formLayout->setWidget(NOTES_INDEX, QFormLayout::FieldRole, plainTextEdit);
 
@@ -65,7 +65,7 @@ void AddPatientForm::save()
 
     try
     {
-        res = PatientBDModel::DBExec("INSERT INTO patient (name, " + PatientBDModel::tableFieldsLine +
+        res = DB::Exec("INSERT INTO patient (name, " + DB::tableFieldsLine +
             ") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)", values, expectedErrors);
     }
 

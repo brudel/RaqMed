@@ -14,8 +14,9 @@
 #include <QMessageBox>
 #include "qutils.h"
 #include "appointmentwidget.h"
-#include "patientbdmodel.h"
+#include "db.h"
 #include "patientdelegate.h"
+#include "patientmodel.h"
 extern "C" {
 #include <libpq-fe.h>
 }
@@ -54,7 +55,7 @@ public:
     QTableView* tableView = new QTableView();
     QTabWidget *tabWidget = new QTabWidget(centralWidget);
     AppointmentWidget* appointmentWidget;
-    PatientBDModel* patientModel;
+    PatientModel* pModel;
 
 signals:
     void closed(char*);

@@ -3,7 +3,7 @@
 #include "addpatientform.h"
 #include "addappointmentform.h"
 #include "patientlineedit.h"
-#include "patientbdmodel.h"
+#include "db.h"
 #include <QListView>
 #include "edittabmodel.h"
 
@@ -11,7 +11,7 @@ Calendar::Calendar(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::Calendar)
 {
-    PatientBDModel::setMainWindow(this);
+    DB::setMainWindow(this);
     ui->setupUi(this);
 
     ui->tableWidget->setColumnCount(2);
@@ -30,10 +30,10 @@ Calendar::Calendar(QWidget *parent) :
 
     connect(ui->calendarWidget, SIGNAL(selectionChanged()), this, SLOT(dayChanged()));
     connect(patientQuery, SIGNAL(completationDone(QString)), this, SLOT(doneQuery(QString)));
-    ui->menuEditar_modelos->addAction(PatientBDModel::tabNames->at(0), this, SLOT(reasons()));
-    ui->menuEditar_modelos->addAction(PatientBDModel::tabNames->at(1), this, SLOT(antecedents()));
-    ui->menuEditar_modelos->addAction(PatientBDModel::tabNames->at(2), this, SLOT(exams()));
-    ui->menuEditar_modelos->addAction(PatientBDModel::tabNames->at(3), this, SLOT(reports()));
+    ui->menuEditar_modelos->addAction(DB::tabNames->at(0), this, SLOT(reasons()));
+    ui->menuEditar_modelos->addAction(DB::tabNames->at(1), this, SLOT(antecedents()));
+    ui->menuEditar_modelos->addAction(DB::tabNames->at(2), this, SLOT(exams()));
+    ui->menuEditar_modelos->addAction(DB::tabNames->at(3), this, SLOT(reports()));
 
     dayChanged();
 }
@@ -41,14 +41,14 @@ Calendar::Calendar(QWidget *parent) :
 Calendar::~Calendar()
 {
     delete ui;
-    PQfinish(PatientBDModel::conn);
+    PQfinish(DB::conn);
 }
 
 void Calendar::dayChanged()
 {
     QDate qdate = ui->calendarWidget->selectedDate();
 
-    PGresult* res = PatientBDModel::DBExec("SELECT patient, to_char(day, 'HH24:MI') FROM appointment\
+    PGresult* res = DB::Exec("SELECT patient, to_char(day, 'HH24:MI') FROM appointment\
  WHERE date(day) = $1", qdate.toString("yyyy-MM-dd"));
 
     if (res == nullptr)

@@ -1,5 +1,5 @@
 #include "addappointmentform.h"
-#include "patientbdmodel.h"
+#include "db.h"
 
 AddAppointmentForm::AddAppointmentForm(QDate date, QWidget *parent) :
     QDialog(parent)
@@ -49,7 +49,7 @@ void AddAppointmentForm::save() {
 
     try
     {
-        res = PatientBDModel::DBExec("INSERT INTO appointment (patient, day, content) VALUES ($1, $2, $3)", values, expectedErrors);
+        res = DB::Exec("INSERT INTO appointment (patient, day, content) VALUES ($1, $2, $3)", values, expectedErrors);
     }
 
     catch (int sqlstate)
