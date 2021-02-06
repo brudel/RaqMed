@@ -1,6 +1,5 @@
 #include "patient.h"
-
-#define DELETE_CONFIRMATION
+#include "timebutton.h"
 
 Patient::Patient(QString qname, QWidget *parent) :
     QMainWindow(parent)
@@ -166,25 +165,19 @@ bool Patient::saveTabs()
 
 void Patient::deletePatient()
 {
-    QMessageBox::StandardButton b_ans = QMessageBox::warning(this, "Deletar Paciente",
-"Tem certeza que você deseja deletar permanentemente esse paciente?\nTodos os dados serão perdidos",
-QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
+    TimeButton* yesButton = new TimeButton("Sim");
 
-    if (b_ans == QMessageBox::Cancel)
+    QMessageBox messageBox(this);
+    messageBox.setWindowTitle("Deletar Paciente");
+    messageBox.setIcon(QMessageBox::Warning);
+    messageBox.setText("Tem certeza que você deseja deletar permanentemente esse paciente?\nTodos os dados serão perdidos");
+    messageBox.addButton(yesButton, QMessageBox::AcceptRole);
+    messageBox.addButton("Cancelar", QMessageBox::RejectRole);
+    messageBox.setDefaultButton(QMessageBox::Cancel);
+    messageBox.exec();
+
+    if (messageBox.clickedButton() != yesButton)
         return;
-
-#ifdef DELETE_CONFIRMATION
-    if (comboBox->count() > 0)
-    {
-        b_ans = QMessageBox::warning(this, "Deletar Paciente",
-"Você tem certeza MESMO que quer deletar esse paciente???\n\
-Perceba que você não está apagando uma consulta só, está apagando todos os dados do paciente para sempre e inrecuperavelmente",
-QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
-
-        if (b_ans == QMessageBox::Cancel)
-            return;
-    }
-#endif
 
     PGresult* res = DB::Exec("DELETE FROM patient WHERE name = $1", name);
     if (res == nullptr)

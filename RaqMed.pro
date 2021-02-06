@@ -50,7 +50,8 @@ SOURCES += \
     edittabmodel.cpp \
     patientdelegate.cpp \
     db.cpp \
-    patientmodel.cpp
+    patientmodel.cpp \
+    timebutton.cpp
 
 HEADERS += \
 	patient.h \
@@ -63,7 +64,8 @@ HEADERS += \
     edittabmodel.h \
     patientdelegate.h \
     db.h \
-    patientmodel.h
+    patientmodel.h \
+    timebutton.h
 
 FORMS += \
 	calendar.ui
