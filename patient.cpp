@@ -77,37 +77,44 @@ Patient::Patient(QString qname, QWidget *parent) :
 
 Patient::~Patient()
 {
+    if (isVisible())
+        exit();
+
     free(name);
 }
 
 
 void Patient::closeEvent(QCloseEvent *event)
 {
+    if(exit())
+    {
+        event->accept();
+        closed(name);
+    }
+    else
+        event->ignore();
+}
+
+bool Patient::exit()
+{
     PGresult* res;
 
     if (invalid)
-    {
-        closed(name);
-        event->accept();
-    }
+        return true;
 
     if (stackedLayout->currentIndex() == 1)
     {
         res = DB::ExecCommand("BEGIN");
 
         if (res == nullptr)
-        {
-            event->ignore();
-            return;
-        }
+            return false;
 
         PQclear(res);
 
         if (!saveTabs() || !appointmentWidget->saveChanges())
         {
             DB::rollBack();
-            event->ignore();
-            return;
+            return false;
         }
 
         res = DB::ExecCommand("COMMIT");
@@ -116,20 +123,15 @@ void Patient::closeEvent(QCloseEvent *event)
         {
             DB::rollBack();
             appointmentWidget->restoreDate();
-            event->ignore();
-            return;
+            return false;
         }
         PQclear(res);
     }
 
     else if (!saveTabs())
-    {
-        event->ignore();
-        return;
-    }
+        return false;
 
-    closed(name);
-    event->accept();
+    return true;
 }
 
 bool Patient::saveTabs()

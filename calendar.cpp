@@ -41,7 +41,6 @@ Calendar::Calendar(QWidget *parent) :
 Calendar::~Calendar()
 {
     delete ui;
-    PQfinish(DB::conn);
 }
 
 void Calendar::dayChanged()

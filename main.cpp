@@ -3,6 +3,7 @@
 
 int main(int argc, char *argv[])
 {
+    int status;
     QApplication a(argc, argv);
     a.setWindowIcon(QIcon(":icon.png"));
 
@@ -13,8 +14,14 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    Calendar c;
-    c.showMaximized();
+    Calendar* c = new Calendar();
+    c->showMaximized();
 
-    return a.exec();
+    status = a.exec();
+
+    delete c;
+
+    PQfinish(DB::conn);
+
+    return status;
 }

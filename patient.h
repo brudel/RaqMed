@@ -33,6 +33,7 @@ public:
     explicit Patient(QString name, QWidget *parent = nullptr);
     ~Patient();
     void closeEvent(QCloseEvent *event) override;
+    bool exit();
     bool saveTabs();
 
     //Variables
