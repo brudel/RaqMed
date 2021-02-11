@@ -18,7 +18,7 @@ win32: {
     QMAKE_LFLAGS    += -L../postgresql/lib
 }
 
-QMAKE_LFLAGS    += -lpq
+LIBS    += -lpq -lstdc++fs
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -52,7 +52,8 @@ SOURCES += \
     db.cpp \
     patientmodel.cpp \
     timebutton.cpp \
-    autosavetextedit.cpp
+    autosavetextedit.cpp \
+    autosaverestore.cpp
 
 HEADERS += \
 	patient.h \
@@ -67,7 +68,8 @@ HEADERS += \
     db.h \
     patientmodel.h \
     timebutton.h \
-    autosavetextedit.h
+    autosavetextedit.h \
+    autosaverestore.h
 
 FORMS += \
 	calendar.ui

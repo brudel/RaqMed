@@ -1,5 +1,6 @@
-#include "calendar.h"
 #include <QApplication>
+#include "calendar.h"
+#include "autosaverestore.h"
 
 int main(int argc, char *argv[])
 {
@@ -16,6 +17,8 @@ int main(int argc, char *argv[])
 
     Calendar* c = new Calendar();
     c->showMaximized();
+
+    AutosaveRestore ar;
 
     status = a.exec();
 
