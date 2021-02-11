@@ -28,8 +28,10 @@ Patient::Patient(QString qname, QWidget *parent) :
 
     tabWidget->addTab(tableView, "Identificação");
     for (int i = 0; i < TABS_NUM; ++i) {
-        tabs[i] = new QPlainTextEdit(PQgetvalue(res, 0, i), tabWidget);
+        tabs[i] = new AutosaveTextEdit(tabWidget, (string) name + " - " + DB::tabNames->at(i).toStdString(),
+            PQgetvalue(res, 0, i));
         tabWidget->addTab(tabs[i], DB::tabNames->at(i));
+        connect(this, SIGNAL(closed(char*)), tabs[i], SLOT(ended()));
     }
     PQclear(res);
 
@@ -77,8 +79,8 @@ Patient::Patient(QString qname, QWidget *parent) :
 
 Patient::~Patient()
 {
-    if (isVisible())
-        exit();
+    if (isVisible() && exit())
+        closed(name);
 
     free(name);
 }
@@ -146,6 +148,7 @@ bool Patient::saveTabs()
             command += /*(string) */(j == 2 ? " " : ", ") + DB::tableTabs[i] + " = $" + std::to_string(j);
             ++j;
             parameters.push_back(QUtils::ToCString(tabs[i]->toPlainText()));
+            tabs[i]->save();
         }
 
     if (j != 2)
@@ -208,6 +211,13 @@ void Patient::nameChanged(char* newName)
     free(name);
     name = newName;
     nameLbl->setText(newName);
+
+    for (int i = 0; i < TABS_NUM; ++i)
+    {
+        tabs[i]->setTitle((string) name + " - " + DB::tabNames->at(i).toStdString());
+        if (tabs[i]->wasUsed())
+            tabs[i]->save();
+    }
 }
 
 void Patient::resizeNoteCell()

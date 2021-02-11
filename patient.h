@@ -2,7 +2,6 @@
 #define PATIENT_H
 
 #include <QMainWindow>
-#include <QPlainTextEdit>
 #include <QTableView>
 #include <QBoxLayout>
 #include <QComboBox>
@@ -17,6 +16,7 @@
 #include "db.h"
 #include "patientdelegate.h"
 #include "patientmodel.h"
+#include "autosavetextedit.h"
 extern "C" {
 #include <libpq-fe.h>
 }
@@ -39,7 +39,7 @@ public:
     //Variables
     char* name;
     bool invalid = false;
-    std::array<QPlainTextEdit*, 4> tabs;
+    std::array<AutosaveTextEdit*, 4> tabs;
 
     //Layout
     QWidget *centralWidget = new QWidget(this);

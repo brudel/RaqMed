@@ -51,7 +51,8 @@ SOURCES += \
     patientdelegate.cpp \
     db.cpp \
     patientmodel.cpp \
-    timebutton.cpp
+    timebutton.cpp \
+    autosavetextedit.cpp
 
 HEADERS += \
 	patient.h \
@@ -65,7 +66,8 @@ HEADERS += \
     patientdelegate.h \
     db.h \
     patientmodel.h \
-    timebutton.h
+    timebutton.h \
+    autosavetextedit.h
 
 FORMS += \
 	calendar.ui

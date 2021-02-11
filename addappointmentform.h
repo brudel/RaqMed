@@ -40,7 +40,6 @@ public:
 public slots:
     void save();
 
-
 signals:
     void dateEdited(QDate newDate, QString name);
 };

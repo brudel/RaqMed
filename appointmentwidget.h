@@ -6,10 +6,10 @@
 #include <QDateTimeEdit>
 #include <QStackedLayout>
 #include <QPushButton>
-#include <QPlainTextEdit>
 #include <QComboBox>
 #include <QLineEdit>
 #include "qutils.h"
+#include "autosavetextedit.h"
 extern "C" {
 #include <libpq-fe.h>
 }
@@ -44,7 +44,7 @@ public:
     QSpacerItem *horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
     QPushButton* exitButton = new QPushButton("Salvar e fechar", this);
     QHBoxLayout* horizontalLayout = new QHBoxLayout();
-    QPlainTextEdit* plainTextEdit = new QPlainTextEdit(this);
+    AutosaveTextEdit* contentEdit = new AutosaveTextEdit(this);
     QVBoxLayout* verticalLayout = new QVBoxLayout(this);
     QComboBox* comboBox;
     QMenu* menu;

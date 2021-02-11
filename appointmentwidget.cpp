@@ -33,7 +33,7 @@ QWidget(parent)
     horizontalLayout->addWidget(exitButton);
 
     verticalLayout->addLayout(horizontalLayout);
-    verticalLayout->addWidget(plainTextEdit, 1);
+    verticalLayout->addWidget(contentEdit, 1);
 
     connect(comboBox, SIGNAL(activated(int)), this, SLOT(setDate(int)));
     connect(exitButton, SIGNAL(clicked()), this, SLOT(exit()));
@@ -63,13 +63,16 @@ void AppointmentWidget::setDate(int index)
         return;
     }
 
-    plainTextEdit->setPlainText(PQgetvalue(res, 0, 0));
+    contentEdit->setPlainText(PQgetvalue(res, 0, 0));
     heightLineEdit->setText(PQgetvalue(res, 0, 1));
     weightLineEdit->setText(PQgetvalue(res, 0, 2));
     PQclear(res);
 
     currentDateTime = QUtils::stringToQDateTime(dateTimes[index]);
     dateTimeEdit->setDateTime(currentDateTime);
+
+    contentEdit->setTitle((string)ident[0] + " - Consulta de " + currentDateTime.toString("dd/MM/yyyy hh:mm.").toStdString());
+    contentEdit->abort();
 
     ageLabel->setText(("Idade: " + std::to_string(QUtils::yearsTo(birthday, currentDateTime.date())) + " anos").c_str());
 
@@ -94,10 +97,11 @@ bool AppointmentWidget::saveChanges()
     QDateTime newDateTime = dateTimeEdit->dateTime();
     bool dateChanged = false;
 
-    if (plainTextEdit->document()->isModified())
+    if (contentEdit->document()->isModified())
     {
         query += " content = $" + std::to_string(count++);
-        ident.push_back(QUtils::ToCString(plainTextEdit->toPlainText()));
+        ident.push_back(QUtils::ToCString(contentEdit->toPlainText()));
+        contentEdit->save();
     }
 
     if (newDateTime != currentDateTime)
@@ -142,6 +146,7 @@ bool AppointmentWidget::saveChanges()
     }
 
     ident.pop_back();
+    contentEdit->ended();
     return true;
 }
 
@@ -149,11 +154,15 @@ void AppointmentWidget::restoreDate()
 {
     dateTimes.push_back(QUtils::ToCString(currentDateTime.toString(Qt::ISODate)));
     ident.push_back(dateTimes.back());
+
+    if (contentEdit->document()->isModified())
+        contentEdit->save();
 }
 
 void AppointmentWidget::nameChanged(char* newName)
 {
     ident[0] = newName;
+    contentEdit->setTitle((string)ident[0] + " - Consulta de " + currentDateTime.toString("dd/MM/yyyy hh:mm.").toStdString());
 }
 
 bool AppointmentWidget::deleteAppointment()
