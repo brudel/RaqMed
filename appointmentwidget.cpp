@@ -38,7 +38,6 @@ QWidget(parent)
     connect(comboBox, SIGNAL(activated(int)), this, SLOT(setDate(int)));
     connect(exitButton, SIGNAL(clicked()), this, SLOT(exit()));
     connect(this, SIGNAL(dateEdited(QDate,QDate)), this, SLOT(loadDates()));
-    connect(plainTextEdit, SIGNAL(undoAvailable(bool)), this, SLOT(contentChange(bool)));
 }
 
 AppointmentWidget::~AppointmentWidget()
@@ -99,7 +98,6 @@ bool AppointmentWidget::saveChanges()
     {
         query += " content = $" + std::to_string(count++);
         ident.push_back(QUtils::ToCString(plainTextEdit->toPlainText()));
-        contentChanged = false;
     }
 
     if (newDateTime != currentDateTime)
@@ -151,11 +149,6 @@ void AppointmentWidget::restoreDate()
 {
     dateTimes.push_back(QUtils::ToCString(currentDateTime.toString(Qt::ISODate)));
     ident.push_back(dateTimes.back());
-}
-
-void AppointmentWidget::contentChange(bool modified)
-{
-    contentChanged = modified;
 }
 
 void AppointmentWidget::nameChanged(char* newName)

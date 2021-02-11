@@ -28,7 +28,6 @@ public:
 
     //Variables
     std::vector<char*> ident;
-    bool contentChanged = false;
     bool invalid = false;
     QDateTime currentDateTime;
     std::vector<char*> dateTimes;
@@ -62,9 +61,6 @@ public slots:
 
     //Basic action
     bool loadDates();
-
-    //Intern action
-    void contentChange(bool modified);
 
     //Responsivity
     void nameChanged(char* newName);
