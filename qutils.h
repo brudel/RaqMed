@@ -19,7 +19,7 @@ public:
     static string constructLine(std::vector<string>::iterator begin, std::vector<string>::iterator end);
     static string toBrDate(char* dateTime);
     static void BDdebug(PGresult* ans);
-    static char* readFile(FILE* file);
+    static char* readFileLine(FILE* file);
     static QDateTime stringToQDateTime(char* str);
     static QDate stringToQDate(char* str);
     static int yearsTo(QDate first, QDate second);

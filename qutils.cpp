@@ -70,7 +70,7 @@ void QUtils::BDdebug(PGresult* res)
     qDebug(PQresultErrorMessage(res));
 }
 
-char* QUtils::readFile(FILE *file)
+char* QUtils::readFileLine(FILE *file)
 {
     char* s = malloc(1);
     size_t n = 1;

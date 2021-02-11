@@ -52,7 +52,7 @@ PGconn* DB::setConn()
     FILE* database = fopen(DATABASE_CONFIG_FILE, "r");
     PGconn* conn;
 
-    config = QUtils::readFile(database);
+    config = QUtils::readFileLine(database);
     conn = PQconnectdb(config);
     free(config);
 
