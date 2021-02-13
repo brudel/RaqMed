@@ -215,6 +215,5 @@ bool AppointmentWidget::loadDates()
 void AppointmentWidget::birthdayChanged(QDate newBirthday)
 {
     birthday = newBirthday;
-    ageLabel->setText(("Idade: " + std::to_string(QUtils::yearsTo(birthday, currentDateTime.date())) + " anos").c_str());
 }
 
