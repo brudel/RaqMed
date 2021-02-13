@@ -20,6 +20,7 @@ public:
     //Inline functions
     inline void abort() {timer.stop();};
     inline bool wasUsed() {return document()->isModified() || document()->isRedoAvailable();};
+    inline void setPlainText(const QString &text) { QPlainTextEdit::setPlainText(text); abort();};
 
     string path;
     QTimer timer;

@@ -72,7 +72,6 @@ void AppointmentWidget::setDate(int index)
     dateTimeEdit->setDateTime(currentDateTime);
 
     contentEdit->setTitle((string)ident[0] + " - Consulta de " + currentDateTime.toString("dd/MM/yyyy hh:mm.").toStdString());
-    contentEdit->abort();
 
     ageLabel->setText(("Idade: " + std::to_string(QUtils::yearsTo(birthday, currentDateTime.date())) + " anos").c_str());
 
