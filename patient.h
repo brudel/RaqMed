@@ -39,7 +39,7 @@ public:
     //Variables
     char* name;
     bool invalid = false;
-    std::array<AutosaveTextEdit*, 4> tabs;
+    std::array<AutosaveTextEdit*, TABS_NUM> tabs;
 
     //Layout
     QWidget *centralWidget = new QWidget(this);

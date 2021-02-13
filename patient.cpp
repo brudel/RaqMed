@@ -142,7 +142,7 @@ bool Patient::saveTabs()
     string command = "UPDATE patient SET";
     std::vector<char*> parameters = {name};
 
-    for (i = 0; i < 4; ++i)
+    for (i = 0; i < TABS_NUM; ++i)
         if (tabs[i]->document()->isModified())
         {
             command += /*(string) */(j == 2 ? " " : ", ") + DB::tableTabs[i] + " = $" + std::to_string(j);
