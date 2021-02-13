@@ -34,7 +34,7 @@ protected:
 };
 
 
-#ifdef __unix__
+#if QT_VERSION <= QT_VERSION_CHECK(5, 11, 3)
 template <>
 struct std::hash<QString>
 {

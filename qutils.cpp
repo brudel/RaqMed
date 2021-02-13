@@ -37,7 +37,7 @@ void QBDateTimeEdit::focusInEvent(QFocusEvent *event){
         setSelectedSection(section);
 }
 
-#ifdef __unix__
+#if QT_VERSION <= QT_VERSION_CHECK(5, 11, 3)
 std::size_t std::hash<QString>::operator()(const QString qstr) const
 {
     return hash<string>()(qstr.toStdString());
