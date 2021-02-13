@@ -19,7 +19,7 @@
 #endif
 
 #ifdef CLOUD_DB
-    PGconn* PatientBDModel::conn = PatientBDModel::setConn();
+    PGconn* DB::conn = DB::setConn();
 #else
     PGconn* DB::conn = PQconnectdb("user=brudel dbname=rqm_pgloader");
 #endif

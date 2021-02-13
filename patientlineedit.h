@@ -48,8 +48,8 @@
 **
 ****************************************************************************/
 
-#ifndef GOOGLESUGGEST_H
-#define GOOGLESUGGEST_H
+#ifndef PATIENTLINEEDIT_H
+#define PATIENTLINEEDIT_H
 
 #include <QtWidgets>
 #include <QtCore>
@@ -83,5 +83,5 @@ private:
     QTimer timer;
 };
 //! [1]
-#endif // GOOGLESUGGEST_H
+#endif // PATIENTLINEEDIT_H
 

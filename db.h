@@ -1,5 +1,5 @@
-#ifndef PATIENTBDMODEL_H
-#define PATIENTBDMODEL_H
+#ifndef DB_H
+#define DB_H
 
 #include <QDate>
 #include <QMessageBox>
@@ -53,4 +53,4 @@ public:
     static string tableTabsLine;
 };
 
-#endif // PATIENTBDMODEL_H
+#endif // DB_H
