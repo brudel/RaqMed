@@ -19,7 +19,7 @@ public:
 
     //Inline functions
     inline void abort() {timer.stop();};
-    bool wasUsed() {return document()->isModified() || document()->isRedoAvailable();};
+    inline bool wasUsed() {return document()->isModified() || document()->isRedoAvailable();};
 
     string path;
     QTimer timer;
