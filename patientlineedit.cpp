@@ -132,17 +132,11 @@ bool PatientLineEdit::eventFilter(QObject *obj, QEvent *ev)
 
 void PatientLineEdit::showCompletion(const QVector<QString> &choices)
 {
-    const QPalette &pal = editor->palette();
-    QColor color = pal.color(QPalette::Disabled, QPalette::WindowText);
-
     popup->setUpdatesEnabled(false);
     popup->clear();
 
-    for (const auto &choice : choices) {
+    for (const auto &choice : choices)
         auto item  = new QListWidgetItem(choice, popup);
-        fflush(stdout);
-        item->setTextColor(color);
-    }
 
     int height = popup->sizeHintForRow(0) * popup->model()->rowCount()+ 2 * popup->frameWidth();
     int width = popup->sizeHintForColumn(0) + 2 * popup->frameWidth(); //#
