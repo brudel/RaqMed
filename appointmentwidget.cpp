@@ -37,6 +37,7 @@ QWidget(parent)
 
     connect(comboBox, SIGNAL(activated(int)), this, SLOT(setDate(int)));
     connect(exitButton, SIGNAL(clicked()), this, SLOT(exit()));
+    QObject::connect(exitShortcut, SIGNAL(activated()), this, SLOT(exit()));
     connect(this, SIGNAL(dateEdited(QDate,QDate)), this, SLOT(loadDates()));
 }
 

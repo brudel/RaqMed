@@ -8,6 +8,7 @@
 #include <QPushButton>
 #include <QComboBox>
 #include <QLineEdit>
+#include <QShortcut>
 #include "qutils.h"
 #include "autosavetextedit.h"
 extern "C" {
@@ -48,6 +49,7 @@ public:
     QVBoxLayout* verticalLayout = new QVBoxLayout(this);
     QComboBox* comboBox;
     QMenu* menu;
+    QShortcut* exitShortcut = new QShortcut(QKeySequence("Esc"), this);
 
 signals:
     void exited();
