@@ -165,10 +165,20 @@ void PatientLineEdit::doneCompletion()
 
 void PatientLineEdit::autoSuggest()
 {
-    if (editor->text() == "")
+    QString name = editor->text().simplified();
+
+    if (name == "")
         return;
 
-    PGresult* res = DB::Exec("SELECT name FROM patient WHERE name ~* $1 LIMIT 10", editor->text());
+    //Escape especial characters
+    name.replace('%', "\\%");
+    name.replace('_', "\\_");
+
+    //Permite parcial and omitted words
+    name.replace(' ', "% ");
+    name.append('%');
+
+    PGresult* res = DB::Exec("SELECT name FROM patient WHERE name ILIKE $1 LIMIT 10", name);
     if (res == nullptr)
         return;
 
