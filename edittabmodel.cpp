@@ -5,11 +5,7 @@
 EditTabModel::EditTabModel(int _tabNumber, QWidget *parent) :
     QDialog(parent)
 {
-    PGresult* res = DB::Exec
-("SELECT col.column_default \
-FROM information_schema.columns col \
-WHERE col.table_name = 'patient' \
-AND col.column_name = $1", DB::tableTabs[_tabNumber]);
+    PGresult* res = DB::Exec("SELECT get_text_default('patient', $1)", DB::tableTabs[_tabNumber]);
 
     if (res == nullptr)
 {
@@ -17,8 +13,7 @@ AND col.column_name = $1", DB::tableTabs[_tabNumber]);
         return;
 }
 
-    QString old = PQgetvalue(res, 0, 0) + 1;
-    plainTextEdit = new QPlainTextEdit(old.chopped(7), this);
+    plainTextEdit = new QPlainTextEdit(PQgetvalue(res, 0, 0), this);
     PQclear(res);
 
     tabNumber = _tabNumber;
@@ -41,13 +36,16 @@ AND col.column_name = $1", DB::tableTabs[_tabNumber]);
     connect(cancelButton, SIGNAL(clicked()), this, SLOT(close()));
 }
 
-void EditTabModel::save() {
-    char* newDefault = QUtils::ToCString(plainTextEdit->toPlainText());
+void EditTabModel::save()
+{
+    std::vector<char*> values;
 
-    PGresult* res = DB::ExecCommand("ALTER TABLE patient ALTER " + DB::tableTabs[tabNumber]
-+ " SET DEFAULT '" + newDefault + '\'');
+    values.push_back((char*) DB::tableTabs[tabNumber].c_str());
+    values.push_back(QUtils::ToCString(plainTextEdit->toPlainText()));
 
-    free(newDefault);
+    PGresult* res = DB::Exec("SELECT define_default('patient', $1, $2)", values);
+
+    free(values[1]);
 
     if (res == nullptr)
         return;

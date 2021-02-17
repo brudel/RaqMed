@@ -38,3 +38,41 @@ CREATE TABLE appointment
 	CONSTRAINT appointment_pk
 		PRIMARY KEY (patient, day)
 );
+
+
+CREATE OR REPLACE FUNCTION define_default(p_table TEXT, p_column TEXT, p_value TEXT)
+	RETURNS boolean
+	LANGUAGE plpgsql
+	AS
+		$$
+		BEGIN
+			EXECUTE 'ALTER TABLE ' || p_table || ' ALTER ' || p_column || ' SET DEFAULT ' || quote_literal(p_value);
+			RETURN true;
+		END;
+		$$;
+
+
+CREATE OR REPLACE FUNCTION get_text_default(p_table TEXT, p_column TEXT)
+	RETURNS text
+	LANGUAGE plpgsql
+	AS
+		$$
+		DECLARE
+			casted_default text;
+			default_value text;
+		BEGIN
+			EXECUTE
+				'SELECT col.column_default
+					FROM information_schema.columns col
+					WHERE
+						col.table_name = ' || quote_literal(p_table) ||
+						' AND col.column_name = ' || quote_literal(p_column)
+				INTO casted_default;
+
+			EXECUTE
+				'SELECT ' || casted_default
+				INTO default_value;
+
+			RETURN default_value;
+		END;
+		$$;
