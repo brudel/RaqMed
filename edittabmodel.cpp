@@ -57,7 +57,8 @@ void EditTabModel::save()
 
 void EditTabModel::closeEvent(QCloseEvent *event)
 {
-    if (saved) {
+    if (saved || !plainTextEdit->document()->isModified())
+    {
         event->accept();
         return;
     }
