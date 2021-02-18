@@ -3,7 +3,7 @@
 #include <QMessageBox>
 
 AddPatientForm::AddPatientForm(QWidget *parent) :
-    QDialog(parent)
+    QWidget(parent, Qt::Window | Qt::Tool)
 {
     setWindowTitle("Cadastrar Paciente");
 

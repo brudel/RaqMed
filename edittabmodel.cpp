@@ -3,7 +3,7 @@
 #include <QMessageBox>
 
 EditTabModel::EditTabModel(int _tabNumber, QWidget *parent) :
-    QDialog(parent)
+    QWidget(parent, Qt::Window | Qt::Tool)
 {
     PGresult* res = DB::Exec("SELECT get_text_default('patient', $1)", DB::tableTabs[_tabNumber]);
 

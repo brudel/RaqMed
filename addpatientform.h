@@ -1,11 +1,9 @@
 #ifndef ADDPATIENTFORM_H
 #define ADDPATIENTFORM_H
 
-#include <QDialog>
 #include <QStringList>
 #include <QtCore/QVariant>
 #include <QApplication>
-#include <QDialog>
 #include <QFormLayout>
 #include <QLabel>
 #include <QLineEdit>
@@ -19,7 +17,7 @@ extern "C" {
 #include <libpq-fe.h>
 }
 
-class AddPatientForm : public QDialog
+class AddPatientForm : public QWidget
 {
     Q_OBJECT
 

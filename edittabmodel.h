@@ -1,7 +1,6 @@
 #ifndef EDITTABMODEL_H
 #define EDITTABMODEL_H
 
-#include <QDialog>
 #include <QLabel>
 #include <QPlainTextEdit>
 #include <QPushButton>
@@ -11,7 +10,7 @@ extern "C" {
 #include <libpq-fe.h>
 }
 
-class EditTabModel : public QDialog
+class EditTabModel : public QWidget
 {
     Q_OBJECT
 

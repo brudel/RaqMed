@@ -2,7 +2,7 @@
 #include "db.h"
 
 AddAppointmentForm::AddAppointmentForm(QDate date, QWidget *parent) :
-    QDialog(parent)
+    QWidget(parent, Qt::Window | Qt::Tool)
 {
     original = date;
 

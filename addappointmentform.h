@@ -1,7 +1,6 @@
 #ifndef ADDAPPOINTMENTFORM_H
 #define ADDAPPOINTMENTFORM_H
 
-#include <QDialog>
 #include <QVBoxLayout>
 #include <QFormLayout>
 #include <QLabel>
@@ -15,7 +14,7 @@ extern "C" {
 #include <libpq-fe.h>
 }
 
-class AddAppointmentForm : public QDialog
+class AddAppointmentForm : public QWidget
 {
     Q_OBJECT
 public:
