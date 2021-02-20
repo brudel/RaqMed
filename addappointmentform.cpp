@@ -20,7 +20,7 @@ AddAppointmentForm::AddAppointmentForm(QDate date, QWidget *parent) :
     new PatientLineEdit(lineEdit);
 
     verticalLayout->addLayout(formLayout);
-    verticalLayout->addWidget(plainTextEdit);
+    verticalLayout->addWidget(contentEdit);
 
     horizontalButtonLayout->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
     horizontalButtonLayout->addWidget(pushButton);
@@ -31,7 +31,8 @@ AddAppointmentForm::AddAppointmentForm(QDate date, QWidget *parent) :
     connect(pushButton, &QPushButton::clicked, this, &AddAppointmentForm::save);
 }
 
-void AddAppointmentForm::save() {
+void AddAppointmentForm::save()
+{
     std::vector<char*> values;
     QString name = lineEdit->text();
     PGresult* res;
@@ -43,9 +44,11 @@ void AddAppointmentForm::save() {
         return;
     }
 
+    contentEdit->save();
+
     values.push_back(QUtils::ToCString(name));
     values.push_back(QUtils::ToCString(dateTimeEdit->dateTime().toString("yyyy-MM-dd hh:mm")));
-    values.push_back(QUtils::ToCString(plainTextEdit->toPlainText()));
+    values.push_back(QUtils::ToCString(contentEdit->toPlainText()));
 
     try
     {
@@ -72,11 +75,14 @@ void AddAppointmentForm::save() {
         free(cstr);
 
     if (res == nullptr)
+    {
+        saveFailed = true;
         return;
-
+    }
     PQclear(res);
 
     dateEdited(dateTimeEdit->date(), name);
+    contentEdit->ended();
     saved = true;
     this->close();
 }
@@ -89,7 +95,7 @@ void AddAppointmentForm::closeEvent(QCloseEvent *event)
         (
             lineEdit->text().isEmpty() &&
             dateTimeEdit->dateTime() == QDateTime(original) &&
-            plainTextEdit->toPlainText().isEmpty()
+            contentEdit->toPlainText().isEmpty()
         )
     )
     {
@@ -97,12 +103,26 @@ void AddAppointmentForm::closeEvent(QCloseEvent *event)
         return;
     }
 
+    if (saveFailed)
+    {
+        contentEdit->save();
+
+        QMessageBox::information(this, "Agendamento salvo para recuperação",
+            "O agendamento foi falvo para posterior recuperação devido ao erro de salvamento.");
+
+        event->accept();
+        return;
+    }
+
     QMessageBox::StandardButton b_ans = QMessageBox::warning(this, "Cancelar Agendamento",
-"Tem certeza que deseja fechar essa janela?\n A consulta não será agendada",
-QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Yes);
+        "Tem certeza que deseja fechar essa janela?\n A consulta não será agendada",
+        QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Yes);
 
     if (b_ans == QMessageBox::Yes)
-         event->accept();
-        else
-         event->ignore();
+    {
+        event->accept();
+        contentEdit->ended();
+    }
+    else
+        event->ignore();
  }

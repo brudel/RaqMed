@@ -2,9 +2,9 @@
 #define EDITTABMODEL_H
 
 #include <QLabel>
-#include <QPlainTextEdit>
 #include <QPushButton>
 #include <QVBoxLayout>
+#include <autosavetextedit.h>
 #include <qutils.h>
 extern "C" {
 #include <libpq-fe.h>
@@ -18,12 +18,15 @@ public:
     EditTabModel(int _tabNumber, QWidget *parent = nullptr);
     void closeEvent(QCloseEvent *event) override;
 
+    //Variables
     int tabNumber;
     bool saved = false;
+    bool saveFailed = false;
 
+    //Layout
     QVBoxLayout *verticalLayout = new QVBoxLayout(this);
     QLabel* label = new QLabel("Data:", this);
-    QPlainTextEdit *plainTextEdit;
+    AutosaveTextEdit* templateEdit;
     QPushButton *saveButton = new QPushButton("Salvar", this);
     QPushButton *cancelButton = new QPushButton("Cancelar", this);
     QHBoxLayout *horizontalButtonLayout = new QHBoxLayout();

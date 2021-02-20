@@ -6,10 +6,10 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QDateTimeEdit>
-#include <QPlainTextEdit>
 #include <QPushButton>
 #include <qutils.h>
 #include <patientlineedit.h>
+#include <autosavetextedit.h>
 extern "C" {
 #include <libpq-fe.h>
 }
@@ -24,6 +24,7 @@ public:
     //Variables
     QDate original;
     bool saved = false;
+    bool saveFailed = false;
 
     //Layout
     QVBoxLayout *verticalLayout = new QVBoxLayout(this);
@@ -32,7 +33,7 @@ public:
     QBDateTimeEdit* dateTimeEdit = new QBDateTimeEdit(this);
     QLabel* patientLabel = new QLabel("Paciente:", this);
     QLineEdit* lineEdit = new QLineEdit(this);
-    QPlainTextEdit *plainTextEdit = new QPlainTextEdit(this);
+    AutosaveTextEdit* contentEdit = new AutosaveTextEdit(this, "Nova Consulta");
     QPushButton *pushButton = new QPushButton("Salvar", this);
     QHBoxLayout *horizontalButtonLayout = new QHBoxLayout();
 
