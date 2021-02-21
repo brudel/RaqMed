@@ -8,6 +8,7 @@ AddAppointmentForm::AddAppointmentForm(QDate date, QWidget *parent) :
 
     setWindowTitle("Agendar Consulta");
     resize(600, 400); //#Find elegant answer
+    setAttribute(Qt::WA_DeleteOnClose);
 
     formLayout->setWidget(0, QFormLayout::LabelRole, dateLabel);
 

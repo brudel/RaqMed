@@ -20,6 +20,7 @@ EditTabModel::EditTabModel(int _tabNumber, QWidget *parent) :
 
     setWindowTitle("Editar Modelo de " + DB::tabNames->at(tabNumber));
     resize(600, 400); //#Find elegant answer
+    setAttribute(Qt::WA_DeleteOnClose);
 
     label->setText(DB::tabNames->at(tabNumber));
     verticalLayout->addWidget(label);

@@ -6,6 +6,7 @@ AddPatientForm::AddPatientForm(QWidget *parent) :
     QWidget(parent, Qt::Window | Qt::Tool)
 {
     setWindowTitle("Cadastrar Paciente");
+    setAttribute(Qt::WA_DeleteOnClose);
 
     defaultDate = birthDateEdit->date();
 
