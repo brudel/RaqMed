@@ -153,13 +153,16 @@ PGresult* DB::nonconnectionErrorHandler(PGresult* res, const char *command, int 
     const char *const *paramValues, std::vector<char*> expectedErros)
 {
     char* sqlstate = PQresultErrorField(res, PG_DIAG_SQLSTATE);
-    PQclear(res);
 
     for (int i = 0; i < expectedErros.size(); ++i)
         if (!strcmp(expectedErros[i], sqlstate))
+        {
+			PQclear(res);
             throw i;
+        }
 
     unknownDBError(res, command, nParams, paramValues);
+    PQclear(res);
     return nullptr;
 }
 
