@@ -99,15 +99,19 @@ void Calendar::doneQuery(QString qname) {
 
 bool Calendar::openPatient(QString qname)
 {
+    Patient* p;
+
     patient_it it = open_patients.find(qname);
     if (it != open_patients.end()) {
         it->second->activateWindow();
         return false;
     }
 
-    Patient* p = new Patient(qname, this);
-    if (p->invalid == true)
+    try {
+        p = new Patient(qname, this);
+    } catch (...) {
         return false;
+    }
 
     connect(p, SIGNAL(closed(char*)), this, SLOT(patient_closed(char*)));
     connect(p->appointmentWidget, SIGNAL(dateEdited(QDate, QDate)), this, SLOT(dateChanged(QDate, QDate)));

@@ -22,7 +22,6 @@ public:
     QDate getBirthday();
 
     //Variables
-    bool invalid = false;
     std::vector<string> fieldValues;
 
 signals:

@@ -42,7 +42,6 @@ public:
     QLabel* weightLabel = new QLabel("Peso:", this);
     QLineEdit* weightLineEdit = new QLineEdit(this);
     QLabel* ageLabel = new QLabel(this);
-    QSpacerItem *horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
     QPushButton* exitButton = new QPushButton("Salvar e fechar", this);
     QHBoxLayout* horizontalLayout = new QHBoxLayout();
     AutosaveTextEdit* contentEdit = new AutosaveTextEdit(this);

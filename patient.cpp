@@ -1,6 +1,11 @@
 #include "patient.h"
 #include "timebutton.h"
 
+#define CANCEL_CONSTRUCTOR      \
+free(name);                     \
+delete horizontalLayout;        \
+delete stackedLayout;           \
+
 Patient::Patient(QString qname, QWidget *parent) :
     QMainWindow(parent)
 {
@@ -8,32 +13,29 @@ Patient::Patient(QString qname, QWidget *parent) :
     PGresult* res = DB::Exec("SELECT " + DB::tableTabsLine + " FROM patient WHERE name = $1", name);
     if (res == nullptr)
     {
-        invalid = true;
-        return;
-    }
-
-    pModel = new PatientModel(name, centralWidget);
-    if (pModel->invalid == true)
-    {
-        invalid = true;
-        return;
-    }
-
-    appointmentWidget = new AppointmentWidget(name, comboBox, menuAppointment, pModel->getBirthday(), centralWidget);
-    if (appointmentWidget->invalid == true)
-    {
-        invalid = true;
-        return;
+        CANCEL_CONSTRUCTOR;
+        throw 0;
     }
 
     tabWidget->addTab(tableView, "Identificação");
-    for (int i = 0; i < TABS_NUM; ++i) {
+    for (int i = 0; i < TABS_NUM; ++i)
+    {
         tabs[i] = new AutosaveTextEdit(tabWidget, (string) name + " - " + DB::tabNames->at(i).toStdString(),
             PQgetvalue(res, 0, i));
         tabWidget->addTab(tabs[i], DB::tabNames->at(i));
         connect(this, SIGNAL(closed(char*)), tabs[i], SLOT(ended()));
     }
     PQclear(res);
+
+    try {
+        pModel = new PatientModel(name, centralWidget);
+        appointmentWidget = new AppointmentWidget(name, comboBox, menuAppointment, pModel->getBirthday(), centralWidget);
+    } catch (...) {
+        CANCEL_CONSTRUCTOR;
+        throw;
+    }
+
+    //Sucess construct
 
     setWindowTitle("Ficha de " + qname);
     setCentralWidget(centralWidget);
@@ -47,7 +49,7 @@ Patient::Patient(QString qname, QWidget *parent) :
 
     nameLbl->setText(qname);
     horizontalLayout->addWidget(nameLbl);
-    horizontalLayout->addItem(horizontalSpacer);
+    horizontalLayout->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
     horizontalLayout->addWidget(comboBox);
 
     //Table View

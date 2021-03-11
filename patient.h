@@ -50,10 +50,9 @@ public:
     QVBoxLayout *verticalLayout = new QVBoxLayout(centralWidget);
     QHBoxLayout *horizontalLayout = new QHBoxLayout();
     QLabel *nameLbl = new QLabel(centralWidget);
-    QSpacerItem *horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
     QComboBox *comboBox = new QComboBox(centralWidget);
     QStackedLayout* stackedLayout = new QStackedLayout();
-    QTableView* tableView = new QTableView();
+    QTableView* tableView = new QTableView(centralWidget);
     QTabWidget *tabWidget = new QTabWidget(centralWidget);
     AppointmentWidget* appointmentWidget;
     PatientModel* pModel;

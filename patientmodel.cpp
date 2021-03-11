@@ -9,10 +9,7 @@ PatientModel::PatientModel(char* _patient, QObject* parent) :
 
     PGresult* res = DB::Exec("SELECT " + DB::tableFieldsLine + " FROM patient WHERE name = $1", _patient);
     if (res == nullptr)
-    {
-        invalid = true;
-        return;
-    }
+        throw 0;
 
     for (int i = 0; i < DB::tableFields.size() - 1; ++i)
         fieldValues.push_back(PQgetvalue(res, 0, i));

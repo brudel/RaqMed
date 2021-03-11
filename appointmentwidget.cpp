@@ -12,8 +12,8 @@ QWidget(parent)
 
     if (!loadDates())
     {
-        invalid = true;
-        return;
+        delete horizontalLayout;
+        throw 0;
     }
 
     menu = _menu;
@@ -29,7 +29,7 @@ QWidget(parent)
     horizontalLayout->addWidget(weightLabel);
     horizontalLayout->addWidget(weightLineEdit);
     horizontalLayout->addWidget(ageLabel);
-    horizontalLayout->addItem(horizontalSpacer);
+    horizontalLayout->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
     horizontalLayout->addWidget(exitButton);
 
     verticalLayout->addLayout(horizontalLayout);
