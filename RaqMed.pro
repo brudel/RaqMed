@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT              += core gui
+QT              += core gui charts
 
 QMAKE_CXXFLAGS  += -fpermissive -std=c++2a
 
@@ -53,7 +53,8 @@ SOURCES += \
     patientmodel.cpp \
     timebutton.cpp \
     autosavetextedit.cpp \
-    autosaverestore.cpp
+    autosaverestore.cpp \
+    developmentcurvechart.cpp
 
 HEADERS += \
 	patient.h \
@@ -69,7 +70,8 @@ HEADERS += \
     patientmodel.h \
     timebutton.h \
     autosavetextedit.h \
-    autosaverestore.h
+    autosaverestore.h \
+    developmentcurvechart.h
 
 FORMS += \
 	calendar.ui

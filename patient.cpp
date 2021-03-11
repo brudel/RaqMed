@@ -30,12 +30,14 @@ Patient::Patient(QString qname, QWidget *parent) :
     try {
         pModel = new PatientModel(name, centralWidget);
         appointmentWidget = new AppointmentWidget(name, comboBox, menuAppointment, pModel->getBirthday(), centralWidget);
+        developmentChart = new DevelopmentCurveChart(name, pModel->getBirthday(), this);
     } catch (...) {
         CANCEL_CONSTRUCTOR;
         throw;
     }
 
     //Sucess construct
+    tabWidget->addTab(developmentChart, "Gráficos de desenvolvimento");
 
     setWindowTitle("Ficha de " + qname);
     setCentralWidget(centralWidget);

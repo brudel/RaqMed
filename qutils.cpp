@@ -110,6 +110,15 @@ int QUtils::yearsTo(QDate first, QDate second)
     return deltaYears - 1;
 }
 
+int QUtils::monthsTo(QDate first, QDate second)
+{
+    int deltaYears = (second.year() - first.year()) * 12 + second.month() - first.month();
+
+    if (second.day() >= first.day())
+        return deltaYears;
+
+    return deltaYears - 1;
+}
 
 bool QUtils::stringGreaterThan(char* a, char* b)
 {

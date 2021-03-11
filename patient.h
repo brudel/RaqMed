@@ -17,6 +17,7 @@
 #include "patientdelegate.h"
 #include "patientmodel.h"
 #include "autosavetextedit.h"
+#include "developmentcurvechart.h"
 extern "C" {
 #include <libpq-fe.h>
 }
@@ -56,6 +57,7 @@ public:
     QTabWidget *tabWidget = new QTabWidget(centralWidget);
     AppointmentWidget* appointmentWidget;
     PatientModel* pModel;
+    DevelopmentCurveChart* developmentChart;
 
 signals:
     void closed(char*);

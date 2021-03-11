@@ -5,6 +5,7 @@
 #include <QDateTimeEdit>
 #include <functional>
 #include <QDate>
+#include <QDebug>
 extern "C" {
 #include <libpq-fe.h>
 }
@@ -23,6 +24,7 @@ public:
     static QDateTime stringToQDateTime(char* str);
     static QDate stringToQDate(char* str);
     static int yearsTo(QDate first, QDate second);
+    static int monthsTo(QDate first, QDate second);
     static bool stringGreaterThan(char* a, char* b);
 };
 
