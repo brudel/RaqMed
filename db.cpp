@@ -56,7 +56,13 @@ PGconn* DB::setConn()
     conn = PQconnectdb(config);
     free(config);
 
+    atexit(&freeConn);
     return conn;
+}
+
+void DB::freeConn()
+{
+    PQfinish(conn);
 }
 
 void DB::setMainWindow(QWidget* mW)

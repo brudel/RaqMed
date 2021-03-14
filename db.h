@@ -21,6 +21,7 @@ public:
 
     //DB functions
     static PGconn* setConn();
+    static void freeConn();
     static void setMainWindow(QWidget* mW);
     static PGresult* Exec(string command, std::vector<char*> params, std::vector<char*> expectedErros = {});
     static PGresult* Exec(string command, QString param, std::vector<char*> expectedErros = {});
