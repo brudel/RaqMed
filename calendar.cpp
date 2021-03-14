@@ -162,3 +162,18 @@ void Calendar::nameChanged(char* name)
             return;
         }
 }
+
+void Calendar::on_actionBackup_triggered()
+{
+    string path = QFileDialog::getSaveFileName(this, "Selecione o destino do backup",
+        QDir::homePath() + "/raqmed_backup_" + QDateTime::currentDateTime().toString("dd-MM-yyyy_hh-mm") + ".bkp",
+        QString(), nullptr, QFileDialog::ShowDirsOnly | QFileDialog::HideNameFilterDetails).toStdString();
+
+    if (path.empty())
+        return;
+
+    if (DB::backupDB(path))
+        QMessageBox::information(this, "Backup Criado", ("O Backup foi criado com sucesso em: " + path + '.').c_str());
+    else
+        QMessageBox::critical(this, "Erro de Backup", "O backup não foi criado devido a um erro durante o procedimento.");
+}

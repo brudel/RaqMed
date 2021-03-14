@@ -58,6 +58,8 @@ public slots:
     void dateChanged(QDate qDate); //Geral
     void nameChanged(char* name);
 
+    void on_actionBackup_triggered();
+
 private:
     Ui::Calendar *ui;
 };

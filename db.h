@@ -35,6 +35,8 @@ public:
     static void tryReconnect();
     static void unknownDBError(PGresult* res, const char *command, int nParams, const char *const *paramValues);
     static bool rollBack();
+    static bool backupTable(string table, FILE* file);
+    static bool backupDB(string path);
 
     //DB variables
     static PGconn* conn;

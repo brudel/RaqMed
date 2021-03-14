@@ -77,7 +77,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="teste.qrc">:/capa.png</pixmap>
+         <pixmap resource="images.qrc">:/capa.png</pixmap>
         </property>
        </widget>
       </item>
@@ -126,8 +126,9 @@
    </widget>
    <widget class="QMenu" name="menuP_nico">
     <property name="title">
-     <string>Pânico</string>
+     <string>Outros</string>
     </property>
+    <addaction name="actionBackup"/>
     <addaction name="actionApagar_todos_os_arquivos_do_computador_e_n_o_ligar_mais"/>
    </widget>
    <addaction name="menuOp_es"/>
@@ -180,9 +181,14 @@
     <string>Apagar todos os arquivos do computador e não ligar mais</string>
    </property>
   </action>
+  <action name="actionBackup">
+   <property name="text">
+    <string>Backup</string>
+   </property>
+  </action>
  </widget>
  <resources>
-  <include location="teste.qrc"/>
+  <include location="images.qrc"/>
  </resources>
  <connections/>
 </ui>

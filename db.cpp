@@ -256,3 +256,86 @@ bool DB::rollBack()
 
     return true;
 }
+
+bool DB::backupTable(string table, FILE* file)
+{
+    char* buf;
+    int size;
+    PGresult* res;
+
+    //Header
+    fprintf(file, "--\n-- Tabela: %s\n--\n\n", table.c_str());
+
+    res = ExecCommand("SELECT * FROM " + table + " WHERE false");
+
+    //Copy statement
+    fprintf(file, "COPY public.%s (", table.c_str());
+    size = PQnfields(res);
+    for (int i = 0; i < size - 1; ++i)
+        fprintf(file, "%s, ", PQfname(res, i));
+    fprintf(file, "%s) FROM STDIN;\n", PQfname(res, size - 1));
+    PQclear(res);
+
+    //Data
+    res = ExecCommand("COPY " + table + " TO STDOUT");
+    PQclear(res);
+
+    while ((size = PQgetCopyData(conn, &buf, 0)) > 0) //#Verify error -2
+    {
+        fwrite(buf, size, 1, file);
+        PQfreemem(buf);
+    }
+    if (size == -2)
+        return false;
+    fprintf(file, "\\.\n\n\n");
+
+    res = PQgetResult(conn);
+    size = PQresultStatus(res);
+    PQclear(res);
+
+    //Check sucess
+    if (size != PGRES_FATAL_ERROR)
+        return true;
+    else
+        return false;
+}
+
+bool DB::backupDB(string path)
+{
+    bool sucess;
+    FILE* file = fopen(path.c_str(), "w");
+
+    //Headers
+    fprintf(file, "--\n-- PostgreSQL database dump\n--\n\n");
+    fprintf(file, "-- Dumped by RaqMed\n");
+    fprintf(file, "-- Format based on pg_dump version 11.10 (Debian 11.10-0+deb10u1)\n\n");
+
+    //Config
+    fprintf(file, "SET statement_timeout = 0;\n"
+        "SET lock_timeout = 0;\n"
+        "SET idle_in_transaction_session_timeout = 0;\n"
+        "SET client_encoding = 'UTF8';\n"
+        "SET standard_conforming_strings = on;\n"
+        "SELECT pg_catalog.set_config('search_path', '', false);\n"
+        "SET check_function_bodies = false;\n"
+        "SET xmloption = content;\n"
+        "SET client_min_messages = warning;\n"
+        "SET row_security = off;\n\n");
+
+    //Backup tables
+    sucess = backupTable("patient", file) && backupTable("appointment", file);
+
+    //Complete or erase file
+    if (sucess)
+    {
+        fprintf(file, "--\n-- PostgreSQL database dump complete\n--\n\n");
+        fclose(file);
+        return true;
+    }
+    else
+    {
+        fclose(file);
+        remove(path.c_str());
+        return false;
+    }
+}
