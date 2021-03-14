@@ -97,52 +97,55 @@ bool AppointmentWidget::saveChanges()
     QDateTime newDateTime = dateTimeEdit->dateTime();
     bool dateChanged = false;
 
-    if (contentEdit->document()->isModified())
+    if (!invalid)
     {
-        query += " content = $" + std::to_string(count++);
-        ident.push_back(QUtils::ToCString(contentEdit->toPlainText()));
-        contentEdit->save();
-    }
-
-    if (newDateTime != currentDateTime)
-    {
-        query += (string)(count == 3 ? "" : ",") + " day = $" + std::to_string(count);
-        ++count;
-        ident.push_back(QUtils::ToCString(newDateTime.toString("yyyy-MM-dd hh:mm:00")));
-        dateChanged = true;
-    }
-
-    if (heightLineEdit->isModified())
-    {
-        query += (string)(count == 3 ? "" : ",") + " height = $" + std::to_string(count);
-        ++count;
-        ident.push_back(QUtils::ToCString(heightLineEdit->text()));
-    }
-
-    if (weightLineEdit->isModified())
-    {
-        query += (string)(count == 3 ? "" : ",") + " weight = $" + std::to_string(count);
-        ++count;
-        ident.push_back(QUtils::ToCString(weightLineEdit->text()));
-    }
-
-    if (count != 3)
-    {
-        query += " WHERE patient = $1 AND day = $2";
-        PGresult* res = DB::Exec(query, ident);
-
-        while (--count > 2)
+        if (contentEdit->document()->isModified())
         {
-            free(ident.back());
-            ident.pop_back();
+            query += " content = $" + std::to_string(count++);
+            ident.push_back(QUtils::ToCString(contentEdit->toPlainText()));
+            contentEdit->save();
         }
 
-        if (res == nullptr)
-            return false;
-        PQclear(res);
+        if (newDateTime != currentDateTime)
+        {
+            query += (string)(count == 3 ? "" : ",") + " day = $" + std::to_string(count);
+            ++count;
+            ident.push_back(QUtils::ToCString(newDateTime.toString("yyyy-MM-dd hh:mm:00")));
+            dateChanged = true;
+        }
 
-        if (dateChanged)
-            dateEdited(currentDateTime.date(), newDateTime.date());
+        if (heightLineEdit->isModified())
+        {
+            query += (string)(count == 3 ? "" : ",") + " height = $" + std::to_string(count);
+            ++count;
+            ident.push_back(QUtils::ToCString(heightLineEdit->text()));
+        }
+
+        if (weightLineEdit->isModified())
+        {
+            query += (string)(count == 3 ? "" : ",") + " weight = $" + std::to_string(count);
+            ++count;
+            ident.push_back(QUtils::ToCString(weightLineEdit->text()));
+        }
+
+        if (count != 3)
+        {
+            query += " WHERE patient = $1 AND day = $2";
+            PGresult* res = DB::Exec(query, ident);
+
+            while (--count > 2)
+            {
+                free(ident.back());
+                ident.pop_back();
+            }
+
+            if (res == nullptr)
+                return false;
+            PQclear(res);
+
+            if (dateChanged)
+                dateEdited(currentDateTime.date(), newDateTime.date());
+        }
     }
 
     ident.pop_back();
