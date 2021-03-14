@@ -21,8 +21,8 @@ public:
 
     //Variables
     static std::array<QSplineSeries, 12> glbMarcondes;
-    std::array<QSplineSeries, 12> marcondes;
     static bool initClass;
+    std::array<QSplineSeries, 12> marcondes;
     char* name;
     QDate birthday;
     QLineSeries patientSerie;
@@ -39,8 +39,16 @@ public:
 signals:
 
 public slots:
+    //User action
     void setMarcondes();
     bool loadPatient();
+
+    //Responsivity
+    void birthdayChanged(QDate newBirthday);
+    void dateChanged();
+
+private:
+    inline int marcondesOffset() {return (bgs[0]->checkedId() != -2) * 6 + (bgs[1]->checkedId() == -2) * 3;}
 };
 
 #endif // DEVELOPMENTCURVECHART_H

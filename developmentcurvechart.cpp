@@ -124,7 +124,7 @@ void DevelopmentCurveChart::setYAxis(int offset)
 
 void DevelopmentCurveChart::setMarcondes()
 {
-    int offset = 0 + (bgs[0]->checkedId() != -2) * 6 + (bgs[1]->checkedId() == -2) * 3;
+    int offset = marcondesOffset();
     chartView->setUpdatesEnabled(false);
 
     if (marcondes[offset].count() == 0)
@@ -169,9 +169,21 @@ bool DevelopmentCurveChart::loadPatient()
             );
         }
 
-	PQclear(res);
+    PQclear(res);
 
     setXAxis();
 
     return true;
+}
+
+void DevelopmentCurveChart::birthdayChanged(QDate newBirthday)
+{
+    birthday = newBirthday;
+    loadPatient();
+}
+
+void DevelopmentCurveChart::dateChanged()
+{
+    loadPatient();
+    setYAxis(marcondesOffset());
 }

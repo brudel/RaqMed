@@ -73,11 +73,14 @@ Patient::Patient(QString qname, QWidget *parent) :
     connect(comboBox, SIGNAL(activated(int)), this, SLOT(appointmentOpened()));
     connect(appointmentWidget, SIGNAL(exited()), this, SLOT(appointmentClosed()));
     connect(this, SIGNAL(appointmentChanged()), appointmentWidget, SLOT(loadDates()));
+    connect(appointmentWidget, SIGNAL(dateEdited(QDate, QDate)), developmentChart, SLOT(dateChanged()));
+    connect(appointmentWidget, SIGNAL(dataEdited()), developmentChart, SLOT(dateChanged()));
 
     //Patient Model interface
     connect(pModel, SIGNAL(nameEdited(char*)), this, SLOT(nameChanged(char*)));
     connect(pModel, SIGNAL(nameEdited(char*)), appointmentWidget, SLOT(nameChanged(char*))); //#Mover para um deles
     connect(pModel, SIGNAL(birthdayEdited(QDate)), appointmentWidget, SLOT(birthdayChanged(QDate)));
+    connect(pModel, SIGNAL(birthdayEdited(QDate)), developmentChart, SLOT(birthdayChanged(QDate)));
     connect(pModel, SIGNAL(notesCellEdited()), this, SLOT(resizeNoteCell()));
 }
 

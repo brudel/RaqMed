@@ -96,6 +96,7 @@ bool AppointmentWidget::saveChanges()
     string query = "UPDATE appointment SET";
     QDateTime newDateTime = dateTimeEdit->dateTime();
     bool dateChanged = false;
+    bool dataChanged = false;
 
     if (!invalid)
     {
@@ -119,6 +120,7 @@ bool AppointmentWidget::saveChanges()
             query += (string)(count == 3 ? "" : ",") + " height = $" + std::to_string(count);
             ++count;
             ident.push_back(QUtils::ToCString(heightLineEdit->text()));
+            dataChanged = true;
         }
 
         if (weightLineEdit->isModified())
@@ -126,6 +128,7 @@ bool AppointmentWidget::saveChanges()
             query += (string)(count == 3 ? "" : ",") + " weight = $" + std::to_string(count);
             ++count;
             ident.push_back(QUtils::ToCString(weightLineEdit->text()));
+            dataChanged = true;
         }
 
         if (count != 3)
@@ -145,6 +148,9 @@ bool AppointmentWidget::saveChanges()
 
             if (dateChanged)
                 dateEdited(currentDateTime.date(), newDateTime.date());
+
+            if (dataChanged)
+                dataEdited();
         }
     }
 

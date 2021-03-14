@@ -53,6 +53,7 @@ public:
 signals:
     void exited();
     void dateEdited(QDate oldQDate, QDate newQDate);
+    void dataEdited();
 
 public slots:
     //User action
