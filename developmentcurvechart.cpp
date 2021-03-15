@@ -45,12 +45,11 @@ DevelopmentCurveChart::DevelopmentCurveChart(char* _name, QDate _birthday, QWidg
 
     //Series
     setMarcondes();
-    chart->addSeries(&patientSerie);  //Must be after add marcondes because of colors
-    patientSerie.attachAxis(xAxis);
-    patientSerie.attachAxis(yAxis);
+    for (auto &series : patientSeries)
+        series.setPointsVisible();
+    addSeries(patientSerie);  //Must be after add marcondes because of colors
 
     //Chart
-    patientSerie.setPointsVisible();
     chart->legend()->hide();
 
     //ChartView
@@ -58,7 +57,7 @@ DevelopmentCurveChart::DevelopmentCurveChart(char* _name, QDate _birthday, QWidg
     chartView->setRenderHints(QPainter::Antialiasing);
 
     connect(bgs[0], SIGNAL(buttonClicked(int)), this, SLOT(setMarcondes()));
-    connect(bgs[1], SIGNAL(buttonClicked(int)), this, SLOT(loadPatient()));
+    connect(bgs[1], SIGNAL(buttonClicked(int)), this, SLOT(switchPatient()));
     connect(bgs[1], SIGNAL(buttonClicked(int)), this, SLOT(setMarcondes()));
 }
 
@@ -94,8 +93,8 @@ void DevelopmentCurveChart::setXAxis()
 {
     double xmin, xmax;
 
-    xmin = floor(patientSerie.at(0).rx());
-    xmax = ceil(patientSerie.at(patientSerie.count() - 1).rx());
+    xmin = floor(patientSerie->at(0).rx());
+    xmax = ceil(patientSerie->at(patientSerie->count() - 1).rx());
     xmax = xmax < 19 ? 19 : xmax;
 
     xAxis->setMin(xmin);
@@ -109,12 +108,12 @@ void DevelopmentCurveChart::setYAxis(int offset)
     int xMinIndex, xmin = xAxis->min();
 
     xMinIndex = (xmin > 1 ? xmin + 4 : xmin == 1 ? 4 : 0);
-    ymin = patientSerie.at(0).ry() < marcondes[offset].at(xMinIndex).ry() ?
-        patientSerie.at(xMinIndex).ry() : marcondes[offset].at(xMinIndex).ry();
+    ymin = patientSerie->at(0).ry() < marcondes[offset].at(xMinIndex).ry() ?
+        patientSerie->at(xMinIndex).ry() : marcondes[offset].at(xMinIndex).ry();
     ymin = floor(ymin / Y_SCALE) * Y_SCALE;
 
-    ymax = patientSerie.at(patientSerie.count() - 1).ry() > marcondes[offset + 2].at(marcondes[offset].count() - 1).ry() ?
-        patientSerie.at(patientSerie.count() - 1).ry() : marcondes[offset + 2].at(marcondes[offset].count() - 1).ry();
+    ymax = patientSerie->at(patientSerie->count() - 1).ry() > marcondes[offset + 2].at(marcondes[offset].count() - 1).ry() ?
+        patientSerie->at(patientSerie->count() - 1).ry() : marcondes[offset + 2].at(marcondes[offset].count() - 1).ry();
     ymax = ceil(ymax / Y_SCALE) * Y_SCALE;
 
     yAxis->setMin(ymin);
@@ -131,15 +130,11 @@ void DevelopmentCurveChart::setMarcondes()
         loadMarcondes(offset);
 
     for (auto serie : chart->series())
-        if (serie != &patientSerie)
+        if (serie != patientSerie)
             chart->removeSeries(serie);
 
     for (int i = 0; i < 3; ++i)
-    {
-        chart->addSeries(&marcondes[i + offset]);
-        marcondes[i + offset].attachAxis(xAxis);
-        marcondes[i + offset].attachAxis(yAxis);
-    }
+        addSeries(&marcondes[i + offset]);
 
     setYAxis(offset);
 
@@ -149,24 +144,19 @@ void DevelopmentCurveChart::setMarcondes()
 bool DevelopmentCurveChart::loadPatient()
 {
     int n;
-    PGresult* res = DB::Exec(bgs[1]->checkedId() == -2 ?
-                "SELECT weight, day FROM appointment WHERE patient = $1 ORDER BY DAY" :
-                "SELECT height, day FROM appointment WHERE patient = $1 ORDER BY DAY", name);
+    PGresult* res = DB::Exec("SELECT weight, height, day FROM appointment WHERE patient = $1 ORDER BY DAY", name);
 
     if (res == nullptr)
         return false;
-
-    patientSerie.clear();
 
     n = PQntuples(res);
 
     for (int i = 0; i < n; ++i)
         if (PQgetvalue(res, i, 0)[0] != '0' && PQgetvalue(res, i, 0)[0] != '\0')
         {
-            patientSerie.append(
-                QUtils::monthsTo(birthday, QUtils::stringToQDate(PQgetvalue(res, i, 1))) / 12.,
-                atof(PQgetvalue(res, i, 0))
-            );
+            double years = QUtils::monthsTo(birthday, QUtils::stringToQDate(PQgetvalue(res, i, 2))) / 12.;
+            patientSeries[0].append(years, atof(PQgetvalue(res, i, 0)));
+            patientSeries[1].append(years, atof(PQgetvalue(res, i, 1)));
         }
 
     PQclear(res);
@@ -176,14 +166,28 @@ bool DevelopmentCurveChart::loadPatient()
     return true;
 }
 
+void DevelopmentCurveChart::switchPatient()
+{
+    if (patientSeries[bgs[1]->checkedId() == -2 ? 0 : 1].chart() != nullptr)
+        return;
+
+    patientSerie = &patientSeries[bgs[1]->checkedId() == -2 ? 0 : 1];
+    addSeries(patientSerie);
+
+    //Must be after add the new to keep diferent colors
+    chart->removeSeries(&patientSeries[bgs[1]->checkedId() != -2 ? 0 : 1]);
+}
+
 void DevelopmentCurveChart::birthdayChanged(QDate newBirthday)
 {
     birthday = newBirthday;
-    loadPatient();
+    resetPatient();
 }
 
-void DevelopmentCurveChart::dateChanged()
+void DevelopmentCurveChart::resetPatient()
 {
+    for (auto &series : patientSeries)
+        series.clear();
     loadPatient();
     setYAxis(marcondesOffset());
 }

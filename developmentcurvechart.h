@@ -25,7 +25,8 @@ public:
     std::array<QSplineSeries, 12> marcondes;
     char* name;
     QDate birthday;
-    QLineSeries patientSerie;
+    std::array<QLineSeries, 2> patientSeries;
+    QLineSeries* patientSerie = patientSeries.data();
 
     //Layout
     std::array<QButtonGroup*, 2> bgs;
@@ -42,13 +43,15 @@ public slots:
     //User action
     void setMarcondes();
     bool loadPatient();
+    void switchPatient();
 
-    //Responsivity
+    //Responsivity (may fail to reload without returning any indicator)
     void birthdayChanged(QDate newBirthday);
-    void dateChanged();
+    void resetPatient();
 
 private:
     inline int marcondesOffset() {return (bgs[0]->checkedId() != -2) * 6 + (bgs[1]->checkedId() == -2) * 3;}
+    inline void addSeries(QLineSeries* series) {chart->addSeries(series); series->attachAxis(xAxis); series->attachAxis(yAxis);}
 };
 
 #endif // DEVELOPMENTCURVECHART_H
