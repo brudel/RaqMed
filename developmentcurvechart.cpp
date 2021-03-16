@@ -86,59 +86,7 @@ bool DevelopmentCurveChart::initMarcondes()
 void DevelopmentCurveChart::loadMarcondes(int offset)
 {
     for (int i = 0; i < 3; ++i)
-        marcondes[offset + i] << glbMarcondes[offset + i].points();
-}
-
-void DevelopmentCurveChart::setXAxis()
-{
-    double xmin, xmax;
-
-    xmin = floor(patientSerie->at(0).rx());
-    xmax = ceil(patientSerie->at(patientSerie->count() - 1).rx());
-    xmax = xmax < 19 ? 19 : xmax;
-
-    xAxis->setMin(xmin);
-    xAxis->setMax(xmax);
-    xAxis->setTickCount(xmax - xmin + 1);
-}
-
-void DevelopmentCurveChart::setYAxis(int offset)
-{
-    double ymin, ymax;
-    int xMinIndex, xmin = xAxis->min();
-
-    xMinIndex = (xmin > 1 ? xmin + 4 : xmin == 1 ? 4 : 0);
-    ymin = patientSerie->at(0).ry() < marcondes[offset].at(xMinIndex).ry() ?
-        patientSerie->at(xMinIndex).ry() : marcondes[offset].at(xMinIndex).ry();
-    ymin = floor(ymin / Y_SCALE) * Y_SCALE;
-
-    ymax = patientSerie->at(patientSerie->count() - 1).ry() > marcondes[offset + 2].at(marcondes[offset].count() - 1).ry() ?
-        patientSerie->at(patientSerie->count() - 1).ry() : marcondes[offset + 2].at(marcondes[offset].count() - 1).ry();
-    ymax = ceil(ymax / Y_SCALE) * Y_SCALE;
-
-    yAxis->setMin(ymin);
-    yAxis->setMax(ymax);
-    yAxis->setTickCount((ymax - ymin) / Y_SCALE + 1);
-}
-
-void DevelopmentCurveChart::setMarcondes()
-{
-    int offset = marcondesOffset();
-    chartView->setUpdatesEnabled(false);
-
-    if (marcondes[offset].count() == 0)
-        loadMarcondes(offset);
-
-    for (auto serie : chart->series())
-        if (serie != patientSerie)
-            chart->removeSeries(serie);
-
-    for (int i = 0; i < 3; ++i)
-        addSeries(&marcondes[i + offset]);
-
-    setYAxis(offset);
-
-    chartView->setUpdatesEnabled(true);
+        marcondes[i] << glbMarcondes[i +  offset].points();
 }
 
 bool DevelopmentCurveChart::loadPatient()
@@ -166,6 +114,59 @@ bool DevelopmentCurveChart::loadPatient()
     return true;
 }
 
+void DevelopmentCurveChart::setXAxis()
+{
+    double xmin, xmax;
+
+    xmin = floor(patientSerie->at(0).rx());
+    xmax = ceil(patientSerie->at(patientSerie->count() - 1).rx());
+    xmax = xmax < 19 ? 19 : xmax;
+
+    xAxis->setMin(xmin);
+    xAxis->setMax(xmax);
+    xAxis->setTickCount(xmax - xmin + 1);
+}
+
+void DevelopmentCurveChart::setYAxis()
+{
+    double ymin, ymax;
+    int xMinIndex, xmin = xAxis->min();
+
+    xMinIndex = (xmin > 1 ? xmin + 4 : xmin == 1 ? 4 : 0);
+    ymin = patientSerie->at(0).ry() < marcondes->at(xMinIndex).ry() ?
+        patientSerie->at(xMinIndex).ry() : marcondes->at(xMinIndex).ry();
+    ymin = floor(ymin / Y_SCALE) * Y_SCALE;
+
+    ymax = patientSerie->at(patientSerie->count() - 1).ry() > marcondes[2].at(marcondes->count() - 1).ry() ?
+        patientSerie->at(patientSerie->count() - 1).ry() : marcondes[2].at(marcondes->count() - 1).ry();
+    ymax = ceil(ymax / Y_SCALE) * Y_SCALE;
+
+    yAxis->setMin(ymin);
+    yAxis->setMax(ymax);
+    yAxis->setTickCount((ymax - ymin) / Y_SCALE + 1);
+}
+
+void DevelopmentCurveChart::setMarcondes()
+{
+    int offset = (bgs[0]->checkedId() != -2) * 6 + (bgs[1]->checkedId() == -2) * 3;
+    marcondes = &marcondesArray[offset];
+    chartView->setUpdatesEnabled(false);
+
+    if (marcondes->count() == 0)
+        loadMarcondes(offset);
+
+    for (auto serie : chart->series())
+        if (serie != patientSerie)
+            chart->removeSeries(serie);
+
+    for (int i = 0; i < 3; ++i)
+        addSeries(&marcondes[i]);
+
+    setYAxis();
+
+    chartView->setUpdatesEnabled(true);
+}
+
 void DevelopmentCurveChart::switchPatient()
 {
     if (patientSeries[bgs[1]->checkedId() == -2 ? 0 : 1].chart() != nullptr)
@@ -189,5 +190,5 @@ void DevelopmentCurveChart::resetPatient()
     for (auto &series : patientSeries)
         series.clear();
     loadPatient();
-    setYAxis(marcondesOffset());
+    setYAxis();
 }

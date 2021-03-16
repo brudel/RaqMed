@@ -16,13 +16,15 @@ public:
     explicit DevelopmentCurveChart(char *_name, QDate _birthday, QWidget *parent = nullptr);
     static bool initMarcondes();
     void loadMarcondes(int offset);
+    bool loadPatient();
     void setXAxis();
-    void setYAxis(int offset);
+    void setYAxis();
 
     //Variables
     static std::array<QSplineSeries, 12> glbMarcondes;
     static bool initClass;
-    std::array<QSplineSeries, 12> marcondes;
+    std::array<QSplineSeries, 12> marcondesArray;
+    QSplineSeries* marcondes = marcondesArray.data();
     char* name;
     QDate birthday;
     std::array<QLineSeries, 2> patientSeries;
@@ -42,7 +44,6 @@ signals:
 public slots:
     //User action
     void setMarcondes();
-    bool loadPatient();
     void switchPatient();
 
     //Responsivity (may fail to reload without returning any indicator)
@@ -50,7 +51,6 @@ public slots:
     void resetPatient();
 
 private:
-    inline int marcondesOffset() {return (bgs[0]->checkedId() != -2) * 6 + (bgs[1]->checkedId() == -2) * 3;}
     inline void addSeries(QLineSeries* series) {chart->addSeries(series); series->attachAxis(xAxis); series->attachAxis(yAxis);}
 };
 
