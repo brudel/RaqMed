@@ -14,7 +14,7 @@ class DevelopmentCurveChart : public QWidget
     Q_OBJECT
 public:
     explicit DevelopmentCurveChart(char *_name, QDate _birthday, QWidget *parent = nullptr);
-    static bool initMarcondes();
+    static void initMarcondes();
     void loadMarcondes(int offset);
     bool loadPatient();
     void setXAxis();
@@ -22,7 +22,6 @@ public:
 
     //Variables
     static std::array<QSplineSeries, 12> glbMarcondes;
-    static bool initClass;
     std::array<QSplineSeries, 12> marcondesArray;
     QSplineSeries* marcondes = marcondesArray.data();
     char* name;

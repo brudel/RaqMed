@@ -7,6 +7,8 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     a.setWindowIcon(QIcon(":icon.png"));
 
+    setlocale(LC_ALL, "C"); //Unseted by QApplication constructor
+
     if (PQstatus(DB::conn) == CONNECTION_BAD)
     {
         QMessageBox::critical(nullptr, "Erro no banco de dados",

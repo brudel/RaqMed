@@ -5,7 +5,6 @@
 #define Y_MINOR_TICK_COUNT 4
 
 std::array<QSplineSeries, 12> DevelopmentCurveChart::glbMarcondes;
-bool DevelopmentCurveChart::initClass = DevelopmentCurveChart::initMarcondes();
 
 DevelopmentCurveChart::DevelopmentCurveChart(char* _name, QDate _birthday, QWidget *parent) : QWidget(parent)
 {
@@ -44,6 +43,8 @@ DevelopmentCurveChart::DevelopmentCurveChart(char* _name, QDate _birthday, QWidg
     yAxis->setMinorTickCount(Y_MINOR_TICK_COUNT);
 
     //Series
+    if (glbMarcondes[0].count() == 0)
+        initMarcondes();
     setMarcondes();
     for (auto &series : patientSeries)
         series.setPointsVisible();
@@ -61,7 +62,7 @@ DevelopmentCurveChart::DevelopmentCurveChart(char* _name, QDate _birthday, QWidg
     connect(bgs[1], SIGNAL(buttonClicked(int)), this, SLOT(setMarcondes()));
 }
 
-bool DevelopmentCurveChart::initMarcondes()
+void DevelopmentCurveChart::initMarcondes()
 {
     int month;
     float sample;
@@ -79,8 +80,6 @@ bool DevelopmentCurveChart::initMarcondes()
     }
 
     fclose(file);
-
-    return true;
 }
 
 void DevelopmentCurveChart::loadMarcondes(int offset)
