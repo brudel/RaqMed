@@ -1,6 +1,9 @@
 #include "patient.h"
 #include "timebutton.h"
 
+#define CHART_LABEL "Gráficos de desenvolvimento"
+#define CHART_INDEX 5
+
 #define CANCEL_CONSTRUCTOR      \
 free(name);                     \
 delete horizontalLayout;        \
@@ -30,14 +33,13 @@ Patient::Patient(QString qname, QWidget *parent) :
     try {
         pModel = new PatientModel(name, centralWidget);
         appointmentWidget = new AppointmentWidget(name, comboBox, menuAppointment, pModel->getBirthday(), centralWidget);
-        developmentChart = new DevelopmentCurveChart(name, pModel->getBirthday(), this);
     } catch (...) {
         CANCEL_CONSTRUCTOR;
         throw;
     }
 
     //Sucess construct
-    tabWidget->addTab(developmentChart, "Gráficos de desenvolvimento");
+    tabWidget->addTab(new QWidget(), CHART_LABEL);
 
     setWindowTitle("Ficha de " + qname);
     setCentralWidget(centralWidget);
@@ -73,15 +75,15 @@ Patient::Patient(QString qname, QWidget *parent) :
     connect(comboBox, SIGNAL(activated(int)), this, SLOT(appointmentOpened()));
     connect(appointmentWidget, SIGNAL(exited()), this, SLOT(appointmentClosed()));
     connect(this, SIGNAL(appointmentChanged()), appointmentWidget, SLOT(loadDates()));
-    connect(appointmentWidget, SIGNAL(dateEdited(QDate, QDate)), developmentChart, SLOT(resetPatient()));
-    connect(appointmentWidget, SIGNAL(dataEdited()), developmentChart, SLOT(resetPatient()));
 
     //Patient Model interface
     connect(pModel, SIGNAL(nameEdited(char*)), this, SLOT(nameChanged(char*)));
     connect(pModel, SIGNAL(nameEdited(char*)), appointmentWidget, SLOT(nameChanged(char*))); //#Mover para um deles
     connect(pModel, SIGNAL(birthdayEdited(QDate)), appointmentWidget, SLOT(birthdayChanged(QDate)));
-    connect(pModel, SIGNAL(birthdayEdited(QDate)), developmentChart, SLOT(birthdayChanged(QDate)));
     connect(pModel, SIGNAL(notesCellEdited()), this, SLOT(resizeNoteCell()));
+
+    //Others
+    connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(constructChart(int)));
 }
 
 Patient::~Patient()
@@ -205,6 +207,30 @@ void Patient::deletePatient()
 void Patient::appointmentOpened()
 {
     stackedLayout->setCurrentIndex(1);
+}
+
+void Patient::constructChart(int tab)
+{
+    if (tab != CHART_INDEX)
+        return;
+
+    try {
+        developmentChart = new DevelopmentCurveChart(name, pModel->getBirthday(), centralWidget);
+    } catch (...) {
+        return;
+    }
+
+    disconnect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(constructChart(int)));
+
+    tabWidget->setUpdatesEnabled(false);
+    tabWidget->removeTab(CHART_INDEX);
+    tabWidget->addTab(developmentChart, CHART_LABEL);
+    tabWidget->setCurrentIndex(CHART_INDEX);
+    tabWidget->setUpdatesEnabled(true);
+
+    connect(appointmentWidget, SIGNAL(dateEdited(QDate, QDate)), developmentChart, SLOT(resetPatient()));
+    connect(appointmentWidget, SIGNAL(dataEdited()), developmentChart, SLOT(resetPatient()));
+    connect(pModel, SIGNAL(birthdayEdited(QDate)), developmentChart, SLOT(birthdayChanged(QDate)));
 }
 
 void Patient::appointmentClosed()

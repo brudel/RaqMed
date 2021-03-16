@@ -70,6 +70,7 @@ public slots:
     //User action
     void deletePatient();
     void appointmentOpened();
+    void constructChart(int tab);
 
     //Extern action
     void appointmentClosed();
