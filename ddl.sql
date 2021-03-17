@@ -40,18 +40,6 @@ CREATE TABLE appointment
 );
 
 
-CREATE OR REPLACE FUNCTION define_default(p_table TEXT, p_column TEXT, p_value TEXT)
-	RETURNS boolean
-	LANGUAGE plpgsql
-	AS
-		$$
-		BEGIN
-			EXECUTE 'ALTER TABLE ' || p_table || ' ALTER ' || p_column || ' SET DEFAULT ' || quote_literal(p_value);
-			RETURN true;
-		END;
-		$$;
-
-
 CREATE OR REPLACE FUNCTION get_text_default(p_table TEXT, p_column TEXT)
 	RETURNS text
 	LANGUAGE plpgsql

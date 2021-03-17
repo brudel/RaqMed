@@ -40,16 +40,16 @@ EditTabModel::EditTabModel(int _tabNumber, QWidget *parent) :
 
 void EditTabModel::save()
 {
-    std::vector<char*> values;
+    string aux;
 
     templateEdit->save();
 
-    values.push_back((char*) DB::tableTabs[tabNumber].c_str());
-    values.push_back(QUtils::ToCString(templateEdit->toPlainText()));
+    aux = templateEdit->toPlainText().toStdString();
+    char* new_default = PQescapeLiteral(DB::conn, aux.c_str(), aux.size());
 
-    PGresult* res = DB::Exec("SELECT define_default('patient', $1, $2)", values);
+    PGresult* res = DB::ExecCommand("ALTER TABLE patient ALTER " + DB::tableTabs[tabNumber] + " SET DEFAULT " + new_default);
 
-    free(values[1]);
+    PQfreemem(new_default);
 
     if (res == nullptr)
     {
