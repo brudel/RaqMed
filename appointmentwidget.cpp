@@ -177,7 +177,7 @@ void AppointmentWidget::nameChanged(char* newName)
 bool AppointmentWidget::deleteAppointment()
 {
     QMessageBox::StandardButton b_ans = QMessageBox::warning(this, "Apagar Consulta",
-"Tem certeza que você deseja apagar essa consulta?\nTodos os dados serão perdidos",
+"Tem certeza que você deseja apagar essa consulta?\nTodos os dados serão perdidos.",
 QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
 
     if (b_ans == QMessageBox::Cancel)

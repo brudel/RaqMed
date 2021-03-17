@@ -83,7 +83,7 @@ void EditTabModel::closeEvent(QCloseEvent *event)
     }
 
     QMessageBox::StandardButton b_ans = QMessageBox::warning(this, "Cancelar Edição de Modelo",
-        "Tem certeza que deseja fechar essa janela?\n O novo modelo não será salvo",
+        "Tem certeza que deseja fechar essa janela?\n O novo modelo não será salvo.",
         QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Yes);
 
     if (b_ans == QMessageBox::Yes)

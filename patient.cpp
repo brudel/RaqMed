@@ -184,7 +184,7 @@ void Patient::deletePatient()
     QMessageBox messageBox(this);
     messageBox.setWindowTitle("Deletar Paciente");
     messageBox.setIcon(QMessageBox::Warning);
-    messageBox.setText("Tem certeza que você deseja deletar permanentemente esse paciente?\nTodos os dados serão perdidos");
+    messageBox.setText("Tem certeza que você deseja deletar permanentemente esse paciente?\nTodos os dados serão perdidos.");
     messageBox.addButton(yesButton, QMessageBox::AcceptRole);
     messageBox.addButton("Cancelar", QMessageBox::RejectRole);
     messageBox.setDefaultButton(QMessageBox::Cancel);

@@ -116,7 +116,7 @@ void AddAppointmentForm::closeEvent(QCloseEvent *event)
     }
 
     QMessageBox::StandardButton b_ans = QMessageBox::warning(this, "Cancelar Agendamento",
-        "Tem certeza que deseja fechar essa janela?\n A consulta não será agendada",
+        "Tem certeza que deseja fechar essa janela?\n A consulta não será agendada.",
         QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Yes);
 
     if (b_ans == QMessageBox::Yes)

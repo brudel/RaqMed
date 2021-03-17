@@ -33,7 +33,7 @@ AutosaveRestore::AutosaveRestore(QWidget *parent) : QWidget(parent)
     QMessageBox::information(this, "Recuperação de dados",
         "Foram detectados textos que não salvos corretamente em uma seção anterior.\n"
         "Será aberto um diálogo onde você pode ver os textos e copia-los para onde desejar.\n"
-        "Após ter certeza que salvou tudo que deseja, você pode descartar os textos da ferramenta de recuperação");
+        "Após ter certeza que salvou tudo que deseja, você pode descartar os textos da ferramenta de recuperação.");
 
     it_files = files.begin();
 
