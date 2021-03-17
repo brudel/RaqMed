@@ -26,7 +26,7 @@ public:
 
     //Functions
     bool openPatient(QString qname);
-    void editModel(int k);
+    inline void editModel(int k);
         //Edit k indexed model
 
     //Variables
@@ -45,12 +45,6 @@ public slots:
     //Add menu
     void on_actionAdicionar_Paciente_triggered();
     void on_actionAdicionar_Consulta_triggered();
-
-    //Template edit menu
-    void reasons() {editModel(0);};
-    void antecedents() {editModel(1);};
-    void exams() {editModel(2);};
-    void reports() {editModel(3);};
 
     //Responsive control
     void dateChanged(QDate newQDate, QString name); //Add

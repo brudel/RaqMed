@@ -30,10 +30,9 @@ Calendar::Calendar(QWidget *parent) :
 
     connect(ui->calendarWidget, SIGNAL(selectionChanged()), this, SLOT(dayChanged()));
     connect(patientQuery, SIGNAL(completationDone(QString)), this, SLOT(doneQuery(QString)));
-    ui->menuEditar_modelos->addAction(DB::tabNames->at(0), this, SLOT(reasons()));
-    ui->menuEditar_modelos->addAction(DB::tabNames->at(1), this, SLOT(antecedents()));
-    ui->menuEditar_modelos->addAction(DB::tabNames->at(2), this, SLOT(exams()));
-    ui->menuEditar_modelos->addAction(DB::tabNames->at(3), this, SLOT(reports()));
+
+    for (int i = 0; i < 4; ++i)
+        ui->menuEditar_modelos->addAction(DB::tabNames->at(i), [=] {editModel(i);});
 
     dayChanged();
 }
