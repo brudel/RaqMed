@@ -8,10 +8,11 @@ EditTabModel::EditTabModel(int _tabNumber, QWidget *parent) :
     PGresult* res = DB::Exec("SELECT get_text_default('patient', $1)", DB::tableTabs[_tabNumber]);
 
     if (res == nullptr)
-{
-        close();
+    {
+        delete horizontalButtonLayout;
+        throw 0;
         return;
-}
+    }
 
     templateEdit = new AutosaveTextEdit(this, ("Modelo de " + DB::tabNames->at(_tabNumber)).toStdString(), PQgetvalue(res, 0, 0));
     PQclear(res);

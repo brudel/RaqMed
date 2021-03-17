@@ -124,8 +124,11 @@ bool Calendar::openPatient(QString qname)
 
 void Calendar::editModel(int k)
 {
-    EditTabModel* e = new EditTabModel(k, this);
-    e->show();
+    try {
+        EditTabModel* e = new EditTabModel(k, this);
+        e->show();
+    } catch (...) {
+    }
 }
 
 void Calendar::dateChanged(QDate newQDate, QString name)
