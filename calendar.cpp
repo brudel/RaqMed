@@ -55,6 +55,7 @@ void Calendar::dayChanged()
     ui->label->setText("Consultas de " + qdate.toString("dddd, dd/MM/yyyy"));
 
     int n = PQntuples(res);
+    ui->tableWidget->setUpdatesEnabled(false);
     ui->tableWidget->setRowCount(0);
 
     for (int i = 0; i < n; ++i) {
@@ -63,6 +64,7 @@ void Calendar::dayChanged()
         ui->tableWidget->setItem(i, 1, new QTableWidgetItem(PQgetvalue(res, i, 1)));
     }
     PQclear(res);
+    ui->tableWidget->setUpdatesEnabled(true);
 
     ui->tableWidget->sortItems(1);
 }
