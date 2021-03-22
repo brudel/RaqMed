@@ -91,19 +91,25 @@ void DevelopmentCurveChart::loadMarcondes(int offset)
 bool DevelopmentCurveChart::loadPatient()
 {
     int n;
-    PGresult* res = DB::Exec("SELECT weight, height, day FROM appointment WHERE patient = $1 ORDER BY DAY", name);
+    PGresult* res = DB::Exec("SELECT weight, height, day FROM appointment WHERE patient = $1", name);
 
     if (res == nullptr)
         return false;
 
     n = PQntuples(res);
+    std::vector<std::pair<int, int>> numDates;
+    numDates.reserve(n);
 
     for (int i = 0; i < n; ++i)
-        if (PQgetvalue(res, i, 0)[0] != '0' && PQgetvalue(res, i, 0)[0] != '\0')
+        numDates.push_back(std::make_pair(QUtils::monthsTo(birthday, QUtils::stringToQDate(PQgetvalue(res, i, 2))), i));
+
+    std::sort(numDates.begin(), numDates.end());
+
+    for (int i = 0; i < n; ++i)
+        if (PQgetvalue(res, numDates[i].second, 0)[0] != '0' && PQgetvalue(res, numDates[i].second, 0)[0] != '\0')
         {
-            double years = QUtils::monthsTo(birthday, QUtils::stringToQDate(PQgetvalue(res, i, 2))) / 12.;
-            patientSeries[0].append(years, atof(PQgetvalue(res, i, 0)));
-            patientSeries[1].append(years, atof(PQgetvalue(res, i, 1)));
+            patientSeries[0].append(numDates[i].first / 12., atof(PQgetvalue(res, numDates[i].second, 0)));
+            patientSeries[1].append(numDates[i].first / 12., atof(PQgetvalue(res, numDates[i].second, 1)));
         }
 
     PQclear(res);
