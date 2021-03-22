@@ -3,9 +3,9 @@
 #include <QMessageBox>
 
 EditTabModel::EditTabModel(int _tabNumber, QWidget *parent) :
-    QWidget(parent, Qt::Window | Qt::Tool)
+    QWidget(parent, Qt::Window | Qt::Tool), tabNumber(_tabNumber)
 {
-    PGresult* res = DB::Exec("SELECT get_text_default('patient', $1)", DB::tableTabs[_tabNumber]);
+    PGresult* res = DB::Exec("SELECT get_text_default('patient', $1)", DB::tableTabs[tabNumber]);
 
     if (res == nullptr)
     {
@@ -14,10 +14,8 @@ EditTabModel::EditTabModel(int _tabNumber, QWidget *parent) :
         return;
     }
 
-    templateEdit = new AutosaveTextEdit(this, ("Modelo de " + DB::tabNames->at(_tabNumber)).toStdString(), PQgetvalue(res, 0, 0));
+    templateEdit = new AutosaveTextEdit(this, ("Modelo de " + DB::tabNames->at(tabNumber)).toStdString(), PQgetvalue(res, 0, 0));
     PQclear(res);
-
-    tabNumber = _tabNumber;
 
     setWindowTitle("Editar Modelo de " + DB::tabNames->at(tabNumber));
     resize(600, 400); //#Find elegant answer

@@ -10,9 +10,8 @@ delete horizontalLayout;        \
 delete stackedLayout;           \
 
 Patient::Patient(QString qname, QWidget *parent) :
-    QMainWindow(parent)
+    QMainWindow(parent), name(QUtils::ToCString(qname))
 {
-    name = QUtils::ToCString(qname);
     PGresult* res = DB::Exec("SELECT " + DB::tableTabsLine + " FROM patient WHERE name = $1", name);
     if (res == nullptr)
     {

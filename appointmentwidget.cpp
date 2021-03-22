@@ -5,19 +5,15 @@
 #include <cstring>
 
 AppointmentWidget::AppointmentWidget(char* name, QComboBox* _comboBox, QMenu* _menu, QDate _birthday, QWidget *parent) :
-QWidget(parent)
+QWidget(parent), comboBox(_comboBox), menu(_menu), birthday(_birthday)
 {
     ident.push_back(name);
-    comboBox = _comboBox;
 
     if (!loadDates())
     {
         delete horizontalLayout;
         throw 0;
     }
-
-    menu = _menu;
-    birthday = _birthday;
 
     menu->addAction("Apagar Consulta", this, SLOT(deleteAppointment()));
     menu->menuAction()->setVisible(false);

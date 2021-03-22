@@ -6,11 +6,9 @@
 
 std::array<QSplineSeries, 12> DevelopmentCurveChart::glbMarcondes;
 
-DevelopmentCurveChart::DevelopmentCurveChart(char* _name, QDate _birthday, QWidget *parent) : QWidget(parent)
+DevelopmentCurveChart::DevelopmentCurveChart(char* _name, QDate _birthday, QWidget *parent) : QWidget(parent),
+    name(_name), birthday(_birthday)
 {
-    name = _name;
-    birthday = _birthday;
-
     char* buttonLabels[4] = {"Menino", "Menina", "Peso", "Altura"};
 
     buttonsLayout->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));

@@ -2,10 +2,8 @@
 #include "db.h"
 
 AddAppointmentForm::AddAppointmentForm(QDate date, QWidget *parent) :
-    QWidget(parent, Qt::Window | Qt::Tool)
+    QWidget(parent, Qt::Window | Qt::Tool), original(date)
 {
-    original = date;
-
     setWindowTitle("Agendar Consulta");
     resize(600, 400); //#Find elegant answer
     setAttribute(Qt::WA_DeleteOnClose);

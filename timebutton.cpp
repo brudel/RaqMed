@@ -2,11 +2,8 @@
 #include <string>
 
 TimeButton::TimeButton(string _baseText, int _time, QWidget *parent) :
-    QPushButton(makeText(_baseText, _time), parent)
+    QPushButton(makeText(_baseText, _time), parent), baseText(_baseText), time(_time)
 {
-    baseText = _baseText;
-    time = _time;
-
     setEnabled(false);
 
     timer.setInterval(1000);
