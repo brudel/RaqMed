@@ -36,6 +36,7 @@ DevelopmentCurveChart::DevelopmentCurveChart(char* _name, QDate _birthday, QWidg
     }
 
     //Axis
+    setXAxis();
     chart->setAxisX(xAxis);
     chart->setAxisY(yAxis);
     xAxis->setLabelFormat("%d");
@@ -106,15 +107,15 @@ bool DevelopmentCurveChart::loadPatient()
     std::sort(numDates.begin(), numDates.end());
 
     for (int i = 0; i < n; ++i)
+    {
         if (PQgetvalue(res, numDates[i].second, 0)[0] != '0' && PQgetvalue(res, numDates[i].second, 0)[0] != '\0')
-        {
             patientSeries[0].append(numDates[i].first / 12., atof(PQgetvalue(res, numDates[i].second, 0)));
+
+        if (PQgetvalue(res, numDates[i].second, 1)[0] != '0' && PQgetvalue(res, numDates[i].second, 1)[0] != '\0')
             patientSeries[1].append(numDates[i].first / 12., atof(PQgetvalue(res, numDates[i].second, 1)));
-        }
+    }
 
     PQclear(res);
-
-    setXAxis();
 
     return true;
 }
@@ -182,6 +183,8 @@ void DevelopmentCurveChart::switchPatient()
 
     //Must be after add the new to keep diferent colors
     chart->removeSeries(&patientSeries[bgs[1]->checkedId() != -2 ? 0 : 1]);
+
+    setXAxis();
 }
 
 void DevelopmentCurveChart::birthdayChanged(QDate newBirthday)
@@ -195,5 +198,6 @@ void DevelopmentCurveChart::resetPatient()
     for (auto &series : patientSeries)
         series.clear();
     loadPatient();
+    setXAxis();
     setYAxis();
 }
