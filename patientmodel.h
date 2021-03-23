@@ -4,6 +4,7 @@
 #include <QMessageBox>
 #include <QDate>
 #include "qutils.h"
+#include "db.h"
 
 class PatientModel : public QAbstractListModel
 {
@@ -19,7 +20,7 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
     //Other functions
-    QDate getBirthday();
+    inline QDate getBirthday() {return QDate::fromString(fieldValues[BIRTHDATE_INDEX].c_str(), Qt::ISODate);}
 
     //Variables
     std::vector<string> fieldValues;

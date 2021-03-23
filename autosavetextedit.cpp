@@ -18,11 +18,6 @@ AutosaveTextEdit::AutosaveTextEdit(QWidget* parent, string title, QString text) 
     connect(&timer, SIGNAL(timeout()), this, SLOT(save()));
 }
 
-void AutosaveTextEdit::setTitle(string title)
-{
-    header = title + "\n";
-}
-
 void AutosaveTextEdit::setSave()
 {
     timer.start();

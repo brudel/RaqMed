@@ -15,7 +15,7 @@ class DevelopmentCurveChart : public QWidget
 public:
     explicit DevelopmentCurveChart(char *_name, QDate _birthday, QWidget *parent = nullptr);
     static void initMarcondes();
-    void loadMarcondes(int offset);
+    inline void loadMarcondes(int offset);
     bool loadPatient();
     void setXAxis();
     void setYAxis();

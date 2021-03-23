@@ -14,13 +14,11 @@ class AutosaveTextEdit : public QPlainTextEdit
 public:
     AutosaveTextEdit(QWidget *parent =  nullptr, string title = "", QString text = "");
 
-    //Functions
-    void setTitle(string title);
-
     //Inline functions
-    inline void abort() {timer.stop();};
-    inline bool wasUsed() {return document()->isModified() || document()->isRedoAvailable();};
-    inline void setPlainText(const QString &text) { QPlainTextEdit::setPlainText(text); abort();};
+    void inline setTitle(string title) {header = title + "\n";}
+    inline void abort() {timer.stop();}
+    inline bool wasUsed() {return document()->isModified() || document()->isRedoAvailable();}
+    inline void setPlainText(const QString &text) { QPlainTextEdit::setPlainText(text); abort();}
 
     string path;
     QTimer timer;

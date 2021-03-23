@@ -1,5 +1,4 @@
 #include "patientmodel.h"
-#include "db.h"
 
 PatientModel::PatientModel(char* _patient, QObject* parent) :
     QAbstractListModel(parent)
@@ -81,9 +80,4 @@ bool PatientModel::setData(const QModelIndex &index, const QVariant &value, int 
         notesCellEdited();
 
     return true;
-}
-
-QDate PatientModel::getBirthday()
-{
-    return QDate::fromString(fieldValues[BIRTHDATE_INDEX].c_str(), Qt::ISODate);
 }

@@ -16,7 +16,6 @@ class QUtils {
 public:
     static char* ToCString(QString qstr);
     static char* ToCString(string cppstr);
-    static string constructLine(std::vector<string> tableFields);
     static string constructLine(std::vector<string>::iterator begin, std::vector<string>::iterator end);
     static string toBrDate(char* dateTime);
     static void BDdebug(PGresult* ans);
@@ -26,6 +25,10 @@ public:
     static int yearsTo(QDate first, QDate second);
     static int monthsTo(QDate first, QDate second);
     static bool stringGreaterThan(char* a, char* b);
+
+    //Inline functions
+    static inline std::string constructLine(std::vector<std::string> tableFields)
+        {return constructLine(tableFields.begin(), tableFields.end());}
 };
 
 class QBDateTimeEdit: public QDateTimeEdit {

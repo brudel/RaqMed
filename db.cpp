@@ -65,40 +65,6 @@ void DB::freeConn()
     PQfinish(conn);
 }
 
-void DB::setMainWindow(QWidget* mW)
-{
-    mainWindow = mW;
-}
-
-PGresult* DB::Exec(string command, std::vector<char*> params, std::vector<char *> expectedErros)
-{
-    return safeExec(command.c_str(), params.size(), params.data(), expectedErros);
-}
-
-PGresult* DB::Exec(string command, QString param, std::vector<char *> expectedErros)
-{
-    string str = param.toStdString();
-    const char* buff = str.c_str();
-    return safeExec(command.c_str(), 1, &buff, expectedErros);
-}
-
-PGresult* DB::Exec(string command, string param, std::vector<char *> expectedErros)
-{
-    const char* buff = param.c_str();
-    return safeExec(command.c_str(), 1, &buff, expectedErros);
-}
-
-PGresult* DB::Exec(string command, char* param, std::vector<char *> expectedErros)
-{
-    return safeExec(command.c_str(), 1, &param, expectedErros);
-}
-
-
-PGresult* DB::ExecCommand(string command, std::vector<char *> expectedErros)
-{
-    return safeExec(command.c_str(), 0, nullptr, expectedErros);
-}
-
 PGresult* DB::safeExec(const char *command, int nParams, const char *const *paramValues,
     std::vector<char*> expectedErros)
 {

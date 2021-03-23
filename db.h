@@ -22,12 +22,6 @@ public:
     //DB functions
     static PGconn* setConn();
     static void freeConn();
-    static void setMainWindow(QWidget* mW);
-    static PGresult* Exec(string command, std::vector<char*> params, std::vector<char*> expectedErros = {});
-    static PGresult* Exec(string command, QString param, std::vector<char*> expectedErros = {});
-    static PGresult* Exec(string command, string param, std::vector<char*> expectedErros = {});
-    static PGresult* Exec(string command, char* param, std::vector<char*> expectedErros = {});
-    static PGresult* ExecCommand(string command, std::vector<char*> expectedErros = {});
     static PGresult* safeExec(const char *command, int nParams, const char *const *paramValues,
         std::vector<char*> expectedErros = {});
     static PGresult* nonconnectionErrorHandler(PGresult* res, const char *command, int nParams, const char *const *paramValues,
@@ -38,6 +32,27 @@ public:
     static bool rollBack();
     static bool backupTable(string table, FILE* file);
     static bool backupDB(string path);
+
+    //Inline functions
+    static inline void setMainWindow(QWidget* mW) {mainWindow = mW;}
+
+    static inline PGresult* Exec(string command, std::vector<char*> params, std::vector<char*> expectedErros = {})
+        {return safeExec(command.c_str(), params.size(), params.data(), expectedErros);}
+
+    static PGresult* Exec(string command, QString param, std::vector<char*> expectedErros = {})
+        {string str = param.toStdString();
+        const char* buff = str.c_str();
+        return safeExec(command.c_str(), 1, &buff, expectedErros);}
+
+    static PGresult* Exec(string command, string param, std::vector<char*> expectedErros = {})
+        {const char* buff = param.c_str();
+        return safeExec(command.c_str(), 1, &buff, expectedErros);}
+
+    static PGresult* Exec(string command, char* param, std::vector<char*> expectedErros = {})
+        {return safeExec(command.c_str(), 1, &param, expectedErros);}
+
+    static PGresult* ExecCommand(string command, std::vector<char*> expectedErros = {})
+        {return safeExec(command.c_str(), 0, nullptr, expectedErros);}
 
     //DB variables
     static PGconn* conn;

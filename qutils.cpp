@@ -16,11 +16,6 @@ char* QUtils::ToCString(string cppstr) {
     return cstr;
 }
 
-std::string QUtils::constructLine(std::vector<std::string> tableFields)
-{
-    return constructLine(tableFields.begin(), tableFields.end());
-}
-
 std::string QUtils::constructLine(std::vector<std::string>::iterator it, std::vector<std::string>::iterator end)
 {
     std::string str = *it;
@@ -30,8 +25,8 @@ std::string QUtils::constructLine(std::vector<std::string>::iterator it, std::ve
     return str;
 }
 
-
-void QBDateTimeEdit::focusInEvent(QFocusEvent *event){
+void QBDateTimeEdit::focusInEvent(QFocusEvent *event)
+{
         Section section = currentSection();
         QDateTimeEdit::focusInEvent(event);
         setSelectedSection(section);
