@@ -67,7 +67,7 @@ void AddAppointmentForm::save()
             break;
         }
 
-        res = nullptr;
+        return;
     }
 
     for (auto cstr : values)
