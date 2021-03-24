@@ -5,14 +5,13 @@
 #define CHART_INDEX 5
 
 #define CANCEL_CONSTRUCTOR      \
-free(name);                     \
 delete horizontalLayout;        \
 delete stackedLayout;           \
 
-Patient::Patient(QString qname, QWidget *parent) :
-    QMainWindow(parent), name(QUtils::ToCString(qname))
+Patient::Patient(QString qname, QWidget* parent) :
+    QMainWindow(parent), name(qname.toStdString())
 {
-    PGresult* res = DB::Exec("SELECT " + DB::tableTabsLine + " FROM patient WHERE name = $1", name);
+    PGresult* res = DB::Exec("SELECT " + DB::tableTabsLine + " FROM patient WHERE name = $1", name.c_str());
     if (res == nullptr)
     {
         CANCEL_CONSTRUCTOR;
@@ -22,7 +21,7 @@ Patient::Patient(QString qname, QWidget *parent) :
     tabWidget->addTab(tableView, "Identificação");
     for (int i = 0; i < TABS_NUM; ++i)
     {
-        tabs[i] = new AutosaveTextEdit(tabWidget, (string) name + " - " + DB::tabNames->at(i).toStdString(),
+        tabs[i] = new AutosaveTextEdit(tabWidget, name + " - " + DB::tabNames->at(i).toStdString(),
             PQgetvalue(res, 0, i));
         tabWidget->addTab(tabs[i], DB::tabNames->at(i));
         connect(this, SIGNAL(closed(char*)), tabs[i], SLOT(ended()));
@@ -30,8 +29,8 @@ Patient::Patient(QString qname, QWidget *parent) :
     PQclear(res);
 
     try {
-        pModel = new PatientModel(name, centralWidget);
-        appointmentWidget = new AppointmentWidget(name, comboBox, menuAppointment, pModel->getBirthday(), centralWidget);
+        pModel = new PatientModel(name.c_str(), centralWidget);
+        appointmentWidget = new AppointmentWidget(name.c_str(), comboBox, menuAppointment, pModel->getBirthday(), centralWidget);
     } catch (...) {
         CANCEL_CONSTRUCTOR;
         throw;
@@ -88,9 +87,7 @@ Patient::Patient(QString qname, QWidget *parent) :
 Patient::~Patient()
 {
     if (isVisible() && exit())
-        closed(name);
-
-    free(name);
+        closed(name.c_str());
 }
 
 
@@ -99,7 +96,7 @@ void Patient::closeEvent(QCloseEvent *event)
     if(exit())
     {
         event->accept();
-        closed(name);
+        closed(name.c_str());
     }
     else
         event->ignore();
@@ -148,14 +145,14 @@ bool Patient::saveTabs()
 {
     int i, j = 2;
     string command = "UPDATE patient SET";
-    std::vector<char*> parameters = {name};
+    std::vector<string> parameters = {name};
 
     for (i = 0; i < TABS_NUM; ++i)
         if (tabs[i]->document()->isModified())
         {
             command += /*(string) */(j == 2 ? " " : ", ") + DB::tableTabs[i] + " = $" + std::to_string(j);
             ++j;
-            parameters.push_back(QUtils::ToCString(tabs[i]->toPlainText()));
+            parameters.push_back(tabs[i]->toPlainText().toStdString());
             tabs[i]->save();
         }
 
@@ -163,10 +160,6 @@ bool Patient::saveTabs()
     {
         command += " WHERE name = $1";
         PGresult* res = DB::Exec(command, parameters);
-
-        --j;
-        while (--j > 0)
-            free(parameters[j]);
 
         if (res == nullptr)
             return false;
@@ -192,12 +185,12 @@ void Patient::deletePatient()
     if (messageBox.clickedButton() != yesButton)
         return;
 
-    PGresult* res = DB::Exec("DELETE FROM patient WHERE name = $1", name);
+    PGresult* res = DB::Exec("DELETE FROM patient WHERE name = $1", name.c_str());
     if (res == nullptr)
         return;
     PQclear(res);
 
-    patientEdited(name);
+    patientEdited(name.c_str());
 
     invalid = true;
     close();
@@ -214,7 +207,7 @@ void Patient::constructChart(int tab)
         return;
 
     try {
-        developmentChart = new DevelopmentCurveChart(name, pModel->getBirthday(), centralWidget);
+        developmentChart = new DevelopmentCurveChart(name.c_str(), pModel->getBirthday(), centralWidget);
     } catch (...) {
         return;
     }
@@ -239,14 +232,13 @@ void Patient::appointmentClosed()
 
 void Patient::nameChanged(char* newName)
 {
-    patientEdited(name);
-    free(name);
+    patientEdited(name.c_str());
     name = newName;
     nameLbl->setText(newName);
 
     for (int i = 0; i < TABS_NUM; ++i)
     {
-        tabs[i]->setTitle((string) name + " - " + DB::tabNames->at(i).toStdString());
+        tabs[i]->setTitle(name + " - " + DB::tabNames->at(i).toStdString());
         if (tabs[i]->wasUsed())
             tabs[i]->save();
     }

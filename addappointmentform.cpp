@@ -32,7 +32,7 @@ AddAppointmentForm::AddAppointmentForm(QDate date, QWidget *parent) :
 
 void AddAppointmentForm::save()
 {
-    std::vector<char*> values;
+    std::vector<QString> values;
     QString name = lineEdit->text();
     PGresult* res;
     std::vector<char*> expectedErrors = {"23503", "23505"};
@@ -45,9 +45,9 @@ void AddAppointmentForm::save()
 
     contentEdit->save();
 
-    values.push_back(QUtils::ToCString(name));
-    values.push_back(QUtils::ToCString(dateTimeEdit->dateTime().toString("yyyy-MM-dd hh:mm")));
-    values.push_back(QUtils::ToCString(contentEdit->toPlainText()));
+    values.push_back(name);
+    values.push_back(dateTimeEdit->dateTime().toString("yyyy-MM-dd hh:mm"));
+    values.push_back(contentEdit->toPlainText());
 
     try
     {
@@ -69,9 +69,6 @@ void AddAppointmentForm::save()
 
         return;
     }
-
-    for (auto cstr : values)
-        free(cstr);
 
     if (res == nullptr)
     {

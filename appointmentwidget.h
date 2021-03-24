@@ -21,7 +21,6 @@ class AppointmentWidget : public QWidget
     Q_OBJECT
 public:
     explicit AppointmentWidget(char* name, QComboBox* _comboBox, QMenu* _menu, QDate _birthday, QWidget *parent = nullptr);
-    ~AppointmentWidget();
 
     //Functions
     bool saveChanges();
@@ -31,7 +30,7 @@ public:
     std::vector<char*> ident;
     bool invalid = false;
     QDateTime currentDateTime;
-    std::vector<char*> dateTimes;
+    std::vector<string> dateTimes;
     QDate birthday;
 
     //Layout

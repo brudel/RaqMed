@@ -24,7 +24,8 @@ public:
     static QDate stringToQDate(char* str);
     static int yearsTo(QDate first, QDate second);
     static int monthsTo(QDate first, QDate second);
-    static bool stringGreaterThan(char* a, char* b);
+    static std::vector<char*> sVecToCVec(std::vector<string> svec);
+    static std::vector<string> qVecToSVec(std::vector<QString> qvec);
 
     //Inline functions
     static inline std::string constructLine(std::vector<std::string> tableFields)

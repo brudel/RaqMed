@@ -115,8 +115,24 @@ int QUtils::monthsTo(QDate first, QDate second)
     return deltaYears - 1;
 }
 
-bool QUtils::stringGreaterThan(char* a, char* b)
+std::vector<char*> QUtils::sVecToCVec(std::vector<string> svec)
 {
-    return strcmp(a, b) > 0;
+    std::vector<char*> cvec;
+    cvec.reserve(svec.size());
+
+    for (auto &str : svec)
+        cvec.push_back((char*)str.c_str());
+
+    return cvec;
 }
 
+std::vector<string> QUtils::qVecToSVec(std::vector<QString> qvec)
+{
+    std::vector<string> svec;
+    svec.reserve(qvec.size());
+
+    for (auto &qstr : qvec)
+        svec.push_back(qstr.toStdString());
+
+    return svec;
+}

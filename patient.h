@@ -38,7 +38,7 @@ public:
     bool saveTabs();
 
     //Variables
-    char* name;
+    string name;
     bool invalid = false;
     std::array<AutosaveTextEdit*, TABS_NUM> tabs;
 

@@ -56,11 +56,9 @@ bool PatientModel::setData(const QModelIndex &index, const QVariant &value, int 
     if (role != Qt::EditRole)
         return false;
 
-    std::vector<char*> pgValues({QUtils::ToCString(value.toString()), (char*)fieldValues.front().c_str()});
+    std::vector<string> pgValues({value.toString().toStdString(), fieldValues.front()});
 
     PGresult* res = DB::Exec("UPDATE patient SET " + DB::tableFields[index.row()] + " = $1  WHERE name = $2", pgValues);
-
-    free(pgValues.front());
 
     if (res == nullptr)
         return false;

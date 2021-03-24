@@ -36,6 +36,12 @@ public:
     //Inline functions
     static inline void setMainWindow(QWidget* mW) {mainWindow = mW;}
 
+    static inline PGresult* Exec(string command, std::vector<QString> params, std::vector<char*> expectedErros = {})
+        {return safeExec(command.c_str(), params.size(), QUtils::sVecToCVec(QUtils::qVecToSVec(params)).data(), expectedErros);}
+
+    static inline PGresult* Exec(string command, std::vector<string> params, std::vector<char*> expectedErros = {})
+        {return safeExec(command.c_str(), params.size(), QUtils::sVecToCVec(params).data(), expectedErros);}
+
     static inline PGresult* Exec(string command, std::vector<char*> params, std::vector<char*> expectedErros = {})
         {return safeExec(command.c_str(), params.size(), params.data(), expectedErros);}
 
@@ -47,6 +53,9 @@ public:
     static PGresult* Exec(string command, string param, std::vector<char*> expectedErros = {})
         {const char* buff = param.c_str();
         return safeExec(command.c_str(), 1, &buff, expectedErros);}
+
+    static PGresult* Exec(string command, const char* param, std::vector<char*> expectedErros = {})
+        {return safeExec(command.c_str(), 1, &param, expectedErros);}
 
     static PGresult* Exec(string command, char* param, std::vector<char*> expectedErros = {})
         {return safeExec(command.c_str(), 1, &param, expectedErros);}

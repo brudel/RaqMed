@@ -37,12 +37,6 @@ QWidget(parent), comboBox(_comboBox), menu(_menu), birthday(_birthday)
     connect(this, SIGNAL(dateEdited(QDate,QDate)), this, SLOT(loadDates()));
 }
 
-AppointmentWidget::~AppointmentWidget()
-{
-    for (auto cstr : dateTimes)
-        free(cstr);
-}
-
 void AppointmentWidget::setDate(int index)
 {
     char* old = ident.back();
@@ -51,7 +45,7 @@ void AppointmentWidget::setDate(int index)
         if (!saveChanges())
             return;
 
-    ident.push_back(dateTimes[index]);
+    ident.push_back((char*)dateTimes[index].c_str());
 
     PGresult* res = DB::Exec("SELECT content, height, weight FROM appointment WHERE patient = $1 AND day = $2", ident);
     if (res == nullptr)
@@ -65,7 +59,7 @@ void AppointmentWidget::setDate(int index)
     weightLineEdit->setText(PQgetvalue(res, 0, 2));
     PQclear(res);
 
-    currentDateTime = QUtils::stringToQDateTime(dateTimes[index]);
+    currentDateTime = QUtils::stringToQDateTime(dateTimes[index].c_str());
     dateTimeEdit->setDateTime(currentDateTime);
 
     contentEdit->setTitle((string)ident[0] + " - Consulta de " + currentDateTime.toString("dd/MM/yyyy hh:mm.").toStdString());
@@ -158,7 +152,7 @@ bool AppointmentWidget::saveChanges()
 void AppointmentWidget::restoreDate()
 {
     dateTimes.push_back(QUtils::ToCString(currentDateTime.toString(Qt::ISODate)));
-    ident.push_back(dateTimes.back());
+    ident.push_back((char*)dateTimes.back().c_str());
 
     if (contentEdit->document()->isModified())
         contentEdit->save();
@@ -198,8 +192,6 @@ bool AppointmentWidget::loadDates()
     if (res == nullptr)
         return false;
 
-    for (auto cstr : dateTimes)
-        free(cstr);
     dateTimes.clear();
 
     int n = PQntuples(res);
@@ -207,12 +199,12 @@ bool AppointmentWidget::loadDates()
     comboBox->clear();
 
     for (int i = 0; i < n; ++i)
-        dateTimes.push_back(strdup(PQgetvalue(res, i, 0)));
+        dateTimes.push_back(PQgetvalue(res, i, 0));
 
-    std::sort(dateTimes.begin(), dateTimes.end(), &QUtils::stringGreaterThan);
+    std::sort(dateTimes.rbegin(), dateTimes.rend());
 
     for (int i = 0; i < n; ++i)
-        comboBox->addItem(QUtils::toBrDate(dateTimes[i]).c_str());
+        comboBox->addItem(QUtils::toBrDate(dateTimes[i].c_str()).c_str());
 
     PQclear(res);
     return true;
