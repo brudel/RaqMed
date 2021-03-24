@@ -39,18 +39,24 @@ QWidget(parent), comboBox(_comboBox), menu(_menu), birthday(_birthday)
 
 void AppointmentWidget::setDate(int index)
 {
-    char* old = ident.back();
+    char* old = nullptr;
 
     if (ident.size() == 2)
+    {
         if (!saveChanges())
             return;
+
+        old = ident.back();
+    }
 
     ident.push_back((char*)dateTimes[index].c_str());
 
     PGresult* res = DB::Exec("SELECT content, height, weight FROM appointment WHERE patient = $1 AND day = $2", ident);
     if (res == nullptr)
     {
-        ident[1] = old;
+        if (old != nullptr)
+            ident[1] = old;
+
         return;
     }
 
