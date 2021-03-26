@@ -100,17 +100,17 @@ bool DevelopmentCurveChart::loadPatient()
     numDates.reserve(n);
 
     for (int i = 0; i < n; ++i)
-        numDates.push_back(std::make_pair(QUtils::monthsTo(birthday, QUtils::stringToQDate(PQgetvalue(res, i, 2))), i));
+        numDates.push_back(std::make_pair(birthday.daysTo(QUtils::stringToQDate(PQgetvalue(res, i, 2))), i));
 
     std::sort(numDates.begin(), numDates.end());
 
     for (int i = 0; i < n; ++i)
     {
         if (PQgetvalue(res, numDates[i].second, 0)[0] != '0' && PQgetvalue(res, numDates[i].second, 0)[0] != '\0')
-            patientSeries[0].append(numDates[i].first / 12., atof(PQgetvalue(res, numDates[i].second, 0)));
+            patientSeries[0].append(numDates[i].first / 365.25, atof(PQgetvalue(res, numDates[i].second, 0)));
 
         if (PQgetvalue(res, numDates[i].second, 1)[0] != '0' && PQgetvalue(res, numDates[i].second, 1)[0] != '\0')
-            patientSeries[1].append(numDates[i].first / 12., atof(PQgetvalue(res, numDates[i].second, 1)));
+            patientSeries[1].append(numDates[i].first / 365.25, atof(PQgetvalue(res, numDates[i].second, 1)));
     }
 
     PQclear(res);

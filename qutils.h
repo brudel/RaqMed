@@ -23,7 +23,6 @@ public:
     static QDateTime stringToQDateTime(char* str);
     static QDate stringToQDate(char* str);
     static int yearsTo(QDate first, QDate second);
-    static int monthsTo(QDate first, QDate second);
     static std::vector<char*> sVecToCVec(std::vector<string> svec);
     static std::vector<string> qVecToSVec(std::vector<QString> qvec);
 

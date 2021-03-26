@@ -105,16 +105,6 @@ int QUtils::yearsTo(QDate first, QDate second)
     return deltaYears - 1;
 }
 
-int QUtils::monthsTo(QDate first, QDate second)
-{
-    int deltaYears = (second.year() - first.year()) * 12 + second.month() - first.month();
-
-    if (second.day() >= first.day())
-        return deltaYears;
-
-    return deltaYears - 1;
-}
-
 std::vector<char*> QUtils::sVecToCVec(std::vector<string> svec)
 {
     std::vector<char*> cvec;
