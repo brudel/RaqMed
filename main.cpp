@@ -6,7 +6,6 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     a.setWindowIcon(QIcon(":icon.png"));
-
     setlocale(LC_ALL, "C"); //Unseted by QApplication constructor
 
     if (PQstatus(DB::conn) == CONNECTION_BAD)
@@ -15,6 +14,8 @@ int main(int argc, char *argv[])
 "Não foi possível se conectar ao banco de dados, encerrando programa.");
         exit(1);
     }
+
+    DB::periodicBackup();
 
     Calendar c;
     c.showMaximized();

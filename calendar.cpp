@@ -167,11 +167,19 @@ void Calendar::nameChanged(char* name)
         }
 }
 
+#if defined(__unix__)
+    #define FORMAT "hh:mm_dd-MM-yyyy"
+#elif defined(_WIN32)
+    #define FORMAT "hh-mm_dd-MM-yyyy"
+#else
+    #error Unknown environment!
+#endif
+
 void Calendar::on_actionBackup_triggered()
 {
     string path = QFileDialog::getSaveFileName(this, "Selecione o destino do backup",
-        QDir::homePath() + "/raqmed_backup_" + QDateTime::currentDateTime().toString("dd-MM-yyyy_hh-mm") + ".bkp",
-        QString(), nullptr, QFileDialog::ShowDirsOnly | QFileDialog::HideNameFilterDetails).toStdString();
+        QDir::homePath() + '//' + PROGRAM_PREFIX + "backup_" + QDateTime::currentDateTime().toString(FORMAT) + ".bkp", QString(),
+        nullptr, QFileDialog::ShowDirsOnly | QFileDialog::HideNameFilterDetails).toStdString();
 
     if (path.empty())
         return;

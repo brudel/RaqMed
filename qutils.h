@@ -27,7 +27,7 @@ public:
     static std::vector<string> qVecToSVec(std::vector<QString> qvec);
 
     //Inline functions
-    static inline std::string constructLine(std::vector<std::string> tableFields)
+    static inline string constructLine(std::vector<std::string> tableFields)
         {return constructLine(tableFields.begin(), tableFields.end());}
 };
 

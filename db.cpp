@@ -1,8 +1,10 @@
 #include "db.h"
 #include <QMessageBox>
 #include <QPushButton>
+#include <filesystem>
 #include "qutils.h"
 
+namespace fs = std::filesystem;
 
 //Boolean config defines
 //#define CLOUD_DB
@@ -11,24 +13,28 @@
 #define LOGFILE "dblog.txt"
 
 #if defined(__unix__)
-    #define DATABASE_CONFIG_FILE "/etc/RaqMed/database.config"
+    #define CONFIG_FILE "/etc/RaqMed/raqmed.conf"
 #elif defined(_WIN32)
-    #define DATABASE_CONFIG_FILE "database.config"
+    #define CONFIG_FILE "raqmed.conf"
 #else
     #error Unknown environment!
 #endif
 
 #ifdef CLOUD_DB
-    PGconn* DB::conn = DB::setConn();
+    #define TESTE_CONN
 #else
-    PGconn* DB::conn = PQconnectdb("user=brudel dbname=rqm_pgloader");
+    #define TESTE_CONN free(config); config = strdup("user=brudel dbname=raqmed");
 #endif
+
+PGconn* DB::conn = DB::configDB();
 
 QWidget* DB::mainWindow = nullptr;
 
 QMessageBox* DB::reconnectWindow = nullptr;
 
 bool DB::rb = false;
+
+bool DB::autobackup;
 
 QStringList* DB::fieldNames = new QStringList({"Nome", "Data de aniversário", "Endereço", "Bairro", "Cidade", "Estado",
 "Telefone 1", "Telefone 2", "Telefone 3", "Email", "Nome da mãe", "Profissão da mãe", "Nome do pai",
@@ -46,17 +52,26 @@ std::vector<string> DB::tableTabs({"reasons", "antecedents", "exams", "reports"}
 
 string DB::tableTabsLine = QUtils::constructLine(DB::tableTabs);
 
-PGconn* DB::setConn()
+PGconn* DB::configDB()
 {
-    char* config;
-    FILE* database = fopen(DATABASE_CONFIG_FILE, "r");
+    char* config, c;
+    FILE* configFile = fopen(CONFIG_FILE, "r");
     PGconn* conn;
 
-    config = QUtils::readFileLine(database);
+    config = QUtils::readFileLine(configFile);
+    TESTE_CONN;
     conn = PQconnectdb(config);
     free(config);
 
     atexit(&freeConn);
+
+    fscanf(configFile, "autobackup %c", &c);
+
+    if (c == '1')
+        autobackup = true;
+    else if (c == '0')
+        autobackup = false;
+
     return conn;
 }
 
@@ -309,5 +324,44 @@ bool DB::backupDB(string path)
         fclose(file);
         remove(path.c_str());
         return false;
+    }
+}
+
+#if defined(__unix__)
+    #define FORMAT "yyyy-MM-dd_hh:mm"
+#elif defined(_WIN32)
+    #define FORMAT yyyy-MM-dd_hh-mm"
+#else
+    #error Unknown environment!
+#endif
+
+#define DO_BACKUP backupDB((AUTOBACKUP_DIR PROGRAM_PREFIX + QDateTime::currentDateTime().toString(FORMAT).toStdString() \
++ ".bkp").c_str())
+
+void DB::periodicBackup()
+{
+    if (!autobackup)
+        return;
+
+    std::vector<string> files;
+    int days = 7, max = 4;
+
+    files.reserve(max);
+
+    for (auto entry : fs::directory_iterator(AUTOBACKUP_DIR))
+        files.push_back(entry.path());
+
+    if (files.empty())
+        DO_BACKUP;
+
+    else
+    {
+        if (QUtils::stringToQDate(files.front().c_str() +
+            sizeof(AUTOBACKUP_DIR PROGRAM_PREFIX) - 1).daysTo(QDate::currentDate()) >= days)
+            if (DO_BACKUP)
+                --max;
+
+        if (files.size() > max)
+            remove((files.back()).c_str());
     }
 }

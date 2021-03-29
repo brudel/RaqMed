@@ -14,13 +14,15 @@ extern "C" {
 #define NOTES_INDEX (FIELDS_NUM - 1)
 #define IS_CONNECTION_OK (PQstatus(conn) == CONNECTION_OK)
 #define IS_RESULT_OK(res) (PQresultStatus(res) != PGRES_FATAL_ERROR)
+#define PROGRAM_PREFIX "raqmed_"
+#define AUTOBACKUP_DIR "autobackups/"
 
 class DB
 {
 public:
 
     //DB functions
-    static PGconn* setConn();
+    static PGconn* configDB();
     static void freeConn();
     static PGresult* safeExec(const char *command, int nParams, const char *const *paramValues,
         std::vector<char*> expectedErros = {});
@@ -32,6 +34,7 @@ public:
     static bool rollBack();
     static bool backupTable(string table, FILE* file);
     static bool backupDB(string path);
+    static void periodicBackup();
 
     //Inline functions
     static inline void setMainWindow(QWidget* mW) {mainWindow = mW;}
@@ -68,6 +71,7 @@ public:
     static QWidget* mainWindow;
     static QMessageBox* reconnectWindow;
     static bool rb;
+    static bool autobackup;
 
     //Model fields
     static QStringList* fieldNames;
