@@ -2,6 +2,7 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <filesystem>
+#include <fstream>
 #include "qutils.h"
 
 namespace fs = std::filesystem;
@@ -45,8 +46,24 @@ string DB::tableTabsLine = QUtils::constructLine(DB::tableTabs);
 PGconn* DB::configDB()
 {
     char* config, c;
-	FILE* configFile = fopen(CONFIG_FILE.c_str(), "r");
     PGconn* conn;
+    FILE* configFile;
+
+    if (!fs::exists(LOCALDIR))
+    {
+        fs::create_directory(LOCALDIR);
+        fs::permissions(LOCALDIR, fs::perms::owner_all);
+        fs::create_directory(AUTOBACKUP_DIR, LOCALDIR);
+        fs::create_directory(AUTOSAVES_DIR, LOCALDIR);
+    }
+
+    if (!fs::exists(CONFIG_FILE))
+    {
+        std::ofstream(CONFIG_FILE) << "\nautobackup 0\n";
+        fs::permissions(CONFIG_FILE, fs::perms::owner_read | fs::perms::owner_write);
+    }
+
+    configFile = fopen(CONFIG_FILE.c_str(), "r");
 
     config = QUtils::readFileLine(configFile);
     TESTE_CONN;
