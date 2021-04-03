@@ -40,6 +40,10 @@ CREATE TABLE appointment
 );
 
 
+CREATE INDEX day_idx
+	ON appointment (day);
+
+
 CREATE OR REPLACE FUNCTION get_text_default(p_table TEXT, p_column TEXT)
 	RETURNS text
 	LANGUAGE plpgsql
