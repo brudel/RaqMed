@@ -195,13 +195,6 @@ void DB::unknownDBError(PGresult* res, const char *command, int nParams, const c
     if (ftell(logfile) == 0)
         fs::permissions(LOG_FILE.c_str(), fs::perms::owner_write | fs::perms::owner_read);
 
-    if (logfile == nullptr)
-    {
-        QMessageBox::warning(mainWindow, "Erro do banco de dados",
-            "Não foi possível realizar essa operação devido a um erro não identificado.");
-        return;
-    }
-
     fprintf(
         logfile,
         "{\n"
