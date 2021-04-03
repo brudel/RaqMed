@@ -66,7 +66,7 @@ void DevelopmentCurveChart::initMarcondes()
     int month;
     float sample;
 
-    FILE* file = fopen("curves.csv", "r");
+    FILE* file = fopen(CURVES_FILE, "r");
 
     for (int i = 0; i < 24; ++i)
     {

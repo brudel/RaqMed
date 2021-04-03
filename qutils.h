@@ -6,9 +6,30 @@
 #include <functional>
 #include <QDate>
 #include <QDebug>
+#include <QDir>
 extern "C" {
 #include <libpq-fe.h>
 }
+
+#define HOMEDIR (QDir::homePath() + '//').toStdString()
+#define LOCALDIR (HOMEDIR + ".raqmed/")
+
+#define AUTOBACKUP_DIR (LOCALDIR + "autobackups/")
+#define AUTOSAVES_DIR (LOCALDIR + "autosaves/")
+#define CONFIG_FILE (LOCALDIR + "raqmed.conf")
+#define LOG_FILE (LOCALDIR + "raqmed.log")
+
+#if defined(__unix__)
+    #define DATADIR "/usr/share/raqmed/"
+#elif defined(_WIN32)
+    #define DATADIR ""
+#else
+    #error Unknown environment!
+#endif
+
+#define CURVES_FILE (DATADIR "curves.csv")
+
+#define PROGRAM_PREFIX "raqmed_"
 
 typedef std::string string;
 

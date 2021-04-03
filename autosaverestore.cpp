@@ -24,7 +24,7 @@ AutosaveRestore::AutosaveRestore(QWidget *parent) : QWidget(parent)
     buttonsLayout->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Expanding));
     mainLayout->addLayout(buttonsLayout);
 
-    for (auto entry : fs::directory_iterator(BKPDIR))
+    for (auto entry : fs::directory_iterator(AUTOSAVES_DIR))
         files.push_back(entry.path());
 
     if (files.size() == 0)

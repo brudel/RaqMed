@@ -10,16 +10,6 @@ namespace fs = std::filesystem;
 //#define CLOUD_DB
 //#define DB_VERBOSE
 
-#define LOGFILE "dblog.txt"
-
-#if defined(__unix__)
-    #define CONFIG_FILE "/etc/RaqMed/raqmed.conf"
-#elif defined(_WIN32)
-    #define CONFIG_FILE "raqmed.conf"
-#else
-    #error Unknown environment!
-#endif
-
 #ifdef CLOUD_DB
     #define TESTE_CONN
 #else
@@ -55,7 +45,7 @@ string DB::tableTabsLine = QUtils::constructLine(DB::tableTabs);
 PGconn* DB::configDB()
 {
     char* config, c;
-    FILE* configFile = fopen(CONFIG_FILE, "r");
+	FILE* configFile = fopen(CONFIG_FILE.c_str(), "r");
     PGconn* conn;
 
     config = QUtils::readFileLine(configFile);
@@ -183,7 +173,7 @@ void DB::tryReconnect()
 
 void DB::unknownDBError(PGresult* res, const char *command, int nParams, const char *const *paramValues)
 {
-    FILE* logfile = fopen(LOGFILE, "a");
+	FILE* logfile = fopen(LOG_FILE.c_str(), "a");
 
     if (logfile == nullptr)
     {
@@ -335,8 +325,8 @@ bool DB::backupDB(string path)
     #error Unknown environment!
 #endif
 
-#define DO_BACKUP backupDB((AUTOBACKUP_DIR PROGRAM_PREFIX + QDateTime::currentDateTime().toString(FORMAT).toStdString() \
-+ ".bkp").c_str())
+#define DO_BACKUP backupDB(AUTOBACKUP_DIR + PROGRAM_PREFIX + QDateTime::currentDateTime().toString(FORMAT).toStdString() \
++ ".bkp")
 
 void DB::periodicBackup()
 {
@@ -348,7 +338,7 @@ void DB::periodicBackup()
 
     files.reserve(max);
 
-    for (auto entry : fs::directory_iterator(AUTOBACKUP_DIR))
+	for (auto entry : fs::directory_iterator(AUTOBACKUP_DIR.c_str()))
         files.push_back(entry.path());
 
     if (files.empty())
@@ -357,7 +347,7 @@ void DB::periodicBackup()
     else
     {
         if (QUtils::stringToQDate(files.front().c_str() +
-            sizeof(AUTOBACKUP_DIR PROGRAM_PREFIX) - 1).daysTo(QDate::currentDate()) >= days)
+			(AUTOBACKUP_DIR + PROGRAM_PREFIX).size()).daysTo(QDate::currentDate()) >= days)
             if (DO_BACKUP)
                 --max;
 

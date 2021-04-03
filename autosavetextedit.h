@@ -5,8 +5,6 @@
 #include <QTimer>
 #include "qutils.h"
 
-#define BKPDIR "autosaves/"
-
 class AutosaveTextEdit : public QPlainTextEdit
 {
     Q_OBJECT

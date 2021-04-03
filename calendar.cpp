@@ -178,8 +178,8 @@ void Calendar::nameChanged(char* name)
 void Calendar::on_actionBackup_triggered()
 {
     string path = QFileDialog::getSaveFileName(this, "Selecione o destino do backup",
-        QDir::homePath() + '//' + PROGRAM_PREFIX + "backup_" + QDateTime::currentDateTime().toString(FORMAT) + ".bkp", QString(),
-        nullptr, QFileDialog::ShowDirsOnly | QFileDialog::HideNameFilterDetails).toStdString();
+        (QString) HOMEDIR.c_str() + PROGRAM_PREFIX + "backup_" + QDateTime::currentDateTime().toString(FORMAT) + ".bkp",
+        QString(), nullptr, QFileDialog::ShowDirsOnly | QFileDialog::HideNameFilterDetails).toStdString();
 
     if (path.empty())
         return;

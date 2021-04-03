@@ -14,8 +14,6 @@ extern "C" {
 #define NOTES_INDEX (FIELDS_NUM - 1)
 #define IS_CONNECTION_OK (PQstatus(conn) == CONNECTION_OK)
 #define IS_RESULT_OK(res) (PQresultStatus(res) != PGRES_FATAL_ERROR)
-#define PROGRAM_PREFIX "raqmed_"
-#define AUTOBACKUP_DIR "autobackups/"
 
 class DB
 {
