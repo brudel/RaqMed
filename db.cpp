@@ -175,6 +175,9 @@ void DB::unknownDBError(PGresult* res, const char *command, int nParams, const c
 {
 	FILE* logfile = fopen(LOG_FILE.c_str(), "a");
 
+    if (ftell(logfile) == 0)
+        fs::permissions(LOG_FILE.c_str(), fs::perms::owner_write | fs::perms::owner_read);
+
     if (logfile == nullptr)
     {
         QMessageBox::warning(mainWindow, "Erro do banco de dados",
@@ -281,6 +284,8 @@ bool DB::backupDB(string path)
 {
     bool sucess;
     FILE* file = fopen(path.c_str(), "w");
+
+    fs::permissions(path, fs::perms::owner_write | fs::perms::owner_read);
 
     //Headers
     fprintf(file, "--\n-- PostgreSQL database dump\n--\n\n");

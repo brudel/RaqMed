@@ -21,6 +21,7 @@ public:
     string path;
     QTimer timer;
     string header;
+    bool fileExists = false;
 
     static int docNumber;
 

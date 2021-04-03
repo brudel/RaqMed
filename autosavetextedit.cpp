@@ -1,4 +1,7 @@
 #include "autosavetextedit.h"
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 int AutosaveTextEdit::docNumber = 0;
 
@@ -28,6 +31,9 @@ void AutosaveTextEdit::save()
     string text;
     FILE* file = fopen(path.c_str(), "w");
 
+    if (!fileExists)
+        fs::permissions(path.c_str(), fs::perms::owner_write | fs::perms::owner_read);
+
     fwrite(header.c_str(), sizeof(char), header.size(), file);
 
     text = toPlainText().toStdString();
@@ -35,11 +41,13 @@ void AutosaveTextEdit::save()
     fwrite(text.c_str(), sizeof(char), text.size(), file);
 
     fclose(file);
+
+    fileExists = true;
 }
 
 void AutosaveTextEdit::ended()
 {
     timer.stop();
-    if (document()->isModified() || document()->isRedoAvailable())
+    if (fileExists)
         remove(path.c_str());
 }
