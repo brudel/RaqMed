@@ -6,6 +6,7 @@
 #include "db.h"
 #include <QListView>
 #include "edittabmodel.h"
+#include "settingsform.h"
 
 Calendar::Calendar(QWidget *parent) :
     QMainWindow(parent),
@@ -188,4 +189,11 @@ void Calendar::on_actionBackup_triggered()
         QMessageBox::information(this, "Backup Criado", ("O Backup foi criado com sucesso em: " + path + '.').c_str());
     else
         QMessageBox::critical(this, "Erro de Backup", "O backup não foi criado devido a um erro durante o procedimento.");
+}
+
+void Calendar::on_actionConfigura_es_triggered()
+{
+    SettingsForm* sf = new SettingsForm(this);
+    sf->setAttribute(Qt::WA_DeleteOnClose);
+    sf->show();
 }

@@ -129,6 +129,7 @@
      <string>Outros</string>
     </property>
     <addaction name="actionBackup"/>
+    <addaction name="actionConfigura_es"/>
     <addaction name="actionApagar_todos_os_arquivos_do_computador_e_n_o_ligar_mais"/>
    </widget>
    <addaction name="menuOp_es"/>
@@ -184,6 +185,11 @@
   <action name="actionBackup">
    <property name="text">
     <string>Backup</string>
+   </property>
+  </action>
+  <action name="actionConfigura_es">
+   <property name="text">
+    <string>Configurações</string>
    </property>
   </action>
  </widget>

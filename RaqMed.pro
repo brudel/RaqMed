@@ -54,7 +54,8 @@ SOURCES += \
     timebutton.cpp \
     autosavetextedit.cpp \
     autosaverestore.cpp \
-    developmentcurvechart.cpp
+    developmentcurvechart.cpp \
+    settingsform.cpp
 
 HEADERS += \
 	patient.h \
@@ -71,7 +72,8 @@ HEADERS += \
     timebutton.h \
     autosavetextedit.h \
     autosaverestore.h \
-    developmentcurvechart.h
+    developmentcurvechart.h \
+    settingsform.h
 
 FORMS += \
 	calendar.ui
