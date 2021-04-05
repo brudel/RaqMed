@@ -8,16 +8,9 @@
 namespace fs = std::filesystem;
 
 //Boolean config defines
-//#define CLOUD_DB
 //#define DB_VERBOSE
 
-#ifdef CLOUD_DB
-    #define TESTE_CONN
-#else
-    #define TESTE_CONN free(config); config = strdup("user=brudel dbname=raqmed");
-#endif
-
-PGconn* DB::conn = DB::configDB();
+PGconn* DB::conn;
 
 QWidget* DB::mainWindow = nullptr;
 
@@ -42,45 +35,6 @@ QStringList* DB::tabNames = new QStringList({"Motivos", "Antecedentes", "Exames"
 std::vector<string> DB::tableTabs({"reasons", "antecedents", "exams", "reports"});
 
 string DB::tableTabsLine = QUtils::constructLine(DB::tableTabs);
-
-PGconn* DB::configDB()
-{
-    char* config, c;
-    PGconn* conn;
-    FILE* configFile;
-
-    if (!fs::exists(LOCALDIR))
-    {
-        fs::create_directory(LOCALDIR);
-        fs::permissions(LOCALDIR, fs::perms::owner_all);
-        fs::create_directory(AUTOBACKUP_DIR, LOCALDIR);
-        fs::create_directory(AUTOSAVES_DIR, LOCALDIR);
-    }
-
-    if (!fs::exists(CONFIG_FILE))
-    {
-        std::ofstream(CONFIG_FILE) << "\nautobackup 0\n";
-        fs::permissions(CONFIG_FILE, fs::perms::owner_read | fs::perms::owner_write);
-    }
-
-    configFile = fopen(CONFIG_FILE.c_str(), "r");
-
-    config = QUtils::readFileLine(configFile);
-    TESTE_CONN;
-    conn = PQconnectdb(config);
-    free(config);
-
-    atexit(&freeConn);
-
-    fscanf(configFile, "autobackup %c", &c);
-
-    if (c == '1')
-        autobackup = true;
-    else if (c == '0')
-        autobackup = false;
-
-    return conn;
-}
 
 void DB::freeConn()
 {

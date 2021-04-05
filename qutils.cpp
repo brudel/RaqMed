@@ -72,7 +72,7 @@ char* QUtils::readFileLine(FILE *file)
     char c;
 
     c = getc(file);
-    while (c != EOF && c != '\n') {
+    while (c != '\n') {
         s[n-1] = c;
         s = realloc(s, ++n);
         c = getc(file);
