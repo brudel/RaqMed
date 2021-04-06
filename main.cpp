@@ -51,12 +51,12 @@ void setConfigs()
 
     atexit(&DB::freeConn);
 
-    fscanf(configFile, "autobackup %c", &c);
+    fscanf(configFile, "QUtils::autobackup %c", &c);
 
     if (c == '1')
-        DB::autobackup = true;
+        QUtils::autobackup = true;
     else if (c == '0')
-        DB::autobackup = false;
+        QUtils::autobackup = false;
 }
 
 void recoverConn()
@@ -96,7 +96,8 @@ int main(int argc, char *argv[])
     if (PQstatus(DB::conn) == CONNECTION_BAD)
         recoverConn();
 
-    DB::periodicBackup();
+    if (QUtils::autobackup)
+        DB::periodicBackup();
 
     Calendar c;
     c.showMaximized();

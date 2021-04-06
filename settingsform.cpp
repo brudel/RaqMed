@@ -57,7 +57,7 @@ void SettingsForm::save()
     if (mode & create)
         fs::permissions(CONFIG_FILE, fs::perms::owner_read | fs::perms::owner_write);
 
-    DB::autobackup = autoBkpChkBtn->isChecked();
+    QUtils::autobackup = autoBkpChkBtn->isChecked();
 
     if (mode & init)
     {

@@ -18,8 +18,6 @@ QMessageBox* DB::reconnectWindow = nullptr;
 
 bool DB::rb = false;
 
-bool DB::autobackup;
-
 QStringList* DB::fieldNames = new QStringList({"Nome", "Data de aniversário", "Endereço", "Bairro", "Cidade", "Estado",
 "Telefone 1", "Telefone 2", "Telefone 3", "Email", "Nome da mãe", "Profissão da mãe", "Nome do pai",
 "Profissão do pai", "Indicação", "Observações"});
@@ -299,9 +297,6 @@ bool DB::backupDB(string path)
 
 void DB::periodicBackup()
 {
-    if (!autobackup)
-        return;
-
     std::vector<string> files;
     int days = 7, max = 4;
 

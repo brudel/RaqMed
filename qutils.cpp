@@ -1,5 +1,7 @@
 #include "qutils.h"
 
+bool QUtils::autobackup;
+
 char* QUtils::ToCString(QString qstr) {
     //cppstr length is different from qstr, but the same from cstr
 	string cppstr = qstr.toStdString();

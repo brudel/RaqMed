@@ -50,6 +50,8 @@ public:
     //Inline functions
     static inline string constructLine(std::vector<std::string> tableFields)
         {return constructLine(tableFields.begin(), tableFields.end());}
+
+    static bool autobackup;
 };
 
 class QBDateTimeEdit: public QDateTimeEdit {

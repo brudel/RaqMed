@@ -69,7 +69,6 @@ public:
     static QWidget* mainWindow;
     static QMessageBox* reconnectWindow;
     static bool rb;
-    static bool autobackup;
 
     //Model fields
     static QStringList* fieldNames;
