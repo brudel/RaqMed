@@ -40,6 +40,8 @@ void setConfigs()
 
         SettingsForm sf(nullptr, SettingsForm::init | SettingsForm::create);
         sf.exec();
+
+        return;
     }
 
     configFile = fopen(CONFIG_FILE.c_str(), "r");
