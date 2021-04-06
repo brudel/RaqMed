@@ -53,7 +53,7 @@ void setConfigs()
 
     atexit(&DB::freeConn);
 
-    fscanf(configFile, "QUtils::autobackup %c", &c);
+    fscanf(configFile, "autobackup %c", &c);
 
     if (c == '1')
         QUtils::autobackup = true;
