@@ -4,6 +4,18 @@
 AddAppointmentForm::AddAppointmentForm(QDate date, QWidget *parent) :
     QWidget(parent, Qt::Window | Qt::Tool), original(date)
 {
+    PGresult* res = DB::ExecCommand("SELECT get_text_default('appointment', 'content')");
+
+    if (res == nullptr)
+    {
+        delete horizontalButtonLayout;
+        delete formLayout;
+        throw 0;
+    }
+
+    contentEdit = new AutosaveTextEdit(this, "Nova Consulta", PQgetvalue(res, 0, 0));
+    PQclear(res);
+
     setWindowTitle("Agendar Consulta");
     resize(600, 400); //#Find elegant answer
     setAttribute(Qt::WA_DeleteOnClose);
@@ -91,7 +103,7 @@ void AddAppointmentForm::closeEvent(QCloseEvent *event)
         (
             lineEdit->text().isEmpty() &&
             dateTimeEdit->dateTime() == QDateTime(original) &&
-            contentEdit->toPlainText().isEmpty()
+            !contentEdit->document()->isModified()
         )
     )
     {

@@ -31,6 +31,8 @@ Calendar::Calendar(QWidget *parent) :
 
     connect(ui->calendarWidget, SIGNAL(selectionChanged()), this, SLOT(dayChanged()));
     connect(patientQuery, SIGNAL(completationDone(QString)), this, SLOT(doneQuery(QString)));
+    ui->menuEditar_modelos->addAction("Consulta", [=] {editModel(-1);});
+    ui->menuEditar_modelos->addSeparator();
 
     for (int i = 0; i < 4; ++i)
         ui->menuEditar_modelos->addAction(DB::tabNames->at(i), [=] {editModel(i);});
@@ -89,7 +91,14 @@ void Calendar::on_actionAdicionar_Paciente_triggered()
 
 void Calendar::on_actionAdicionar_Consulta_triggered()
 {
-    AddAppointmentForm* form = new AddAppointmentForm(ui->calendarWidget->selectedDate(), this);
+    AddAppointmentForm* form;
+
+    try {
+        form = new AddAppointmentForm(ui->calendarWidget->selectedDate(), this);
+    } catch (...) {
+        return;
+    }
+
     connect(form, SIGNAL(dateEdited(QDate,QString)), this, SLOT(dateChanged(QDate, QString)));
     form->show();
 }

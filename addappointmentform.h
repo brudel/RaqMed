@@ -33,7 +33,7 @@ public:
     QBDateTimeEdit* dateTimeEdit = new QBDateTimeEdit(this);
     QLabel* patientLabel = new QLabel("Paciente:", this);
     QLineEdit* lineEdit = new QLineEdit(this);
-    AutosaveTextEdit* contentEdit = new AutosaveTextEdit(this, "Nova Consulta");
+    AutosaveTextEdit* contentEdit;
     QPushButton *pushButton = new QPushButton("Salvar", this);
     QHBoxLayout *horizontalButtonLayout = new QHBoxLayout();
 

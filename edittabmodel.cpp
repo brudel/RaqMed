@@ -5,7 +5,18 @@
 EditTabModel::EditTabModel(int _tabNumber, QWidget *parent) :
     QWidget(parent, Qt::Window | Qt::Tool), tabNumber(_tabNumber)
 {
-    PGresult* res = DB::Exec("SELECT get_text_default('patient', $1)", DB::tableTabs[tabNumber]);
+    PGresult* res;
+    QString* name;
+
+    if (tabNumber >= 0)
+        name = &DB::tabNames->at(tabNumber);
+    else
+        name = new QString("Consulta");
+
+    if (tabNumber >= 0)
+        res = DB::Exec("SELECT get_text_default('patient', $1)", DB::tableTabs[tabNumber]);
+    else
+        res = DB::ExecCommand("SELECT get_text_default('appointment', 'content')");
 
     if (res == nullptr)
     {
@@ -14,14 +25,14 @@ EditTabModel::EditTabModel(int _tabNumber, QWidget *parent) :
         return;
     }
 
-    templateEdit = new AutosaveTextEdit(this, ("Modelo de " + DB::tabNames->at(tabNumber)).toStdString(), PQgetvalue(res, 0, 0));
+    templateEdit = new AutosaveTextEdit(this, ("Modelo de " + *name).toStdString(), PQgetvalue(res, 0, 0));
     PQclear(res);
 
-    setWindowTitle("Editar Modelo de " + DB::tabNames->at(tabNumber));
+    setWindowTitle("Editar Modelo de " + *name);
     resize(600, 400); //#Find elegant answer
     setAttribute(Qt::WA_DeleteOnClose);
 
-    label->setText(DB::tabNames->at(tabNumber));
+    label->setText(*name);
     verticalLayout->addWidget(label);
     verticalLayout->addWidget(templateEdit);
 
@@ -34,10 +45,15 @@ EditTabModel::EditTabModel(int _tabNumber, QWidget *parent) :
 
     connect(saveButton, SIGNAL(clicked()), this, SLOT(save()));
     connect(cancelButton, SIGNAL(clicked()), this, SLOT(close()));
+
+
+    if (tabNumber < 0)
+        delete name;
 }
 
 void EditTabModel::save()
 {
+    PGresult* res;
     string aux;
 
     templateEdit->save();
@@ -45,7 +61,10 @@ void EditTabModel::save()
     aux = templateEdit->toPlainText().toStdString();
     char* new_default = PQescapeLiteral(DB::conn, aux.c_str(), aux.size());
 
-    PGresult* res = DB::ExecCommand("ALTER TABLE patient ALTER " + DB::tableTabs[tabNumber] + " SET DEFAULT " + new_default);
+    if (tabNumber >= 0)
+        res = DB::ExecCommand("ALTER TABLE patient ALTER " + DB::tableTabs[tabNumber] + " SET DEFAULT " + new_default);
+    else
+        res = DB::ExecCommand((string) "ALTER TABLE appointment ALTER content SET DEFAULT " + new_default);
 
     PQfreemem(new_default);
 
