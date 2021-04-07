@@ -90,6 +90,10 @@ void DevelopmentCurveChart::loadMarcondes(int offset)
 bool DevelopmentCurveChart::loadPatient()
 {
     int n;
+
+    if (!birthday.isValid())
+        return true;
+
     PGresult* res = DB::Exec("SELECT weight, height, day FROM appointment WHERE patient = $1", name);
 
     if (res == nullptr)

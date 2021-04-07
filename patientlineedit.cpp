@@ -136,7 +136,7 @@ void PatientLineEdit::showCompletion(const QVector<QString> &choices)
     popup->clear();
 
     for (const auto &choice : choices)
-        auto item  = new QListWidgetItem(choice, popup);
+        new QListWidgetItem(choice, popup);
 
     int height = popup->sizeHintForRow(0) * popup->model()->rowCount()+ 2 * popup->frameWidth();
     int width = popup->sizeHintForColumn(0) + 2 * popup->frameWidth();

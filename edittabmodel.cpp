@@ -22,7 +22,6 @@ EditTabModel::EditTabModel(int _tabNumber, QWidget *parent) :
     {
         delete horizontalButtonLayout;
         throw 0;
-        return;
     }
 
     templateEdit = new AutosaveTextEdit(this, ("Modelo de " + *name).toStdString(), PQgetvalue(res, 0, 0));

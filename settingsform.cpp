@@ -70,7 +70,7 @@ void SettingsForm::save()
 
         while (1) {
             r = QMessageBox::warning(this, "Erro de conexão", "Não foi possível se conectar ao banco de dados,"
-                "verifique o endereço fornececido e a sua conexão de internet e tente novamente.",
+                " verifique o endereço fornececido e a sua conexão de internet e tente novamente.",
                 "Editar", "Tentar conectar novamente", "Fechar");
 
             if (r != 1)

@@ -52,5 +52,8 @@ void AutosaveTextEdit::ended()
 {
     timer.stop();
     if (fileExists)
+    {
         remove(path.c_str());
+        fileExists = false;
+    }
 }
