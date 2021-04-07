@@ -12,20 +12,21 @@ extern "C" {
 }
 
 #define HOMEDIR (QDir::homePath() + '//').toStdString()
-#define LOCALDIR (HOMEDIR + ".raqmed/")
+
+#if defined(__unix__)
+    #define DATADIR "/usr/share/raqmed/"
+    #define LOCALDIR (HOMEDIR + ".raqmed/")
+#elif defined(_WIN32)
+    #define DATADIR ""
+    #define LOCALDIR (HOMEDIR + "AppData/Roaming/RaqMed/")
+#else
+    #error Unknown environment!
+#endif
 
 #define AUTOBACKUP_DIR (LOCALDIR + "autobackups/")
 #define AUTOSAVES_DIR (LOCALDIR + "autosaves/")
 #define CONFIG_FILE (LOCALDIR + "raqmed.conf")
 #define LOG_FILE (LOCALDIR + "raqmed.log")
-
-#if defined(__unix__)
-    #define DATADIR "/usr/share/raqmed/"
-#elif defined(_WIN32)
-    #define DATADIR ""
-#else
-    #error Unknown environment!
-#endif
 
 #define CURVES_FILE (DATADIR "curves.csv")
 

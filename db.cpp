@@ -287,7 +287,7 @@ bool DB::backupDB(string path)
 #if defined(__unix__)
     #define FORMAT "yyyy-MM-dd_hh:mm"
 #elif defined(_WIN32)
-    #define FORMAT yyyy-MM-dd_hh-mm"
+    #define FORMAT "yyyy-MM-dd_hh-mm"
 #else
     #error Unknown environment!
 #endif
@@ -303,7 +303,7 @@ void DB::periodicBackup()
     files.reserve(max);
 
 	for (auto entry : fs::directory_iterator(AUTOBACKUP_DIR.c_str()))
-        files.push_back(entry.path());
+        files.push_back(entry.path().string());
 
     if (files.empty())
         DO_BACKUP;

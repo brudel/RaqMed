@@ -10,6 +10,9 @@ AutosaveTextEdit::AutosaveTextEdit(QWidget* parent, string title, QString text) 
 {
     path = AUTOSAVES_DIR + QDateTime::currentDateTime().toString(Qt::ISODate).toStdString() + "-"
         + std::to_string(docNumber++) + ".autosave";
+    #ifdef _WIN32
+    std::replace(path.begin() + 2, path.end(), ':', '-');
+    #endif
 
     header = title + "\n";
 

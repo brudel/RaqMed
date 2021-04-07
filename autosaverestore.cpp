@@ -25,7 +25,7 @@ AutosaveRestore::AutosaveRestore(QWidget *parent) : QWidget(parent)
     mainLayout->addLayout(buttonsLayout);
 
     for (auto entry : fs::directory_iterator(AUTOSAVES_DIR))
-        files.push_back(entry.path());
+        files.push_back(entry.path().string());
 
     if (files.size() == 0)
         return;
