@@ -76,7 +76,7 @@ Patient::Patient(QString qname, QWidget* parent) :
 
     //Patient Model interface
     connect(pModel, SIGNAL(nameEdited(char*)), this, SLOT(nameChanged(char*)));
-    connect(pModel, SIGNAL(nameEdited(char*)), appointmentWidget, SLOT(nameChanged(char*))); //#Mover para um deles
+    connect(pModel, SIGNAL(nameEdited(char*)), appointmentWidget, SLOT(nameChanged(char*)));
     connect(pModel, SIGNAL(birthdayEdited(QDate)), appointmentWidget, SLOT(birthdayChanged(QDate)));
     connect(pModel, SIGNAL(notesCellEdited()), this, SLOT(resizeNoteCell()));
 

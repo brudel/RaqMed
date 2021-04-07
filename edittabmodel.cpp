@@ -29,7 +29,7 @@ EditTabModel::EditTabModel(int _tabNumber, QWidget *parent) :
     PQclear(res);
 
     setWindowTitle("Editar Modelo de " + *name);
-    resize(600, 400); //#Find elegant answer
+    resize(600, 400);
     setAttribute(Qt::WA_DeleteOnClose);
 
     label->setText(*name);

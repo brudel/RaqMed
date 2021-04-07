@@ -222,7 +222,7 @@ bool DB::backupTable(string table, FILE* file)
     res = ExecCommand("COPY " + table + " TO STDOUT");
     PQclear(res);
 
-    while ((size = PQgetCopyData(conn, &buf, 0)) > 0) //#Verify error -2
+    while ((size = PQgetCopyData(conn, &buf, 0)) > 0)
     {
         fwrite(buf, size, 1, file);
         PQfreemem(buf);

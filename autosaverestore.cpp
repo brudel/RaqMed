@@ -7,7 +7,7 @@ namespace fs = std::filesystem;
 AutosaveRestore::AutosaveRestore(QWidget *parent) : QWidget(parent)
 {
     setWindowTitle("Recuperação de textos");
-    resize(750, 500); //#Find elegant answer
+    resize(750, 500);
 
     labelsLayout->addWidget(titleLbl);
     labelsLayout->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Expanding));
