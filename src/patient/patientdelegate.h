@@ -1,3 +1,7 @@
+/*  Copyright 2021 Bruno Del Monde.
+ * Licensed under the EUPL-1.2.
+ */
+
 #ifndef PATIENTDELEGATE_H
 #define PATIENTDELEGATE_H
 

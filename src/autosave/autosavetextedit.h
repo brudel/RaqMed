@@ -1,3 +1,7 @@
+/*  Copyright 2021 Bruno Del Monde.
+ * Licensed under the EUPL-1.2.
+ */
+
 #ifndef AUTOSAVETEXTEDIT_H
 #define AUTOSAVETEXTEDIT_H
 

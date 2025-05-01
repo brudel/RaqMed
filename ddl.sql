@@ -1,3 +1,6 @@
+/*  Copyright 2021 Bruno Del Monde.
+ * Licensed under the EUPL-1.2.
+ */
 
 CREATE TABLE patient
 (

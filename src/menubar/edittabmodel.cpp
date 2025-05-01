@@ -1,3 +1,7 @@
+/*  Copyright 2021 Bruno Del Monde.
+ * Licensed under the EUPL-1.2.
+ */
+
 #include "edittabmodel.h"
 #include "db.h"
 #include <QMessageBox>
