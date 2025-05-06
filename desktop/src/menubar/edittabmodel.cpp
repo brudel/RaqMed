@@ -2,8 +2,8 @@
  * Licensed under the EUPL-1.2.
  */
 
-#include "edittabmodel.h"
-#include "db.h"
+#include "menubar/edittabmodel.h"
+#include "common/db.h"
 #include <QMessageBox>
 
 EditTabModel::EditTabModel(int _tabNumber, QWidget *parent) :

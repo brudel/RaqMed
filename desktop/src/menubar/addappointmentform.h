@@ -11,9 +11,9 @@
 #include <QLineEdit>
 #include <QDateTimeEdit>
 #include <QPushButton>
-#include <qutils.h>
-#include <patientlineedit.h>
-#include <autosavetextedit.h>
+#include "common/qutils.h"
+#include "calendar/patientlineedit.h"
+#include "autosave/autosavetextedit.h"
 extern "C" {
 #include <libpq-fe.h>
 }

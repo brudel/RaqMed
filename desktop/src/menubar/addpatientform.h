@@ -15,8 +15,8 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QDateEdit>
-#include "qutils.h"
-#include "db.h"
+#include "common/qutils.h"
+#include "common/db.h"
 extern "C" {
 #include <libpq-fe.h>
 }

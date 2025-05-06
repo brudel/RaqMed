@@ -2,7 +2,7 @@
  * Licensed under the EUPL-1.2.
  */
 
-#include "autosavetextedit.h"
+#include "autosave/autosavetextedit.h"
 #include <filesystem>
 
 namespace fs = std::filesystem;

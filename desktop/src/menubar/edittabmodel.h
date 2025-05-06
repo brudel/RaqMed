@@ -8,8 +8,8 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QVBoxLayout>
-#include <autosavetextedit.h>
-#include <qutils.h>
+#include "autosave/autosavetextedit.h"
+#include "common/qutils.h"
 extern "C" {
 #include <libpq-fe.h>
 }

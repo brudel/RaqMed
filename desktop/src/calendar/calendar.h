@@ -7,8 +7,8 @@
 
 #include <QMainWindow>
 #include <unordered_map>
-#include "patient.h"
-#include <qutils.h>
+#include "patient/patient.h"
+#include "common/qutils.h"
 extern "C" {
 #include <libpq-fe.h>
 }

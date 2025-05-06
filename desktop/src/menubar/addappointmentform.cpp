@@ -2,8 +2,8 @@
  * Licensed under the EUPL-1.2.
  */
 
-#include "addappointmentform.h"
-#include "db.h"
+#include "menubar/addappointmentform.h"
+#include "common/db.h"
 
 AddAppointmentForm::AddAppointmentForm(QDate date, QWidget *parent) :
     QWidget(parent, Qt::Window | Qt::Tool), original(date)
@@ -106,7 +106,7 @@ void AddAppointmentForm::closeEvent(QCloseEvent *event)
         saved ||
         (
             lineEdit->text().isEmpty() &&
-            dateTimeEdit->dateTime() == QDateTime(original) &&
+            dateTimeEdit->dateTime() == original.startOfDay() &&
             !contentEdit->document()->isModified()
         )
     )

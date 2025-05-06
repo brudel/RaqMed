@@ -2,8 +2,8 @@
  * Licensed under the EUPL-1.2.
  */
 
-#include "appointmentwidget.h"
-#include "db.h"
+#include "appointment/appointmentwidget.h"
+#include "common/db.h"
 #include <QMenu>
 #include <QMessageBox>
 #include <cstring>

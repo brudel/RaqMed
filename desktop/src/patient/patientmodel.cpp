@@ -2,7 +2,7 @@
  * Licensed under the EUPL-1.2.
  */
 
-#include "patientmodel.h"
+#include "patient/patientmodel.h"
 
 PatientModel::PatientModel(char* _patient, QObject* parent) :
     QAbstractListModel(parent)

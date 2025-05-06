@@ -2,8 +2,8 @@
  * Licensed under the EUPL-1.2.
  */
 
-#include "patientdelegate.h"
-#include "db.h"
+#include "patient/patientdelegate.h"
+#include "common/db.h"
 
 PatientDelegate::PatientDelegate(QWidget *parent) : QStyledItemDelegate(parent)
 {

@@ -2,9 +2,9 @@
  * Licensed under the EUPL-1.2.
  */
 
-#include "settingsform.h"
+#include "menubar/settingsform.h"
 #include <filesystem>
-#include "db.h"
+#include "common/db.h"
 
 namespace fs = std::filesystem;
 

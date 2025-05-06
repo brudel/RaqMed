@@ -11,8 +11,8 @@
 #include <QPlainTextEdit>
 #include <QHBoxLayout>
 #include <QPushButton>
-#include "qutils.h"
-#include "autosavetextedit.h"
+#include "common/qutils.h"
+#include "autosave/autosavetextedit.h"
 
 class AutosaveRestore : public QWidget
 {

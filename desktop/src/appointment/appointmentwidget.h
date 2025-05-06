@@ -13,8 +13,8 @@
 #include <QComboBox>
 #include <QLineEdit>
 #include <QShortcut>
-#include "qutils.h"
-#include "autosavetextedit.h"
+#include "common/qutils.h"
+#include "autosave/autosavetextedit.h"
 extern "C" {
 #include <libpq-fe.h>
 }

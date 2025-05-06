@@ -2,7 +2,7 @@
  * Licensed under the EUPL-1.2.
  */
 
-#include "autosaverestore.h"
+#include "autosave/autosaverestore.h"
 #include <filesystem>
 #include <QMessageBox>
 

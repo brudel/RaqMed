@@ -15,13 +15,13 @@
 #include <QStackedLayout>
 #include <QHeaderView>
 #include <QMessageBox>
-#include "qutils.h"
-#include "appointmentwidget.h"
-#include "db.h"
-#include "patientdelegate.h"
-#include "patientmodel.h"
-#include "autosavetextedit.h"
-#include "developmentcurvechart.h"
+#include "common/qutils.h"
+#include "appointment/appointmentwidget.h"
+#include "common/db.h"
+#include "patient/patientdelegate.h"
+#include "patient/patientmodel.h"
+#include "autosave/autosavetextedit.h"
+#include "patient/developmentcurvechart.h"
 extern "C" {
 #include <libpq-fe.h>
 }

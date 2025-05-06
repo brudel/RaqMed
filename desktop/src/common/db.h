@@ -7,7 +7,7 @@
 
 #include <QDate>
 #include <QMessageBox>
-#include "qutils.h"
+#include "common/qutils.h"
 extern "C" {
 #include <libpq-fe.h>
 }

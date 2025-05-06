@@ -4,9 +4,11 @@
 #
 #-------------------------------------------------
 
-QT              += core gui charts
+QT              += core gui charts widgets
 
-QMAKE_CXXFLAGS  += -fpermissive -std=c++2a
+CONFIG += c++17
+
+QMAKE_CXXFLAGS  += -fpermissive
 
 linux: {
 	QMAKE_CXXFLAGS  += -I/usr/include/postgresql
@@ -18,9 +20,9 @@ win32: {
     QMAKE_LFLAGS    += -L../postgresql/lib
 }
 
-LIBS    += -lpq -lstdc++fs
+LIBS    += -lpq #-lstdc++fs
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+INCLUDEPATH += $$PWD/src
 
 TARGET = RaqMed
 TEMPLATE = app
@@ -36,47 +38,45 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-CONFIG += c++2a
-
 SOURCES += \
-	main.cpp \
-	patient.cpp \
-    calendar.cpp \
-    qutils.cpp \
-    addappointmentform.cpp \
-    addpatientform.cpp \
-    patientlineedit.cpp \
-    appointmentwidget.cpp \
-    edittabmodel.cpp \
-    patientdelegate.cpp \
-    db.cpp \
-    patientmodel.cpp \
-    timebutton.cpp \
-    autosavetextedit.cpp \
-    autosaverestore.cpp \
-    developmentcurvechart.cpp \
-    settingsform.cpp
+	src/main.cpp \
+	src/patient/patient.cpp \
+    src/calendar/calendar.cpp \
+    src/common/qutils.cpp \
+    src/menubar/addappointmentform.cpp \
+    src/menubar/addpatientform.cpp \
+    src/calendar/patientlineedit.cpp \
+    src/appointment/appointmentwidget.cpp \
+    src/menubar/edittabmodel.cpp \
+    src/patient/patientdelegate.cpp \
+    src/common/db.cpp \
+    src/patient/patientmodel.cpp \
+    src/widgets/timebutton.cpp \
+    src/autosave/autosavetextedit.cpp \
+    src/autosave/autosaverestore.cpp \
+    src/patient/developmentcurvechart.cpp \
+    src/menubar/settingsform.cpp
 
 HEADERS += \
-	patient.h \
-    calendar.h \
-    qutils.h \
-    addappointmentform.h \
-    addpatientform.h \
-    patientlineedit.h \
-    appointmentwidget.h \
-    edittabmodel.h \
-    patientdelegate.h \
-    db.h \
-    patientmodel.h \
-    timebutton.h \
-    autosavetextedit.h \
-    autosaverestore.h \
-    developmentcurvechart.h \
-    settingsform.h
+	src/patient/patient.h \
+    src/calendar/calendar.h \
+    src/common/qutils.h \
+    src/menubar/addappointmentform.h \
+    src/menubar/addpatientform.h \
+    src/calendar/patientlineedit.h \
+    src/appointment/appointmentwidget.h \
+    src/menubar/edittabmodel.h \
+    src/patient/patientdelegate.h \
+    src/common/db.h \
+    src/patient/patientmodel.h \
+    src/widgets/timebutton.h \
+    src/autosave/autosavetextedit.h \
+    src/autosave/autosaverestore.h \
+    src/patient/developmentcurvechart.h \
+    src/menubar/settingsform.h
 
 FORMS += \
-	calendar.ui
+	src/calendar/calendar.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -84,10 +84,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    database.config \
-    ddl.sql \
-	notes.txt \
     .gitignore
 
 RESOURCES += \
-    images.qrc
+    assets/images.qrc

@@ -2,8 +2,8 @@
  * Licensed under the EUPL-1.2.
  */
 
-#include "addpatientform.h"
-#include "db.h"
+#include "menubar/addpatientform.h"
+#include "common/db.h"
 #include <QMessageBox>
 
 AddPatientForm::AddPatientForm(QWidget *parent) :

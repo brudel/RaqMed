@@ -2,8 +2,8 @@
  * Licensed under the EUPL-1.2.
  */
 
-#include "developmentcurvechart.h"
-#include "db.h"
+#include "patient/developmentcurvechart.h"
+#include "common/db.h"
 
 #define Y_SCALE 10
 #define Y_MINOR_TICK_COUNT 4

@@ -2,15 +2,15 @@
  * Licensed under the EUPL-1.2.
  */
 
-#include "calendar.h"
+#include "calendar/calendar.h"
 #include "ui_calendar.h"
-#include "addpatientform.h"
-#include "addappointmentform.h"
-#include "patientlineedit.h"
-#include "db.h"
+#include "menubar/addpatientform.h"
+#include "menubar/addappointmentform.h"
+#include "calendar/patientlineedit.h"
+#include "common/db.h"
 #include <QListView>
-#include "edittabmodel.h"
-#include "settingsform.h"
+#include "menubar/edittabmodel.h"
+#include "menubar/settingsform.h"
 
 Calendar::Calendar(QWidget *parent) :
     QMainWindow(parent),

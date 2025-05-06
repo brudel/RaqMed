@@ -6,9 +6,9 @@
 #include <filesystem>
 #include <fstream>
 #include <QMessageBox>
-#include "calendar.h"
-#include "autosaverestore.h"
-#include "settingsform.h"
+#include "calendar/calendar.h"
+#include "autosave/autosaverestore.h"
+#include "menubar/settingsform.h"
 
 namespace fs = std::filesystem;
 
@@ -67,13 +67,13 @@ void setConfigs()
 
 void recoverConn()
 {
-    int r;
+    int reply;
 
     while (1) {
-        r = QMessageBox::warning(nullptr, "Erro de conexão", "Não foi possível se conectar ao banco de dados.",
+        reply = QMessageBox::warning(nullptr, "Erro de conexão", "Não foi possível se conectar ao banco de dados.",
             "Tentar novamente", "Fechar", "Editar configurações");
 
-        if (r != 0)
+        if (reply != 0)
             break;
 
         PQreset(DB::conn);
@@ -81,10 +81,10 @@ void recoverConn()
             return;
     }
 
-    if (r == 1)
+    if (reply == 1)
         exit(0);
 
-    if (r == 2)
+    if (reply == 2)
     {
         SettingsForm sf(nullptr, SettingsForm::init);
         sf.exec();

@@ -48,9 +48,9 @@
 **
 ****************************************************************************/
 
-#include "patientlineedit.h"
-#include "qutils.h"
-#include "db.h"
+#include "calendar/patientlineedit.h"
+#include "common/qutils.h"
+#include "common/db.h"
 
 PatientLineEdit::PatientLineEdit(QLineEdit *parent): QObject(parent), editor(parent)
 {

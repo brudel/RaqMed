@@ -2,8 +2,8 @@
  * Licensed under the EUPL-1.2.
  */
 
-#include "patient.h"
-#include "timebutton.h"
+#include "patient/patient.h"
+#include "widgets/timebutton.h"
 
 #define CHART_LABEL "Gráficos de desenvolvimento"
 #define CHART_INDEX 5

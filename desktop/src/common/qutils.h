@@ -15,7 +15,7 @@ extern "C" {
 #include <libpq-fe.h>
 }
 
-#define HOMEDIR (QDir::homePath() + '//').toStdString()
+#define HOMEDIR (QDir::homePath() + '/').toStdString()
 
 #if defined(__unix__)
     #define DATADIR "/usr/share/raqmed/"

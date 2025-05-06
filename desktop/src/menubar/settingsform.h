@@ -11,7 +11,7 @@
 #include <QCheckBox>
 #include <QPushButton>
 #include <QVBoxLayout>
-#include "qutils.h"
+#include "common/qutils.h"
 
 class SettingsForm : public QDialog
 {

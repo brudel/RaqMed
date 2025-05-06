@@ -1,7 +1,3 @@
-/*  Copyright 2021 Bruno Del Monde.
- * Licensed under the EUPL-1.2.
- */
-
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>Calendar</class>
@@ -24,7 +20,7 @@
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
      <layout class="QVBoxLayout" name="verticalLayout">
-      <item alignment="Qt::AlignHCenter">
+      <item alignment="Qt::AlignmentFlag::AlignHCenter">
        <widget class="QCalendarWidget" name="calendarWidget">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
@@ -42,7 +38,7 @@
          <bool>false</bool>
         </property>
         <property name="verticalHeaderFormat">
-         <enum>QCalendarWidget::NoVerticalHeader</enum>
+         <enum>QCalendarWidget::VerticalHeaderFormat::NoVerticalHeader</enum>
         </property>
         <property name="navigationBarVisible">
          <bool>true</bool>
@@ -65,7 +61,7 @@
       <item>
        <spacer name="verticalSpacer">
         <property name="orientation">
-         <enum>Qt::Vertical</enum>
+         <enum>Qt::Orientation::Vertical</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -81,7 +77,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="images.qrc">:/capa.png</pixmap>
+         <pixmap resource="../../assets/images.qrc">:/capa.png</pixmap>
         </property>
        </widget>
       </item>
@@ -113,7 +109,7 @@
      <x>0</x>
      <y>0</y>
      <width>541</width>
-     <height>22</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuOp_es">
@@ -198,7 +194,7 @@
   </action>
  </widget>
  <resources>
-  <include location="images.qrc"/>
+  <include location="../../assets/images.qrc"/>
  </resources>
  <connections/>
 </ui>

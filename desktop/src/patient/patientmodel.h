@@ -7,8 +7,8 @@
 #include <QAbstractListModel>
 #include <QMessageBox>
 #include <QDate>
-#include "qutils.h"
-#include "db.h"
+#include "common/qutils.h"
+#include "common/db.h"
 
 class PatientModel : public QAbstractListModel
 {

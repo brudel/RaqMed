@@ -2,12 +2,12 @@
  * Licensed under the EUPL-1.2.
  */
 
-#include "db.h"
+#include "common/db.h"
 #include <QMessageBox>
 #include <QPushButton>
 #include <filesystem>
 #include <fstream>
-#include "qutils.h"
+#include "common/qutils.h"
 
 namespace fs = std::filesystem;
 

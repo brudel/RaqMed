@@ -7,7 +7,7 @@
 
 #include <QPlainTextEdit>
 #include <QTimer>
-#include "qutils.h"
+#include "common/qutils.h"
 
 class AutosaveTextEdit : public QPlainTextEdit
 {

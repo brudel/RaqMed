@@ -2,7 +2,7 @@
  * Licensed under the EUPL-1.2.
  */
 
-#include "timebutton.h"
+#include "widgets/timebutton.h"
 #include <string>
 
 TimeButton::TimeButton(string _baseText, int _time, QWidget *parent) :
