@@ -1,0 +1,17 @@
+# Build
+build/
+*.deb
+
+# Tools
+.vscode
+*.pro.user
+*.stash
+
+# Secret
+notes.txt
+raqmed.conf
+
+# Temp
+deb
+Makefile
+README.md
