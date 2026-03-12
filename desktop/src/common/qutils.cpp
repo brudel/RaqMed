@@ -68,7 +68,7 @@ string QUtils::toBrDate(char* dateTime)
 
 void QUtils::BDdebug(PGresult* res)
 {
-    qDebug(PQresultErrorMessage(res));
+    qDebug("Database error: %s", PQresultErrorMessage(res));
 }
 
 char* QUtils::readFileLine(FILE *file)

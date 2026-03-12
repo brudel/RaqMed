@@ -25,6 +25,7 @@ Calendar::Calendar(QWidget *parent) :
     ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tableWidget->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
     ui->tableWidget->verticalHeader()->hide();
+    ui->tableWidget->setStyleSheet("QTableView { outline: 0; }");
     PatientLineEdit* patientQuery = new PatientLineEdit(ui->lineEdit);
 
     QLabel* label = new QLabel(ui->centralwidget);

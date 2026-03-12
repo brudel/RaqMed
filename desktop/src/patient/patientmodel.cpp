@@ -27,7 +27,7 @@ Qt::ItemFlags PatientModel::flags(const QModelIndex &index) const
 QVariant PatientModel::data(const QModelIndex &index, int role) const
 {
     if (role != Qt::DisplayRole && role != Qt::EditRole)
-        return QVariant::Invalid;
+        return QVariant();
 
     if (index.row() == BIRTHDATE_INDEX)
         return QVariant(QDate::fromString(fieldValues[index.row()].c_str(), Qt::ISODate));
@@ -45,7 +45,7 @@ QVariant PatientModel::data(const QModelIndex &index, int role) const
 QVariant PatientModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (role != Qt::DisplayRole || orientation == Qt::Horizontal)
-        return QVariant::Invalid;
+        return QAbstractListModel::headerData(section, orientation, role);
 
     return QVariant(DB::fieldNames->at(section));
 }

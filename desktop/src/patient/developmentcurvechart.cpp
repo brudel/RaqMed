@@ -60,9 +60,9 @@ DevelopmentCurveChart::DevelopmentCurveChart(char* _name, QDate _birthday, QWidg
     mainLayout->addWidget(chartView);
     chartView->setRenderHints(QPainter::Antialiasing);
 
-    connect(bgs[0], SIGNAL(buttonClicked(int)), this, SLOT(setMarcondes()));
-    connect(bgs[1], SIGNAL(buttonClicked(int)), this, SLOT(switchPatient()));
-    connect(bgs[1], SIGNAL(buttonClicked(int)), this, SLOT(setMarcondes()));
+    connect(bgs[0], SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(setMarcondes()));
+    connect(bgs[1], SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(switchPatient()));
+    connect(bgs[1], SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(setMarcondes()));
 }
 
 void DevelopmentCurveChart::initMarcondes()
