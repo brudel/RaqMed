@@ -11,21 +11,21 @@
 #include <QCheckBox>
 #include <QPushButton>
 #include <QVBoxLayout>
-#include "common/qutils.h"
 
 class SettingsForm : public QDialog
 {
     Q_OBJECT
 public:
-    typedef enum formMode {
+    enum formMode {
         normal = 0,
         init = 1,
         create = 2
-    } formMode;
+    };
+    Q_DECLARE_FLAGS(formModes, formMode)
 
-    explicit SettingsForm(QWidget* parent = nullptr, formMode _mode = normal);
+    explicit SettingsForm(QWidget* parent = nullptr, formModes _mode = normal);
 
-    formMode mode;
+    formModes mode;
 
     QLabel* connStrLabel = new QLabel("URL do banco de dados", this);
     QLineEdit* connStrLineEdit = new QLineEdit(this);
@@ -42,5 +42,7 @@ public slots:
     void save();
     void cancel();
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(SettingsForm::formModes)
 
 #endif // SETTINGSFORM_H

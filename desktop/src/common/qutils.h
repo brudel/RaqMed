@@ -8,6 +8,9 @@
 #include <QString>
 #include <QDateTimeEdit>
 #include <functional>
+#include <list>
+#include <string>
+#include <vector>
 #include <QDate>
 #include <QDebug>
 #include <QDir>

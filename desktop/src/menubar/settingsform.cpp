@@ -8,7 +8,7 @@
 
 namespace fs = std::filesystem;
 
-SettingsForm::SettingsForm(QWidget *parent, formMode _mode) : QDialog(parent, Qt::Window | Qt::Tool), mode(_mode)
+SettingsForm::SettingsForm(QWidget *parent, formModes _mode) : QDialog(parent, Qt::Window | Qt::Tool), mode(_mode)
 {
     setWindowTitle("Configurações");
     resize(600, 400);

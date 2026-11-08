@@ -9,7 +9,6 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include "autosave/autosavetextedit.h"
-#include "common/qutils.h"
 extern "C" {
 #include <libpq-fe.h>
 }
