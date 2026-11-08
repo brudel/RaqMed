@@ -11,14 +11,6 @@
 
 namespace fs = std::filesystem;
 
-#define TESTE_DB
-
-#ifdef TESTE_DB
-    #define TESTE_CONN free(config); config = strdup("user=brudel dbname=raqmed");
-#else
-    #define TESTE_CONN
-#endif
-
 void setConfigs()
 {
 
@@ -50,7 +42,6 @@ void setConfigs()
     configFile = fopen(CONFIG_FILE.c_str(), "r");
 
     config = QUtils::readFileLine(configFile);
-    TESTE_CONN;
     DB::conn = PQconnectdb(config);
     free(config);
 
