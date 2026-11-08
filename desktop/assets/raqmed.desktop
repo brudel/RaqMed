@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=RaqMed
+Comment=Suíte de gerenciamento de pacientes RaqMed.
+Exec=raqmed
+Icon=raqmed
+Terminal=false
+Categories=Office;

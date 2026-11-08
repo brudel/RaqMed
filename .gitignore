@@ -6,6 +6,7 @@ build/
 .vscode
 *.pro.user
 *.stash
+CMakeUserPresets.json
 
 # Secret
 notes.txt

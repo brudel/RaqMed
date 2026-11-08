@@ -1,0 +1,41 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": { "major": 3, "minor": 25, "patch": 0 },
+  "configurePresets": [
+    {
+      "name": "release",
+      "displayName": "Release",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/release",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+    },
+    {
+      "name": "test",
+      "displayName": "Test (curves.csv from assets/)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/test",
+      "cacheVariables": { "RAQMED_LOCAL_DATA": "ON" }
+    }
+  ],
+  "buildPresets": [
+    { "name": "release", "configurePreset": "release" },
+    { "name": "test", "configurePreset": "test" },
+    { "name": "package", "configurePreset": "release", "targets": "package" }
+  ],
+  "workflowPresets": [
+    {
+      "name": "release",
+      "steps": [
+        { "type": "configure", "name": "release" },
+        { "type": "build", "name": "release" }
+      ]
+    },
+    {
+      "name": "test",
+      "steps": [
+        { "type": "configure", "name": "test" },
+        { "type": "build", "name": "test" }
+      ]
+    }
+  ]
+}

@@ -21,10 +21,14 @@ extern "C" {
 #define HOMEDIR (QDir::homePath() + '/').toStdString()
 
 #if defined(__unix__)
-    #define DATADIR "/usr/share/raqmed/"
+    #ifndef DATADIR
+        #define DATADIR "/usr/share/raqmed/"
+    #endif
     #define LOCALDIR (HOMEDIR + ".raqmed/")
 #elif defined(_WIN32)
-    #define DATADIR ""
+    #ifndef DATADIR
+        #define DATADIR ""
+    #endif
     #define LOCALDIR (HOMEDIR + "AppData/Roaming/RaqMed/")
 #else
     #error Unknown environment!
