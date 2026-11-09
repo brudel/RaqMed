@@ -15,20 +15,20 @@ endif()
 
 include(GNUInstallDirs)
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets Charts)
+find_package(Qt6 6.7 REQUIRED COMPONENTS Widgets Charts)
 find_package(PostgreSQL REQUIRED)
 
-# Where curves.csv is read from at runtime (must end with a slash).
+# Where curves.csv is read from at runtime.
 if(WIN32)
-  set(_raqmed_default_datadir "")
+  set(_raqmed_default_datadir ".")
 else()
-  set(_raqmed_default_datadir "${CMAKE_INSTALL_FULL_DATADIR}/raqmed/")
+  set(_raqmed_default_datadir "${CMAKE_INSTALL_FULL_DATADIR}/raqmed")
 endif()
 set(RAQMED_DATADIR "${_raqmed_default_datadir}" CACHE STRING
-    "Directory curves.csv is read from (must end with a slash)")
+    "Directory curves.csv is read from")
 option(RAQMED_LOCAL_DATA "Test build: read curves.csv from the source tree" OFF)
 if(RAQMED_LOCAL_DATA)
-  set(RAQMED_DATADIR "${CMAKE_CURRENT_SOURCE_DIR}/assets/")
+  set(RAQMED_DATADIR "${CMAKE_CURRENT_SOURCE_DIR}/assets")
 endif()
 
 add_executable(raqmed

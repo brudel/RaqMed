@@ -17,13 +17,7 @@ void setConfigs()
     char* config, c;
     FILE* configFile;
 
-    if (!fs::exists(LOCALDIR))
-    {
-        fs::create_directory(LOCALDIR);
-        fs::permissions(LOCALDIR, fs::perms::owner_all);
-        fs::create_directory(AUTOBACKUP_DIR, LOCALDIR);
-        fs::create_directory(AUTOSAVES_DIR, LOCALDIR);
-    }
+    QUtils::prepareDirs();
 
     if (!fs::exists(CONFIG_FILE))
     {

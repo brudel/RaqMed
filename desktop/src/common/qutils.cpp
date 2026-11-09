@@ -3,8 +3,51 @@
  */
 
 #include "common/qutils.h"
+#include <QCoreApplication>
+#include <QStandardPaths>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 bool QUtils::autobackup;
+
+// QStandardPaths needs the application name, and the path constants below are
+// built during static initialization, so it has to be set before them.
+[[maybe_unused]] static const bool appNameSet = (QCoreApplication::setApplicationName("raqmed"), true);
+
+#if defined(__unix__)
+
+static string location(QStandardPaths::StandardLocation type)
+{
+    return QStandardPaths::writableLocation(type).toStdString();
+}
+
+#elif defined(_WIN32)
+
+static string location(QStandardPaths::StandardLocation)
+{
+    return QDir::homePath().toStdString() + "/AppData/Roaming/RaqMed";
+}
+
+#endif
+
+const string AUTOBACKUP_DIR = location(QStandardPaths::AppDataLocation) + "/autobackups";
+const string AUTOSAVES_DIR = location(QStandardPaths::StateLocation) + "/autosaves";
+const string CONFIG_FILE = location(QStandardPaths::AppConfigLocation) + "/raqmed.conf";
+const string LOG_FILE = location(QStandardPaths::StateLocation) + "/raqmed.log";
+
+void QUtils::prepareDirs()
+{
+    std::error_code ec;
+
+    for (const fs::path& dir : {fs::path(CONFIG_FILE).parent_path(), fs::path(AUTOBACKUP_DIR).parent_path(),
+        fs::path(AUTOBACKUP_DIR), fs::path(LOG_FILE).parent_path(), fs::path(AUTOSAVES_DIR)})
+        if (!fs::exists(dir, ec))
+        {
+            fs::create_directories(dir, ec);
+            fs::permissions(dir, fs::perms::owner_all, ec);
+        }
+}
 
 char* QUtils::ToCString(QString qstr) {
     //cppstr length is different from qstr, but the same from cstr

@@ -296,7 +296,7 @@ bool DB::backupDB(string path)
     #error Unknown environment!
 #endif
 
-#define DO_BACKUP backupDB(AUTOBACKUP_DIR + PROGRAM_PREFIX + QDateTime::currentDateTime().toString(FORMAT).toStdString() \
+#define DO_BACKUP backupDB(AUTOBACKUP_DIR + "/" PROGRAM_PREFIX + QDateTime::currentDateTime().toString(FORMAT).toStdString() \
 + ".bkp")
 
 void DB::periodicBackup()
@@ -315,7 +315,7 @@ void DB::periodicBackup()
     else
     {
         if (QUtils::stringToQDate(files.front().c_str() +
-			(AUTOBACKUP_DIR + PROGRAM_PREFIX).size()).daysTo(QDate::currentDate()) >= days)
+			(AUTOBACKUP_DIR + "/" PROGRAM_PREFIX).size()).daysTo(QDate::currentDate()) >= days)
             if (DO_BACKUP)
                 --max;
 

@@ -22,28 +22,27 @@ extern "C" {
 
 #if defined(__unix__)
     #ifndef DATADIR
-        #define DATADIR "/usr/share/raqmed/"
+        #define DATADIR "/usr/share/raqmed"
     #endif
-    #define LOCALDIR (HOMEDIR + ".raqmed/")
 #elif defined(_WIN32)
     #ifndef DATADIR
-        #define DATADIR ""
+        #define DATADIR "."
     #endif
-    #define LOCALDIR (HOMEDIR + "AppData/Roaming/RaqMed/")
 #else
     #error Unknown environment!
 #endif
 
-#define AUTOBACKUP_DIR (LOCALDIR + "autobackups/")
-#define AUTOSAVES_DIR (LOCALDIR + "autosaves/")
-#define CONFIG_FILE (LOCALDIR + "raqmed.conf")
-#define LOG_FILE (LOCALDIR + "raqmed.log")
-
-#define CURVES_FILE (DATADIR "curves.csv")
+#define CURVES_FILE (DATADIR "/curves.csv")
 
 #define PROGRAM_PREFIX "raqmed_"
 
 typedef std::string string;
+
+// Per-user paths. On Unix they follow the XDG base directory spec.
+extern const string AUTOBACKUP_DIR;
+extern const string AUTOSAVES_DIR;
+extern const string CONFIG_FILE;
+extern const string LOG_FILE;
 
 class QUtils {
 public:
@@ -58,6 +57,9 @@ public:
     static int yearsTo(QDate first, QDate second);
     static std::vector<char*> sVecToCVec(std::vector<string> svec);
     static std::vector<string> qVecToSVec(std::vector<QString> qvec);
+
+    // Creates the directories holding the per-user files declared above.
+    static void prepareDirs();
 
     //Inline functions
     static inline string constructLine(std::vector<std::string> tableFields)
