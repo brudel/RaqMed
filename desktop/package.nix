@@ -8,7 +8,7 @@
 
 stdenv.mkDerivation {
   pname = "raqmed";
-  version = "1.2";
+  version = "1.3";
 
   src = lib.fileset.toSource {
     root = ../.;
